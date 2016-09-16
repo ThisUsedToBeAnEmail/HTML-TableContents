@@ -6,6 +6,8 @@ extends 'HTML::Parser';
 use HTML::TableContent::Store;
 use HTML::TableContent::Table;
 use HTML::TableContent::Table::Row;
+use HTML::TableContent::Table::Header;
+use HTML::TableContent::Table::Cell;
 
 =head1 NAME
 
@@ -47,7 +49,7 @@ sub start
         push @{$self->tables}, $table;
         $self->store->current_table($table);
     } elsif ($tag eq 'th') {
-        my $th = $attr;
+        my $th = HTML::TableContent::Table::Header->new($attr);
         push @{$self->store->current_table->headers}, $th;
         $self->store->current_header($th);
         $self->store->current_element($th);
@@ -57,7 +59,7 @@ sub start
         $self->store->current_row($tr);
         $self->store->current_element($tr);
     } elsif ($tag eq 'td') {
-        my $td = $attr;
+        my $td = HTML::TableContent::Table::Cell->new($attr);
         push @{$self->store->current_row->cells}, $td;
         $self->store->current_cell($td);
         $self->store->current_element($td);
@@ -71,7 +73,8 @@ sub start
         my $elem = $self->store->current_element;
         if ($elem) {
             $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
-            $elem->{data} .= $origtext;
+            my $text = $elem->text . $origtext;
+            $elem->data($text);
         }
         
     }
@@ -88,7 +91,9 @@ sub text
     }
 
     $self->debug('TEXT = ', $text) if $self->debug_on;
-    $elem->{data} .= $text;
+    
+    my $append_text = $elem->text . $text;
+    $elem->text($append_text);
 }
 
 sub end
@@ -105,7 +110,8 @@ sub end
         my $elem = $self->store->current_element;
         if ($elem) {
             $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
-            $elem->{data} .= $origtext;
+            my $text = $elem->text . $origtext;
+            $elem->text($text);
         }
     }
 

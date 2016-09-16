@@ -13,6 +13,11 @@ has 'attributes' => (
     default => sub { { } }
 );
 
+has 'text' => (
+    is => 'rw',   
+    lazy => 1
+);
+
 sub class { shift->attributes->{class}; }
 
 sub id { shift->attributes->{id}; }

@@ -2,7 +2,6 @@ package HTML::TableContent::Table;
 
 use Moo;
 use Data::Dumper;
-use Hash::Objectify;
 
 with 'HTML::TableContent::Role::Attributes';
 
