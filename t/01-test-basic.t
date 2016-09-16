@@ -132,6 +132,7 @@ sub run_tests {
     my $html = $args->{html};
 
     my $t = HTML::TableContent->new();
+    $t->debug_on(1);
     ok($t->parse($html), "parse html into HTML::TableContent");
 
     ok(my $table = $t->tables->[$args->{table}], "found table index: $args->{table}");

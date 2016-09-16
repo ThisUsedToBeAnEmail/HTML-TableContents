@@ -23,8 +23,8 @@ Version 0.01
 our $VERSION = '0.13';
 
 has 'debug_on' => (
-    is => 'ro',
-    default => 0,
+    is => 'rw',
+    lazy => 1,
 );
 
 has 'store' => (
