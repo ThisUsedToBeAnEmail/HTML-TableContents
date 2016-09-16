@@ -41,7 +41,7 @@ sub start
 
     $tag = lc($tag);
 
-# Store the incoming details in the current 'object'.
+    # Store the incoming details in the current 'object'.
     if ($tag eq 'table') {
         my $table = HTML::TableContent::Table->new($attr);
         push @{$self->tables}, $table;

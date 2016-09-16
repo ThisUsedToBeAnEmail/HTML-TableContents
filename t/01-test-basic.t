@@ -20,6 +20,7 @@ $t->parse($html);
 
 is ($t->table_count, 1, "correct table count 1");
 
+warn Dumper $t->tables->[0]->id;
 warn Dumper $t->tables;
 
 1;
