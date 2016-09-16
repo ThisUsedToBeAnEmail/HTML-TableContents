@@ -1,12 +1,11 @@
 package HTML::TableContent;
 
-use 5.006;
-use strict;
-use warnings;
+use Moo;
+extends 'HTML::Parser';
 
 =head1 NAME
 
-HTML::TableContent - The great new HTML::TableContent!
+HTML::TableContent
 
 =head1 VERSION
 
@@ -14,39 +13,150 @@ Version 0.01
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.13';
 
+has 'debug_on' => (
+    is => 'ro',
+    default => 0,
+);
 
-=head1 SYNOPSIS
+has 'tag_names' => (
+    is => 'ro',
+    default => sub { qw(table tr td th caption) }
+);
 
-Quick summary of what the module does.
+has 'store' => (
+    is => 'rw',
+    default => sub { { } },
+);
 
-Perhaps a little code snippet.
+sub start
+{
+    my ($self, $tag, $attr, $attrseq, $origtext) = @_;
 
-    use HTML::TableContent;
+    $tag = lc($tag);
 
-    my $foo = HTML::TableContent->new();
-    ...
+# Store the incoming details in the current 'object'.
+    if ($tag eq 'table') {
+        my $table = $attr;
+        push @{$self->store->{tables}}, $table;
+        $self->store->{current_table} = $table;
 
-=head1 EXPORT
+    } elsif ($tag eq 'th') {
+        my $th = $attr;
+        push @{$self->store->{current_table}->{headers}}, $th;
+        $self->store->{current_header} = $th;
+        $self->store->{current_element} = $th;
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    } elsif ($tag eq 'tr') {
+        my $tr = $attr;
+        push @{$self->store->{current_table}->{rows}}, $tr;
+        $self->store->{current_row} = $tr;
+        $self->store->{current_element} = $tr;
 
-=head1 SUBROUTINES/METHODS
+    } elsif ($tag eq 'td') {
+        my $td = $attr;
+        push @{$self->store->{current_row}->{cells}}, $td;
+        $self->store->{current_data_cell} = $td;
+        $self->store->{current_element} = $td;
 
-=head2 function1
+    } elsif ($tag eq 'caption') {
+        my $cap = $attr;
+        $self->store->{current_table}->{caption} = $cap;
+        $self->store->{current_element} = $cap;
 
-=cut
-
-sub function1 {
+    } else {
+## Found a non-table related tag. Push it into the currently-defined td
+## or th (if one exists).
+        my $elem = $self->store->{current_element};
+        if ($elem) {
+            $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
+            $elem->{data} .= $origtext;
+        }
+        
+    }
+    
+    $self->debug($origtext) if $self->debug_on;
 }
 
-=head2 function2
+sub text
+{
+    my ($self, $text) = @_;
+    my $elem = $self->store->{current_element};
+    if (!$elem) {
+        return undef;
+    }
 
-=cut
+    $self->debug('TEXT = ', $text) if $self->debug_on;
+    $elem->{data} .= $text;
+}
 
-sub function2 {
+sub end
+{
+    my ($self, $tag, $origtext) = @_;
+    $tag = lc($tag);
+
+# Turn off the current object
+    if ($tag eq 'table') {
+        $self->store->{current_table} = undef;
+        $self->store->{current_row} = undef;
+        $self->store->{current_data_cell} = undef;
+        $self->store->{current_header} = undef;
+        $self->store->{current_element} = undef;
+
+    } elsif ($tag eq 'th') {
+        $self->store->{current_row} = undef;
+        $self->store->{current_data_cell} = undef;
+        $self->store->{current_header} = undef;
+        $self->store->{current_element} = undef;
+
+    } elsif ($tag eq 'tr') {
+        $self->store->{current_row} = undef;
+        $self->store->{current_data_cell} = undef;
+        $self->store->{current_header} = undef;
+        $self->store->{current_element} = undef;
+
+    } elsif ($tag eq 'td') {
+        $self->store->{current_data_cell} = undef;
+        $self->store->{current_header} = undef;
+        $self->store->{current_element} = undef;
+
+    } elsif ($tag eq 'caption') {
+        $self->store->{current_element} = undef;
+
+    } else {
+## Found a non-table related close tag. Push it into the currently-defined
+## td or th (if one exists).
+        my $elem = $self->store->{current_element};
+        if ($elem) {
+            $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
+            $elem->{data} .= $origtext;
+        }
+        
+    }
+
+    $self->debug($origtext) if $self->debug_on;
+}
+
+sub parse
+{
+    my ($self, $data) = @_;
+
+    # Ensure the following keys exist
+    $self->store->{current_data_cell} = undef;
+    $self->store->{current_row} = undef;
+    $self->store->{current_table} = undef;
+
+    $self->SUPER::parse($data);
+
+    return $self->store->{tables};
+}
+
+sub debug
+{
+    my ($self) = shift;
+    my $class = ref($self);
+    warn "$class: ", join('', @_), "\n";
 }
 
 =head1 AUTHOR
@@ -55,18 +165,15 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-html-tablecontent at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContent>.  I will be notified, and then you'll
+Please report any bugs or feature requests to C<bug-html-tablecontentparser at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContentParser>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
-
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc HTML::TableContent
+    perldoc HTML::TableContentParser
 
 
 You can also look for information at:
@@ -75,19 +182,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-TableContent>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-TableContentParser>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/HTML-TableContent>
+L<http://annocpan.org/dist/HTML-TableContentParser>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/HTML-TableContent>
+L<http://cpanratings.perl.org/d/HTML-TableContentParser>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/HTML-TableContent/>
+L<http://search.cpan.org/dist/HTML-TableContentParser/>
 
 =back
 
@@ -138,4 +245,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of HTML::TableContent
+1; # End of HTML::TableContentParser
