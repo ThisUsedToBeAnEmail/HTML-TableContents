@@ -8,6 +8,7 @@ use HTML::TableContent::Table;
 use HTML::TableContent::Table::Row;
 use HTML::TableContent::Table::Header;
 use HTML::TableContent::Table::Cell;
+use HTML::TableContent::Table::Caption;
 
 =head1 NAME
 
@@ -37,37 +38,20 @@ has 'tables' => (
     default => sub { [ ] }
 );
 
-sub start
-{
+sub start {
     my ($self, $tag, $attr, $attrseq, $origtext) = @_;
 
     $tag = lc($tag);
 
     # Store the incoming details in the current 'object'.
-    if ($tag eq 'table') {
-        my $table = HTML::TableContent::Table->new($attr);
-        push @{$self->tables}, $table;
-        $self->store->current_table($table);
-    } elsif ($tag eq 'th') {
-        my $th = HTML::TableContent::Table::Header->new($attr);
-        push @{$self->store->current_table->headers}, $th;
-        $self->store->current_header($th);
-        $self->store->current_element($th);
-    } elsif ($tag eq 'tr') {
-        my $tr = HTML::TableContent::Table::Row->new($attr);
-        push @{$self->store->current_table->rows}, $tr;
-        $self->store->current_row($tr);
-        $self->store->current_element($tr);
-    } elsif ($tag eq 'td') {
-        my $td = HTML::TableContent::Table::Cell->new($attr);
-        push @{$self->store->current_row->cells}, $td;
-        $self->store->current_cell($td);
-        $self->store->current_element($td);
-    } elsif ($tag eq 'caption') {
-        my $cap = $attr;
-        $self->store->current_table->caption($cap);
-        $self->store->current_element($cap);
-    } else {
+    if ( my $store_tag = $self->store->options->{$tag} ) {
+        my $class = 'HTML::TableContent::' . $store_tag->{class};
+        my $table = $class->new($attr);
+        for (@{ $store_tag->{store} }) {
+            $self->store->$_($table);
+        }
+    }
+    else {
         ## Found a non-table related tag. Push it into the currently-defined td
         ## or th (if one exists).
         my $elem = $self->store->current_element;
@@ -76,14 +60,12 @@ sub start
             my $text = $elem->text . $origtext;
             $elem->data($text);
         }
-        
     }
     
     $self->debug($origtext) if $self->debug_on;
 }
 
-sub text
-{
+sub text {
     my ($self, $text) = @_;
     my $elem = $self->store->current_element;
     if (!$elem) {
@@ -92,17 +74,18 @@ sub text
 
     $self->debug('TEXT = ', $text) if $self->debug_on;
     
-    my $append_text = $elem->text . $text;
+    my $append_text = $text;
     $elem->text($append_text);
 }
 
-sub end
-{
+sub end {
     my ($self, $tag, $origtext) = @_;
     $tag = lc($tag);
 
-   if (my @clear = @{ $self->store->clear_tags->{$tag} }){
-        for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
+   if ( my $clear = $self->store->options->{$tag} ) {
+       my $push_action = $clear->{push_action};
+       $self->$push_action;
+       for ( @{$clear->{clear}} ) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
     }
     else {
         ## Found a non-table related close tag. Push it into the currently-defined
@@ -118,8 +101,7 @@ sub end
     $self->debug($origtext) if $self->debug_on;
 }
 
-sub parse
-{
+sub parse {
     my ($self, $data) = @_;
 
     # Ensure the following keys exist
@@ -132,11 +114,39 @@ sub table_count {
     return scalar @{ shift->tables };
 }
 
-sub debug
-{
+sub debug {
     my ($self) = shift;
     my $class = ref($self);
     warn "$class: ", join('', @_), "\n";
+}
+
+sub _push_table {
+    my $self = shift;
+    push @{$self->tables}, $self->store->current_table
+        if defined $self->store->current_table;
+}
+
+sub _push_header {
+    my $self = shift;
+    push @{$self->store->current_table->headers}, $self->store->current_header
+        if defined $self->store->current_header;
+}
+
+sub _push_row {
+    my $self = shift;
+    push @{$self->store->current_table->rows}, $self->store->current_row 
+        if defined $self->store->current_row;
+}
+
+sub _push_cell {
+    my $self = shift;
+    push @{$self->store->current_row->cells}, $self->store->current_cell
+        if defined $self->store->current_cell;
+}
+
+sub _push_caption {
+    my $self = shift;
+    $self->store->current_table->caption($self->store->current_element);
 }
 
 =head1 AUTHOR

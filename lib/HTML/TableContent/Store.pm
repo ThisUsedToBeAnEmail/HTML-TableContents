@@ -2,30 +2,50 @@ package HTML::TableContent::Store;
 
 use Moo;
 
-has [ qw(current_table current_row current_header current_cell current_element) ] => (
+has [ qw(current_table current_caption current_row current_header current_cell current_element) ] => (
     is => 'rw',
     lazy => 1,
     clearer => 1,
 );
 
-has 'clear_tags' => (
+has 'options' => (
     is => 'ro',
     lazy => 1,
-    builder => '_build_clear_tags',
+    builder => '_build_clear_options',
 );
 
-sub _build_clear_tags {
+sub _build_clear_options {
     return {
-        table =>  
-            [qw/current_table current_row current_cell current_header current_element/],
-        th => 
-            [qw/current_row current_cell current_header current_element/],
-        tr => 
-            [qw/current_row current_cell current_header current_element/],
-        td =>  
-            [qw/current_cell current_header current_element/],
-        caption => 
-            [qw/current_element/],
+        table => {
+            class => 'Table',
+            store => [qw/current_table/],
+            push_action => '_push_table',
+            clear => [qw/current_table current_row current_cell current_header current_element/],
+        },
+        th => {
+            class => 'Table::Header',
+            store => [qw/current_header current_element/],
+            push_action => '_push_header',
+            clear => [qw/current_row current_cell current_header current_element/],
+        },
+        tr => {
+            class => 'Table::Row',
+            store => [qw/current_row current_element/],
+            push_action => '_push_row',
+            clear => [qw/current_row current_cell current_header current_element/],
+        }, 
+        td => {
+            class => 'Table::Cell',
+            store => [qw/current_cell current_element/], 
+            push_action => '_push_cell',
+            clear => [qw/current_cell current_header current_element/],
+        },
+        caption => {
+            class => 'Table::Caption',
+            store => [qw/current_element/],
+            push_action => '_push_caption',
+            clear => [qw/current_element/]
+        }
    }
 }
 

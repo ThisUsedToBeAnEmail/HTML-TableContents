@@ -8,19 +8,41 @@ BEGIN {
     use_ok("HTML::TableContent");
 }
 
-my $file = 't/html/table.html';
+subtest "basic_single_column_table" => sub {
+    my $html = open_file('t/html/table.html');
+    run_tests({
+        html => $html,
+        count => 1,
+        table_class => 'something'
+    });  
+};
 
-open ( my $fh, '<', $file ) or croak "could not open file: $file"; 
-my $html = do { local $/; <$fh> };
-close $fh;
+done_testing();
 
-my $t = HTML::TableContent->new();
-warn Dumper $t;
-$t->parse($html);
+sub open_file {
+    my $file = shift;
 
-is ($t->table_count, 1, "correct table count 1");
+    open ( my $fh, '<', $file ) or croak "could not open file: $file"; 
+    my $html = do { local $/; <$fh> };
+    close $fh;
+    
+    return $html;
+}
 
-warn Dumper $t->tables->[0]->id;
-warn Dumper $t->tables;
+sub run_tests {
+    my $args = shift;
+
+    my $html = delete $args->{html};
+    my $t = HTML::TableContent->new();
+    $t->parse($html);
+
+    if ( my $count = $args->{count} ) {
+        is($t->table_count, $count, "correct table count: $count");
+    }
+
+    if ( my $table_class = $args->{table_class} ) {
+        is($t->tables->[0]->class, $table_class, "table class: $table_class");
+    }
+}
 
 1;
