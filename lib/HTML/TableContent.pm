@@ -95,34 +95,21 @@ sub end
     my ($self, $tag, $origtext) = @_;
     $tag = lc($tag);
 
-# Turn off the current object
+    # Clear the current object
     if ($tag eq 'table') {
-        $self->store->current_table(undef);
-        $self->store->current_row(undef);
-        $self->store->current_cell(undef);
-        $self->store->current_header(undef);
-        $self->store->current_element(undef);
-
+        my @clear = qw/current_table current_row current_cell current_header current_element/;
+        for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
     } elsif ($tag eq 'th') {
-        $self->store->current_row(undef);
-        $self->store->current_cell(undef);
-        $self->store->current_header(undef);
-        $self->store->current_element(undef);
-
+        my @clear = qw/current_row current_cell current_header current_element/;
+        for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
     } elsif ($tag eq 'tr') {
-        $self->store->current_row(undef);
-        $self->store->current_cell(undef);
-        $self->store->current_header(undef);
-        $self->store->current_element(undef);
-
+        my @clear = qw/current_row current_cell current_header current_element/;
+        for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
     } elsif ($tag eq 'td') {
-        $self->store->current_cell(undef);
-        $self->store->current_header(undef);
-        $self->store->current_element(undef);
-
+        my @clear = qw/current_cell current_header current_element/;
+        for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
     } elsif ($tag eq 'caption') {
-        $self->store->current_element(undef);
-
+        $self->store->clear_current_element;
     } else {
 ## Found a non-table related close tag. Push it into the currently-defined
 ## td or th (if one exists).

@@ -8,6 +8,10 @@ has [ qw(headers rows) ] => (
     default => sub { [ ] }
 );
 
+has 'caption' => (
+    is => 'rw',
+);
+
 __PACKAGE__->meta->make_immutable;
 
 1;

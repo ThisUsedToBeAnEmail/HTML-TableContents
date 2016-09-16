@@ -11,6 +11,7 @@ has [ qw(tables) ] => (
 has [ qw(current_table current_row current_header current_cell current_element) ] => (
     is => 'rw',
     lazy => 1,
+    clearer => 1,
 );
 
 __PACKAGE__->meta->make_immutable;
