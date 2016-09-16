@@ -24,11 +24,6 @@ has 'debug_on' => (
     default => 0,
 );
 
-has 'tag_names' => (
-    is => 'ro',
-    default => sub { qw(table tr td th caption) }
-);
-
 has 'store' => (
     is => 'rw',
     default => sub { return HTML::TableContent::Store->new(); },
@@ -65,8 +60,8 @@ sub start
         $self->store->current_table->caption($cap);
         $self->store->current_element($cap);
     } else {
-## Found a non-table related tag. Push it into the currently-defined td
-## or th (if one exists).
+        ## Found a non-table related tag. Push it into the currently-defined td
+        ## or th (if one exists).
         my $elem = $self->store->current_element;
         if ($elem) {
             $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
@@ -95,30 +90,17 @@ sub end
     my ($self, $tag, $origtext) = @_;
     $tag = lc($tag);
 
-    # Clear the current object
-    if ($tag eq 'table') {
-        my @clear = qw/current_table current_row current_cell current_header current_element/;
+    if (my @clear = @{ $self->store->tags->{$tag}->{clear} }){
         for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
-    } elsif ($tag eq 'th') {
-        my @clear = qw/current_row current_cell current_header current_element/;
-        for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
-    } elsif ($tag eq 'tr') {
-        my @clear = qw/current_row current_cell current_header current_element/;
-        for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
-    } elsif ($tag eq 'td') {
-        my @clear = qw/current_cell current_header current_element/;
-        for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
-    } elsif ($tag eq 'caption') {
-        $self->store->clear_current_element;
-    } else {
-## Found a non-table related close tag. Push it into the currently-defined
-## td or th (if one exists).
+    }
+    else {
+        ## Found a non-table related close tag. Push it into the currently-defined
+        ## td or th (if one exists).
         my $elem = $self->store->current_element;
         if ($elem) {
             $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
             $elem->{data} .= $origtext;
         }
-        
     }
 
     $self->debug($origtext) if $self->debug_on;
