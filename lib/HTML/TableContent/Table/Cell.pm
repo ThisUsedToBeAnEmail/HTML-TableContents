@@ -2,8 +2,7 @@ package HTML::TableContent::Table::Cell;
 
 use Moo;
 
-with 'HTML::TableContent::Role::Attributes';
-
+with 'HTML::TableContent::Role::Content';
 
 __PACKAGE__->meta->make_immutable;
 

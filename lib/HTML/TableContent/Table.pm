@@ -3,7 +3,7 @@ package HTML::TableContent::Table;
 use Moo;
 use Data::Dumper;
 
-with 'HTML::TableContent::Role::Attributes';
+with 'HTML::TableContent::Role::Content';
 
 has 'caption' => (
     is => 'rw',

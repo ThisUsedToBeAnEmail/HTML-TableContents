@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row;
 
 use Moo;
 
-with 'HTML::TableContent::Role::Attributes';
+with 'HTML::TableContent::Role::Content';
 
 has [ qw(cells) ] => (
     is => 'rw',

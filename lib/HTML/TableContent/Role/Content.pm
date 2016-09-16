@@ -1,4 +1,4 @@
-package HTML::TableContent::Role::Attributes;
+package HTML::TableContent::Role::Content;
 
 use Moo::Role;
 
