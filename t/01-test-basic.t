@@ -9,8 +9,8 @@ BEGIN {
 }
 
 subtest "basic_single_column_table" => sub {
-    plan tests => 11;
-    my $html = open_file('t/html/table.html');
+    plan tests => 14;
+    my $html = open_file('t/html/simple-one-column-table.html');
     run_tests({
         html => $html,
         count => 1,
@@ -21,10 +21,97 @@ subtest "basic_single_column_table" => sub {
         row_class => 'echo',
         row_id => 'test-row-id',
         cell => 0,
+        cell_header_class => 'header',
+        cell_header => 'this',
         cell_class => 'ping',
         cell_id => 'test-cell-id',
         cell_text => 'thing'
     });  
+};
+
+subtest "basic_two_column_table" => sub {
+    plan tests => 26;
+    my $html = open_file('t/html/simple-two-column-table.html');
+    run_tests({
+        html => $html,
+        count => 1,
+        table => 0,
+        table_class => 'two-columns',
+        table_id => 'two-id',
+        row => 0,
+        row_class => 'two-column-odd',
+        row_id => 'row-1',
+        cell => 1,
+        cell_header_class => 'savings', 
+        cell_header => 'Savings',
+        cell_class => 'price',
+        cell_text => '$100'
+    }); 
+    run_tests({
+        html => $html,
+        count => 1,
+        table => 0,
+        table_class => 'two-columns',
+        table_id => 'two-id',
+        row => 1,
+        row_class => 'two-column-even',
+        row_id => 'row-2',
+        cell => 0,
+        cell_header_class => 'month',
+        cell_header => 'Month',
+        cell_id => 'month-02',
+        cell_text => 'Febuary'
+    });
+};
+
+subtest "simple_three_column_table" => sub {
+    plan tests => 39;
+    my $html = open_file('t/html/simple-three-column-table.html');
+    run_tests({
+        html => $html,
+        count => 1,
+        table => 0,
+        table_class => 'three-columns',
+        table_id => 'three-id',
+        row => 0,
+        row_class => 'three-column-odd',
+        row_id => 'row-1',
+        cell => 1,
+        cell_header_class => 'bold',
+        cell_header => 'Last Name',
+        cell_class => 'second-name ital',
+        cell_text => 'Janet'
+    }); 
+    run_tests({
+        html => $html,
+        count => 1,
+        table => 0,
+        table_class => 'three-columns',
+        table_id => 'three-id',
+        row => 1,
+        row_class => 'three-column-even',
+        row_id => 'row-2',
+        cell => 0,
+        cell_header_class => 'bold',
+        cell_header => 'First Name',
+        cell_class => 'first-name bold',
+        cell_text => 'Raymond'
+    });
+    run_tests({
+        html => $html,
+        count => 1,
+        table => 0,
+        table_class => 'three-columns',
+        table_id => 'three-id',
+        row => 2,
+        row_class => 'three-column-odd',
+        row_id => 'row-3',
+        cell => 2,
+        cell_header_class => 'bold',
+        cell_header => 'Email',
+        cell_class => 'email',
+        cell_text => 'lukas@emails.com'
+    });
 };
 
 done_testing();
@@ -45,7 +132,7 @@ sub run_tests {
     my $html = $args->{html};
 
     my $t = HTML::TableContent->new();
-    $t->parse($html);
+    ok($t->parse($html), "parse html into HTML::TableContent");
 
     ok(my $table = $t->tables->[$args->{table}], "found table index: $args->{table}");
     if ( my $count = $args->{count} ) {
@@ -73,6 +160,13 @@ sub run_tests {
 
         if ( defined $args->{cell} ) {
             ok(my $cell = $row->cells->[$args->{cell}], "found cell index: $args->{cell}");
+            if ( my $cell_header = $args->{cell_header} ) {
+                my $header = $table->headers->[$args->{cell}];
+                is($header->text, $cell_header, "expected cell_header: $cell_header");
+                if ( my $header_class = $args->{cell_header_class} ) {
+                    is( $header->class, $header_class, "header class: $header_class");   
+                }
+            }
 
             if ( my $cell_class = $args->{cell_class} ) {
                 is($cell->class, $cell_class, "cell class: $cell_class");
@@ -80,11 +174,11 @@ sub run_tests {
             
             if ( my $cell_id = $args->{cell_id} ) {
                 is($cell->id, $cell_id, "cell id: $cell_id");
-             }
+            }
             
-             if ( my $cell_text = $args->{cell_text} ) {
+            if ( my $cell_text = $args->{cell_text} ) {
                 is($cell->text, $cell_text, "cell text: $cell_text");
-             }
+            }
         }
     }
 }
