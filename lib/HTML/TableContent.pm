@@ -29,6 +29,12 @@ has 'store' => (
     default => sub { return HTML::TableContent::Store->new(); },
 );
 
+has 'tables' => (
+    is => 'rw',
+    lazy => 1,
+    default => sub { [ ] }
+);
+
 sub start
 {
     my ($self, $tag, $attr, $attrseq, $origtext) = @_;
@@ -38,7 +44,7 @@ sub start
 # Store the incoming details in the current 'object'.
     if ($tag eq 'table') {
         my $table = HTML::TableContent::Table->new($attr);
-        push @{$self->store->tables}, $table;
+        push @{$self->tables}, $table;
         $self->store->current_table($table);
     } elsif ($tag eq 'th') {
         my $th = $attr;
@@ -113,7 +119,11 @@ sub parse
     # Ensure the following keys exist
     $self->SUPER::parse($data);
 
-    return $self->store->tables;
+    return $self->tables;
+}
+
+sub table_count {
+    return scalar @{ shift->tables };
 }
 
 sub debug

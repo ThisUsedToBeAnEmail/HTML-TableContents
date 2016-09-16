@@ -14,10 +14,12 @@ open ( my $fh, '<', $file ) or croak "could not open file: $file";
 my $html = do { local $/; <$fh> };
 close $fh;
 
-my $parser = HTML::TableContent->new();
-warn Dumper $parser;
-my $tables = $parser->parse($html);
+my $t = HTML::TableContent->new();
+warn Dumper $t;
+$t->parse($html);
 
-warn Dumper $tables;
+is ($t->table_count, 1, "correct table count 1");
+
+warn Dumper $t->tables;
 
 1;
