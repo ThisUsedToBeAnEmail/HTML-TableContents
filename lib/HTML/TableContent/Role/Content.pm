@@ -8,12 +8,12 @@ around BUILDARGS => sub {
     return $class->$orig(attributes => $args);
 };
 
-has 'attributes' => (
+has attributes => (
     is => 'rw',
     default => sub { { } }
 );
 
-has 'text' => (
+has text => (
     is => 'rw',   
     lazy => 1
 );

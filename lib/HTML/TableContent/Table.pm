@@ -5,7 +5,7 @@ use Data::Dumper;
 
 with 'HTML::TableContent::Role::Content';
 
-has 'caption' => (
+has caption => (
     is => 'rw',
 );
 

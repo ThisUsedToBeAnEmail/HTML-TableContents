@@ -4,7 +4,7 @@ use Moo;
 
 with 'HTML::TableContent::Role::Content';
 
-has 'cells' => (
+has cells => (
     is => 'rw',
     lazy => 1,
     default => sub { [ ] }

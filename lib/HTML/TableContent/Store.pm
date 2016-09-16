@@ -8,13 +8,13 @@ has [ qw(current_table current_caption current_row current_header current_cell c
     clearer => 1,
 );
 
-has 'options' => (
+has options => (
     is => 'ro',
     lazy => 1,
-    builder => '_build_clear_options',
+    builder => 1,
 );
 
-sub _build_clear_options {
+sub _build_options {
     return {
         table => {
             class => 'Table',

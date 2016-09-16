@@ -16,23 +16,23 @@ HTML::TableContent
 
 =head1 VERSION
 
-Version 0.01
+Version 0.14
 
 =cut
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
-has 'debug_on' => (
+has debug_on => (
     is => 'rw',
     lazy => 1,
 );
 
-has 'store' => (
+has store => (
     is => 'rw',
     default => sub { return HTML::TableContent::Store->new(); },
 );
 
-has 'tables' => (
+has tables => (
     is => 'rw',
     lazy => 1,
     default => sub { [ ] }
