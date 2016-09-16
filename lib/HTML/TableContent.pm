@@ -3,6 +3,10 @@ package HTML::TableContent;
 use Moo;
 extends 'HTML::Parser';
 
+use HTML::TableContent::Store;
+use HTML::TableContent::Table;
+use HTML::TableContent::Table::Row;
+
 =head1 NAME
 
 HTML::TableContent
@@ -27,7 +31,7 @@ has 'tag_names' => (
 
 has 'store' => (
     is => 'rw',
-    default => sub { { } },
+    default => sub { return HTML::TableContent::Store->new(); },
 );
 
 sub start
@@ -38,37 +42,32 @@ sub start
 
 # Store the incoming details in the current 'object'.
     if ($tag eq 'table') {
-        my $table = $attr;
-        push @{$self->store->{tables}}, $table;
-        $self->store->{current_table} = $table;
-
+        my $table = HTML::TableContent::Table->new($attr);
+        push @{$self->store->tables}, $table;
+        $self->store->current_table($table);
     } elsif ($tag eq 'th') {
         my $th = $attr;
-        push @{$self->store->{current_table}->{headers}}, $th;
-        $self->store->{current_header} = $th;
-        $self->store->{current_element} = $th;
-
+        push @{$self->store->current_table->headers}, $th;
+        $self->store->current_header($th);
+        $self->store->current_element($th);
     } elsif ($tag eq 'tr') {
-        my $tr = $attr;
-        push @{$self->store->{current_table}->{rows}}, $tr;
-        $self->store->{current_row} = $tr;
-        $self->store->{current_element} = $tr;
-
+        my $tr = HTML::TableContent::Table::Row->new($attr);
+        push @{$self->store->current_table->rows}, $tr;
+        $self->store->current_row($tr);
+        $self->store->current_element($tr);
     } elsif ($tag eq 'td') {
         my $td = $attr;
-        push @{$self->store->{current_row}->{cells}}, $td;
-        $self->store->{current_data_cell} = $td;
-        $self->store->{current_element} = $td;
-
+        push @{$self->store->current_row->cells}, $td;
+        $self->store->current_cell($td);
+        $self->store->current_element($td);
     } elsif ($tag eq 'caption') {
         my $cap = $attr;
-        $self->store->{current_table}->{caption} = $cap;
-        $self->store->{current_element} = $cap;
-
+        $self->store->current_table->caption($cap);
+        $self->store->current_element($cap);
     } else {
 ## Found a non-table related tag. Push it into the currently-defined td
 ## or th (if one exists).
-        my $elem = $self->store->{current_element};
+        my $elem = $self->store->current_element;
         if ($elem) {
             $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
             $elem->{data} .= $origtext;
@@ -82,7 +81,7 @@ sub start
 sub text
 {
     my ($self, $text) = @_;
-    my $elem = $self->store->{current_element};
+    my $elem = $self->store->current_element;
     if (!$elem) {
         return undef;
     }
@@ -98,36 +97,36 @@ sub end
 
 # Turn off the current object
     if ($tag eq 'table') {
-        $self->store->{current_table} = undef;
-        $self->store->{current_row} = undef;
-        $self->store->{current_data_cell} = undef;
-        $self->store->{current_header} = undef;
-        $self->store->{current_element} = undef;
+        $self->store->current_table(undef);
+        $self->store->current_row(undef);
+        $self->store->current_cell(undef);
+        $self->store->current_header(undef);
+        $self->store->current_element(undef);
 
     } elsif ($tag eq 'th') {
-        $self->store->{current_row} = undef;
-        $self->store->{current_data_cell} = undef;
-        $self->store->{current_header} = undef;
-        $self->store->{current_element} = undef;
+        $self->store->current_row(undef);
+        $self->store->current_cell(undef);
+        $self->store->current_header(undef);
+        $self->store->current_element(undef);
 
     } elsif ($tag eq 'tr') {
-        $self->store->{current_row} = undef;
-        $self->store->{current_data_cell} = undef;
-        $self->store->{current_header} = undef;
-        $self->store->{current_element} = undef;
+        $self->store->current_row(undef);
+        $self->store->current_cell(undef);
+        $self->store->current_header(undef);
+        $self->store->current_element(undef);
 
     } elsif ($tag eq 'td') {
-        $self->store->{current_data_cell} = undef;
-        $self->store->{current_header} = undef;
-        $self->store->{current_element} = undef;
+        $self->store->current_cell(undef);
+        $self->store->current_header(undef);
+        $self->store->current_element(undef);
 
     } elsif ($tag eq 'caption') {
-        $self->store->{current_element} = undef;
+        $self->store->current_element(undef);
 
     } else {
 ## Found a non-table related close tag. Push it into the currently-defined
 ## td or th (if one exists).
-        my $elem = $self->store->{current_element};
+        my $elem = $self->store->current_element;
         if ($elem) {
             $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
             $elem->{data} .= $origtext;
@@ -143,13 +142,9 @@ sub parse
     my ($self, $data) = @_;
 
     # Ensure the following keys exist
-    $self->store->{current_data_cell} = undef;
-    $self->store->{current_row} = undef;
-    $self->store->{current_table} = undef;
-
     $self->SUPER::parse($data);
 
-    return $self->store->{tables};
+    return $self->store->tables;
 }
 
 sub debug
