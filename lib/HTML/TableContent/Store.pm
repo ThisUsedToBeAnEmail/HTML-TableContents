@@ -14,29 +14,24 @@ has [ qw(current_table current_row current_header current_cell current_element) 
     clearer => 1,
 );
 
-has 'tags' => (
+has 'clear_tags' => (
     is => 'ro',
     lazy => 1,
-    builder => '_build_tags',
+    builder => '_build_clear_tags',
 );
 
-sub _build_tags {
+sub _build_clear_tags {
     return {
-        table => { 
-            clear => [qw/current_table current_row current_cell current_header current_element/],
-        },
-        th => {
-            clear => [qw/current_row current_cell current_header current_element/],
-        },
-        tr => {
-            clear => [qw/current_row current_cell current_header current_element/],
-        },
-        td => { 
-            clear => [qw/current_cell current_header current_element/],
-        },
-        caption => {
-            clear => [qw/current_element/],
-        },
+        table =>  
+            [qw/current_table current_row current_cell current_header current_element/],
+        th => 
+            [qw/current_row current_cell current_header current_element/],
+        tr => 
+            [qw/current_row current_cell current_header current_element/],
+        td =>  
+            [qw/current_cell current_header current_element/],
+        caption => 
+            [qw/current_element/],
    }
 }
 

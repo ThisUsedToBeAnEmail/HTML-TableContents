@@ -90,7 +90,7 @@ sub end
     my ($self, $tag, $origtext) = @_;
     $tag = lc($tag);
 
-    if (my @clear = @{ $self->store->tags->{$tag}->{clear} }){
+   if (my @clear = @{ $self->store->clear_tags->{$tag} }){
         for (@clear) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
     }
     else {
