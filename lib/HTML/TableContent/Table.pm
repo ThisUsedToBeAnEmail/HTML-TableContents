@@ -15,6 +15,14 @@ has [ qw(headers rows) ] => (
     default => sub { [ ] }
 );
 
+sub row_count {
+    return scalar @{ shift->rows };
+}
+
+sub header_count {
+    return scalar @{ shift->headers };
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

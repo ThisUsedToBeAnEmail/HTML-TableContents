@@ -9,15 +9,18 @@ BEGIN {
 }
 
 subtest "basic_single_column_table" => sub {
-    plan tests => 14;
+    plan tests => 17;
     my $html = open_file('t/html/simple-one-column-table.html');
     run_tests({
         html => $html,
         count => 1,
         table => 0,
+        table_header_count => 1,
         table_class => 'something',
         table_id => 'test-id',
+        table_row_count => 1,
         row => 0,
+        row_cell_count => 1,
         row_class => 'echo',
         row_id => 'test-row-id',
         cell => 0,
@@ -30,15 +33,18 @@ subtest "basic_single_column_table" => sub {
 };
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 26;
+    plan tests => 32;
     my $html = open_file('t/html/simple-two-column-table.html');
     run_tests({
         html => $html,
         count => 1,
         table => 0,
+        table_header_count => 2,
         table_class => 'two-columns',
         table_id => 'two-id',
+        table_row_count => 2,
         row => 0,
+        row_cell_count => 2,
         row_class => 'two-column-odd',
         row_id => 'row-1',
         cell => 1,
@@ -51,9 +57,12 @@ subtest "basic_two_column_table" => sub {
         html => $html,
         count => 1,
         table => 0,
+        table_header_count => 2,
         table_class => 'two-columns',
         table_id => 'two-id',
+        table_row_count => 2,
         row => 1,
+        row_cell_count => 2,
         row_class => 'two-column-even',
         row_id => 'row-2',
         cell => 0,
@@ -65,7 +74,7 @@ subtest "basic_two_column_table" => sub {
 };
 
 subtest "simple_three_column_table" => sub {
-    plan tests => 39;
+    plan tests => 48;
     my $html = open_file('t/html/simple-three-column-table.html');
     run_tests({
         html => $html,
@@ -73,7 +82,10 @@ subtest "simple_three_column_table" => sub {
         table => 0,
         table_class => 'three-columns',
         table_id => 'three-id',
+        table_row_count => 3,
+        table_header_count => 3,
         row => 0,
+        row_cell_count => 3,
         row_class => 'three-column-odd',
         row_id => 'row-1',
         cell => 1,
@@ -88,7 +100,10 @@ subtest "simple_three_column_table" => sub {
         table => 0,
         table_class => 'three-columns',
         table_id => 'three-id',
+        table_row_count => 3,
+        table_header_count => 3,
         row => 1,
+        row_cell_count => 3,
         row_class => 'three-column-even',
         row_id => 'row-2',
         cell => 0,
@@ -103,7 +118,10 @@ subtest "simple_three_column_table" => sub {
         table => 0,
         table_class => 'three-columns',
         table_id => 'three-id',
+        table_row_count => 3,
+        table_header_count => 3,
         row => 2,
+        row_cell_count => 3,
         row_class => 'three-column-odd',
         row_id => 'row-3',
         cell => 2,
@@ -134,10 +152,19 @@ sub run_tests {
     my $t = HTML::TableContent->new();
     $t->debug_on(1);
     ok($t->parse($html), "parse html into HTML::TableContent");
-
-    ok(my $table = $t->tables->[$args->{table}], "found table index: $args->{table}");
+    
     if ( my $count = $args->{count} ) {
         is($t->table_count, $count, "correct table count: $count");
+    }
+    
+    ok(my $table = $t->tables->[$args->{table}], "found table index: $args->{table}");
+ 
+    if ( my $row_count = $args->{table_row_count} ) {
+        is($table->row_count, $row_count, "correct row count: $row_count");
+    }
+
+    if ( my $header_count = $args->{table_header_count} ) { 
+        is($table->header_count, $header_count, "expected header count: $header_count");
     }
 
     if ( my $table_class = $args->{table_class} ) {
@@ -150,6 +177,10 @@ sub run_tests {
 
     if ( defined $args->{row} ) {
         ok(my $row = $table->rows->[$args->{row}], "found row index: $args->{row}");
+
+        if ( my $cell_count = $args->{row_cell_count} ) {
+            is($row->cell_count, $cell_count, "expected cell count: $cell_count");
+        }
 
         if ( my $row_class = $args->{row_class} ) {
             is($row->class, $row_class, "row class: $row_class");

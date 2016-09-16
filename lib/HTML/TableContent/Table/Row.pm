@@ -4,11 +4,15 @@ use Moo;
 
 with 'HTML::TableContent::Role::Content';
 
-has [ qw(cells) ] => (
+has 'cells' => (
     is => 'rw',
     lazy => 1,
     default => sub { [ ] }
 );
+
+sub cell_count {
+    return scalar @{ shift->cells };
+}
 
 __PACKAGE__->meta->make_immutable;
 
