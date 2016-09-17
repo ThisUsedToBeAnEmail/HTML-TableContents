@@ -9,6 +9,6 @@ use Data::Dumper;
 my $t = HTML::TableContent->new();
 $t->parse_file("t/html/catch.html");
 
-warn Dumper $t->get_first_table->get_first_header->cells;
+$t->filter_headers(qw/this/);
 
-
+warn Dumper $t->tables;

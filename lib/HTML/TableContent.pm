@@ -39,15 +39,32 @@ sub table_count {
     return scalar @{ shift->tables };
 }
 
+
+sub headers_exist {
+    my ($self, @headers) = @_;
+
+    foreach my $table ( $self->all_tables ) {
+        return 1 if $table->header_exists(@headers);
+    }
+
+    return 0;
+}
+
 sub filter_headers {
     my ($self, @headers) = @_;
 
     my $tables = [ ];
     foreach my $table ( $self->all_tables ) {
-    
+        if ( $table->header_exists(@headers) ) {
+            $table->_filter_headers(@headers);  
+            push @{ $tables }, $table;
+        }
     }
-    
-    $self->tables($tables);
+
+    die "passed headers do not exists in any of the tables - " . join ' ', @headers
+        unless scalar @{ $tables };
+
+    $self->tables($tables);    
 }
 
 sub parse {

@@ -14,6 +14,28 @@ sub cell_count {
     return scalar @{ shift->cells };
 }
 
+sub all_cells {
+    return @{ shift->cells };
+}
+
+sub get_cell {
+    return shift->cells->[shift];
+}
+
+sub get_first_cell {
+    return shift->get_cell(0);
+}
+
+sub _filter_headers {
+    my ($self, $headers) = @_;
+
+    my $cells = [ ];
+    foreach my $cell ( $self->all_cells ) {
+        push @{$cells}, $cell if grep { $cell->header->text eq $_->text } @{ $headers }; 
+    }
+    $self->cells($cells);
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

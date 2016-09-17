@@ -57,6 +57,22 @@ sub header_exists {
     return undef;
 }
 
+sub _filter_headers {
+    my ($self, @headers) = @_;
+
+    my $headers = [ ];
+    foreach my $header ( $self->all_headers ) {
+        push @{ $headers }, $header 
+            if grep { $header->text =~ /$_/ } @headers;
+    }
+
+    $self->headers($headers);
+    
+    foreach my $row ( $self->all_rows ) {
+        $row->_filter_headers($headers);
+    }
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
