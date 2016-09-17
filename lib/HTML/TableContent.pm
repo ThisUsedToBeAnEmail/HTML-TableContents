@@ -39,7 +39,7 @@ sub table_count {
 
 sub parse {
     my ($self, $data) = @_;
-
+    
     $self->SUPER::parse($data);
 
     return $self->tables;
@@ -66,17 +66,14 @@ sub start {
             $self->store->$_($table);
         }
     }
-    else {
-        ## Found a non-table related close tag. Push it into the currently-defined
-        ## td or th (if one exists).
-        $self->push_data($origtext);
-    }
 }
 
 sub text {
     my ($self, $text) = @_;
 
-    $self->_push_data($text);
+    if ( my $elem = $self->store->current_element ) {
+       push @{ $elem->data }, $text;
+    }
 }
 
 sub end {
@@ -87,20 +84,7 @@ sub end {
        my $push_action = $clear->{push_action};
        $self->$push_action;
        for ( @{$clear->{clear}} ) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
-    }
-    else {
-        ## Found a non-table related close tag. Push it into the currently-defined
-        ## td or th (if one exists).
-        $self->push_data($origtext);
-    }
-}
-
-sub _push_data {
-    my ($self, $text) = @_;
-
-    if ( my $elem = $self->store->current_element ) {
-       push @{ $elem->data }, $text;
-    }
+   }
 }
 
 sub _push_table {
