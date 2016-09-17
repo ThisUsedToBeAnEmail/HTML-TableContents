@@ -22,11 +22,6 @@ Version 0.14
 
 our $VERSION = '0.14';
 
-has debug_on => (
-    is => 'rw',
-    lazy => 1,
-);
-
 has store => (
     is => 'rw',
     default => sub { return HTML::TableContent::Store->new(); },
@@ -37,6 +32,26 @@ has tables => (
     lazy => 1,
     default => sub { [ ] }
 );
+
+sub table_count {
+    return scalar @{ shift->tables };
+}
+
+sub parse {
+    my ($self, $data) = @_;
+
+    $self->SUPER::parse($data);
+
+    return $self->tables;
+}
+
+sub parse_file {
+    my ($self, $file) = @_;
+
+    $self->SUPER::parse_file($file);
+
+    return $self->tables;
+}
 
 sub start {
     my ($self, $tag, $attr, $attrseq, $origtext) = @_;
@@ -52,30 +67,16 @@ sub start {
         }
     }
     else {
-        ## Found a non-table related tag. Push it into the currently-defined td
-        ## or th (if one exists).
-        my $elem = $self->store->current_element;
-        if ($elem) {
-            $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
-            my $text = $elem->text . $origtext;
-            $elem->data($text);
-        }
+        ## Found a non-table related close tag. Push it into the currently-defined
+        ## td or th (if one exists).
+        $self->push_data($origtext);
     }
-    
-    $self->debug($origtext) if $self->debug_on;
 }
 
 sub text {
     my ($self, $text) = @_;
-    my $elem = $self->store->current_element;
-    if (!$elem) {
-        return undef;
-    }
 
-    $self->debug('TEXT = ', $text) if $self->debug_on;
-    
-    my $append_text = $text;
-    $elem->text($append_text);
+    $self->_push_data($text);
 }
 
 sub end {
@@ -90,43 +91,16 @@ sub end {
     else {
         ## Found a non-table related close tag. Push it into the currently-defined
         ## td or th (if one exists).
-        my $elem = $self->store->current_element;
-        if ($elem) {
-            $self->debug('TEXT(tag) = ', $origtext) if $self->debug_on;
-            my $text = $elem->text . $origtext;
-            $elem->text($text);
-        }
+        $self->push_data($origtext);
     }
-
-    $self->debug($origtext) if $self->debug_on;
 }
 
-sub parse {
-    my ($self, $data) = @_;
+sub _push_data {
+    my ($self, $text) = @_;
 
-    $self->SUPER::parse($data);
-
-    return $self->tables;
-}
-
-sub parse_file {
-    my ($self, $file) = @_;
-
-    # Ensure the following keys exist
-    $self->SUPER::parse_file($file);
-
-    return $self->tables;
-}
-
-
-sub table_count {
-    return scalar @{ shift->tables };
-}
-
-sub debug {
-    my ($self) = shift;
-    my $class = ref($self);
-    warn "$class: ", join('', @_), "\n";
+    if ( my $elem = $self->store->current_element ) {
+       push @{ $elem->data }, $text;
+    }
 }
 
 sub _push_table {

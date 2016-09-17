@@ -13,10 +13,13 @@ has attributes => (
     default => sub { { } }
 );
 
-has text => (
+has data => (
     is => 'rw',   
-    lazy => 1
+    lazy => 1,
+    default => sub { [ ] }
 );
+
+sub text { join ' ', @{ shift->data }; }
 
 sub class { shift->attributes->{class}; }
 

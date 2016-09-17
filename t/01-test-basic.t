@@ -9,7 +9,7 @@ BEGIN {
 }
 
 subtest "basic_single_column_table" => sub {
-    plan tests => 17;
+    plan tests => 18;
     my $html = open_file('t/html/simple-one-column-table.html');
     run_tests({
         html => $html,
@@ -33,7 +33,7 @@ subtest "basic_single_column_table" => sub {
 };
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 32;
+    plan tests => 34;
     my $html = open_file('t/html/simple-two-column-table.html');
     run_tests({
         html => $html,
@@ -74,7 +74,7 @@ subtest "basic_two_column_table" => sub {
 };
 
 subtest "simple_three_column_table" => sub {
-    plan tests => 48;
+    plan tests => 51;
     my $html = open_file('t/html/simple-three-column-table.html');
     run_tests({
         html => $html,
@@ -208,6 +208,7 @@ sub run_tests {
             }
             
             if ( my $cell_text = $args->{cell_text} ) {
+                is($cell->data->[0], $cell_text, "cell data: $cell_text");
                 is($cell->text, $cell_text, "cell text: $cell_text");
             }
         }
