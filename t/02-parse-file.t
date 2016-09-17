@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use Test::More;
-use Data::Dumper;
 use Carp qw/croak/;
 
 BEGIN {
@@ -444,7 +443,6 @@ sub run_tests {
     my $args = shift;
 
     my $t = HTML::TableContent->new();
-    warn Dumper $args->{file}; 
     ok($t->parse_file($args->{file}), "parse file into HTML::TableContent");
     
     is($t->table_count, $args->{count}, "correct table count: $args->{count}");

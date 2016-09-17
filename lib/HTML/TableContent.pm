@@ -10,16 +10,6 @@ use HTML::TableContent::Table::Header;
 use HTML::TableContent::Table::Cell;
 use HTML::TableContent::Table::Caption;
 
-=head1 NAME
-
-HTML::TableContent
-
-=head1 VERSION
-
-Version 0.14
-
-=cut
-
 our $VERSION = '0.14';
 
 has store => (
@@ -32,6 +22,10 @@ has tables => (
     lazy => 1,
     default => sub { [ ] }
 );
+
+sub all_tables {
+    return @{ shift->tables };
+}
 
 sub table_count {
     return scalar @{ shift->tables };
@@ -58,7 +52,6 @@ sub start {
 
     $tag = lc($tag);
 
-    # Store the incoming details in the current 'object'.
     if ( my $store_tag = $self->store->options->{$tag} ) {
         my $class = 'HTML::TableContent::' . $store_tag->{class};
         my $table = $class->new($attr);
@@ -80,7 +73,7 @@ sub end {
     my ($self, $tag, $origtext) = @_;
     $tag = lc($tag);
 
-   if ( my $clear = $self->store->options->{$tag} ) {
+    if ( my $clear = $self->store->options->{$tag} ) {
        my $push_action = $clear->{push_action};
        $self->$push_action;
        for ( @{$clear->{clear}} ) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
@@ -115,6 +108,62 @@ sub _push_caption {
     my $self = shift;
     $self->store->current_table->caption($self->store->current_element);
 }
+
+=head1 NAME
+
+HTML::TableContent
+
+=head1 VERSION
+
+Version 0.01
+
+=cut
+
+=head1 SYNOPSIS
+
+    use HTML::TableContent;
+    my $t = HTML::TableContent->new();
+    $t->parse_file('test.html'); 
+   
+    foreach my $table ($t->all_tables) {
+        ....
+    }
+ 
+=head1 DESCRIPTION
+
+This module parses the contents of a table from a string or file containing HTML. Each time a table is encountered, the data gets pushed into an array consisting of HTML::TableContent::Table's. 
+
+=head1 METHODS
+
+=head2 parse
+
+Parse $string as a chunk of html.
+
+    $t->parse($string);
+
+=head2 parse_file
+
+Parse a file that contains html.
+
+    $t->parse_file($string);
+
+=head2 tables
+
+Array Ref consisting of HTML::TableContent::Table's
+
+    $t->tables;
+
+=head2 all_tables
+
+Array consisting of HTML::TableContent::Table's
+
+    $t->all_tables;
+
+=head2 table_count
+
+Count number of tables found/stored.
+    
+    $t->table_count;
 
 =head1 AUTHOR
 
@@ -155,9 +204,7 @@ L<http://search.cpan.org/dist/HTML-TableContentParser/>
 
 =back
 
-
 =head1 ACKNOWLEDGEMENTS
-
 
 =head1 LICENSE AND COPYRIGHT
 
