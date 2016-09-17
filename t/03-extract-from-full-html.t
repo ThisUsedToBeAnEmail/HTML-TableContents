@@ -8,9 +8,9 @@ BEGIN {
     use_ok("HTML::TableContent");
 }
 
-subtest "two_tables_two_columns" => sub {
+subtest "page_two_tables" => sub {
     plan tests => 32;
-    my $html = open_file('t/html/two-two-column-tables.html');
+    my $html = open_file('t/html/page-two-tables.html');
     run_tests({
         html => $html,
         count => 2,
@@ -49,9 +49,9 @@ subtest "two_tables_two_columns" => sub {
     });
 };
 
-subtest "three_tables_three_columns" => sub {
+subtest "page_three_tables" => sub {
     plan tests => 48;
-    my $html = open_file('t/html/three-three-column-tables.html');
+    my $html = open_file('t/html/page-three-tables.html');
     run_tests({
         html => $html,
         count => 3,
