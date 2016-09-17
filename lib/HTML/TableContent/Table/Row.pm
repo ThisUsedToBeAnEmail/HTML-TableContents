@@ -36,6 +36,17 @@ sub _filter_headers {
     $self->cells($cells);
 }
 
+around raw_me => sub {
+    my ($orig, $self) = (shift, shift);
+
+    my $row = $self->$orig(@_);
+    $row->{cells} = [ ];
+    foreach my $cell ( $self->all_cells ) {
+        push @{ $row->{cells} }, $cell->raw_me;
+    }
+    return $row;
+};
+
 __PACKAGE__->meta->make_immutable;
 
 1;

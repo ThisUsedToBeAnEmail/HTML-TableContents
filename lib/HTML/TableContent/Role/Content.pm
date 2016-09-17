@@ -15,7 +15,6 @@ has attributes => (
 
 has data => (
     is => 'rw',   
-    lazy => 1,
     default => sub { [ ] }
 );
 
@@ -24,6 +23,19 @@ sub text { join ' ', @{ shift->data }; }
 sub class { shift->attributes->{class}; }
 
 sub id { shift->attributes->{id}; }
+
+sub raw_me { 
+    my $self = shift;
+    
+    my $args = $self->attributes; 
+
+    if ( scalar @{ $self->data } ) {
+        $args->{text} = $self->text; 
+        $args->{data} = $self->data;
+    }
+
+    return $args;
+}
 
 no Moo::Role;
 

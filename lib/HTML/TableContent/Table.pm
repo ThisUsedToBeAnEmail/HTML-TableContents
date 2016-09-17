@@ -73,6 +73,27 @@ sub _filter_headers {
     }
 }
 
+around raw_me => sub {
+    my ($orig, $self) = (shift, shift);
+
+    my $table = $self->$orig(@_);
+    
+    $table->{caption} = $self->caption->text 
+        if defined $self->caption;
+  
+    $table->{headers} = [ ];
+    foreach my $header ($self->all_headers) {
+        push @{ $table->{headers} }, $header->raw_me; 
+    }
+
+    $table->{rows} = [ ];
+    foreach my $row ($self->all_rows) {
+        push @{ $table->{rows} }, $row->raw_me; 
+    }
+
+    return $table;
+};
+
 __PACKAGE__->meta->make_immutable;
 
 1;

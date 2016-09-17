@@ -82,6 +82,17 @@ sub headers_spec {
     return $headers;
 }
 
+sub raw_me {
+    my $self = shift;
+
+    my @tables;
+    foreach my $table ( $self->all_tables ) {
+       push @tables, $table->raw_me; 
+    }
+    
+    return @tables;
+}
+
 sub parse {
     my ($self, $data) = @_;
     
@@ -116,7 +127,7 @@ sub text {
     my ($self, $text) = @_;
 
     if ( my $elem = $self->store->current_element ) {
-       push @{ $elem->data }, $text;
+       push @{ $elem->data }, $text if $text =~ m{\w+}xms;
     }
 }
 
