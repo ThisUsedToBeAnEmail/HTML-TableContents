@@ -104,11 +104,20 @@ sub end {
 sub parse {
     my ($self, $data) = @_;
 
-    # Ensure the following keys exist
     $self->SUPER::parse($data);
 
     return $self->tables;
 }
+
+sub parse_file {
+    my ($self, $file) = @_;
+
+    # Ensure the following keys exist
+    $self->SUPER::parse_file($file);
+
+    return $self->tables;
+}
+
 
 sub table_count {
     return scalar @{ shift->tables };
