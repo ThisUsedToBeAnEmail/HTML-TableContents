@@ -1,28 +1,14 @@
-package HTML::TableContent::Table::Header;
+package HTML::TableContent::Table::Row::Cell;
 
 use Moo;
 
 with 'HTML::TableContent::Role::Content';
 
-__PACKAGE__->meta->make_immutable;
-
-has 'cells' => (
+has 'header' => (
     is => 'rw',
-    lazy => 1,
-    default => sub { [ ] }
 );
 
-sub all_cells {
-    return @{ shift->cells };
-}
-
-sub get_cell {
-    return shift->cells->[shift];
-}
-
-sub get_first_cell {
-    return shift->get_cell(0);
-}
+__PACKAGE__->meta->make_immutable;
 
 1;
 
@@ -30,7 +16,7 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent::Table::Header
+HTML::TableContent::Table::Row::Cell
 
 =head1 VERSION
 
@@ -41,17 +27,16 @@ Version 0.01
     use HTML::TableContent;
     my $t = HTML::TableContent->new()->parse($string);
 
-    my $header = $t->get_first_table->get_first_header;
+    my $cell = $t->get_first_table->get_first_row->get_first_cell;
+    
+    $cell->data;
+    $cell->text;
 
-    $header->cells;
-    $header->all_cells;
+    $cell->header;
 
-    $header->data;
-    $header->text;
-
-    $header->attributes;
-    $header->class;
-    $header->id;
+    $cell->attributes;
+    $cell->class;
+    $cell->id;
 
 =cut
 
@@ -59,59 +44,41 @@ Version 0.01
 
 =head1 METHODS
 
-=head2 cells
-
-ArrayRef of Associated cells to this header HTML::TableContent::Table::Row::Cell's 
-
-    $header->cells;
-
-=head2 all_cells
-
-Array of Associated cells to this header HTML::TableContent::Table::Row::Cell's
-
-    $header->all_cells;
-
-=head2 get_cell
-
-Get cell by Array index.
-
-    $header->get_cell;
-
-=head2 get_first_cell
-
-Get first cell from cells
-
-    $header->get_first_cell;
-
 =head2 data
 
 ArrayRef of Text elements
 
-    $header->data;
+    $cell->data;
 
 =head2 text
 
 data as a string joined with a  ' '
 
-    $header->text;
+    $cell->text;
+
+=head2 header
+
+Column Header, HTML::TableContent::Table::Header.
+
+    $cell->header;
 
 =head2 attributes
 
 HashRef consiting of the tags attributes
 
-    $header->attributes;
+    $cell->attributes;
 
 =head2 class
 
-Header tag class if found.
+Cell tag class if found.
 
-    $header->class;
+    $cell->class;
 
 =head2 id
 
-Header tag id if found.
+Cell tag id if found.
 
-    $header->id;
+    $cell->id;
 
 =head1 AUTHOR
 

@@ -5,9 +5,9 @@ extends 'HTML::Parser';
 
 use HTML::TableContent::Store;
 use HTML::TableContent::Table;
-use HTML::TableContent::Table::Row;
 use HTML::TableContent::Table::Header;
-use HTML::TableContent::Table::Cell;
+use HTML::TableContent::Table::Row;
+use HTML::TableContent::Table::Row::Cell;
 use HTML::TableContent::Table::Caption;
 
 our $VERSION = '0.14';
@@ -27,8 +27,27 @@ sub all_tables {
     return @{ shift->tables };
 }
 
+sub get_table {
+    return shift->tables->[shift]; 
+}
+
+sub get_first_table {
+    return shift->get_table(0);
+}
+
 sub table_count {
     return scalar @{ shift->tables };
+}
+
+sub filter_headers {
+    my ($self, @headers) = @_;
+
+    my $tables = [ ];
+    foreach my $table ( $self->all_tables ) {
+    
+    }
+    
+    $self->tables($tables);
 }
 
 sub parse {
@@ -94,12 +113,15 @@ sub _push_header {
 
 sub _push_row {
     my $self = shift;
+
     push @{$self->store->current_table->rows}, $self->store->current_row 
         if defined $self->store->current_row;
 }
 
 sub _push_cell {
     my $self = shift;
+    
+    $self->store->current_cell->header($self->store->current_cell_header);
     push @{$self->store->current_row->cells}, $self->store->current_cell
         if defined $self->store->current_cell;
 }
@@ -164,6 +186,18 @@ Array consisting of HTML::TableContent::Table's
 Count number of tables found/stored.
     
     $t->table_count;
+
+=head2 get_table
+
+Get table by index
+
+    $t->get_table($index);
+
+=head2 get_first_table
+
+Get first table
+
+    $t->get_first_table;
 
 =head1 AUTHOR
 

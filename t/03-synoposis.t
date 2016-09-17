@@ -7,9 +7,8 @@ use HTML::TableContent;
 use Data::Dumper;
 
 my $t = HTML::TableContent->new();
-$t->parse_file("t/html/page-two-tables.html");
+$t->parse_file("t/html/catch.html");
 
-foreach my $table ($t->all_tables) {
-    warn Dumper $table->rows;
-}
+warn Dumper $t->get_first_table->get_first_header->cells;
+
 
