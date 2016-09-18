@@ -230,7 +230,7 @@ Number of headers found in table
 
 =head2 get_header_column
 
-Returns an array of HTML::TableContent::Table::Row::Cell's which belong to that column.
+Returns an array that contains HTML::TableContent::Table::Row::Cell's which belong to that column.
 
     $table->get_header_column(header => 'Savings');
 

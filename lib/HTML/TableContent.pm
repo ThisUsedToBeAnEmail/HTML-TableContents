@@ -151,7 +151,7 @@ Version 0.01
 
 =head1 DESCRIPTION
 
-Parse content from HTML tables.
+Extract table content from HTML.
 
 =head1 SUBROUTINES/METHODS
 
@@ -175,13 +175,13 @@ Return underlying data structure
 
 =head2 tables
 
-Array Ref consisting of HTML::TableContent::Table's
+Array Ref containing HTML::TableContent::Table's
 
     $t->tables;
 
 =head2 all_tables
 
-Array consisting of HTML::TableContent::Table's
+Array containing HTML::TableContent::Table's
 
     $t->all_tables;
 
