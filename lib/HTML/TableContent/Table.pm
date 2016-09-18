@@ -2,16 +2,16 @@ package HTML::TableContent::Table;
 
 use Moo;
 
+our $VERSION = '0.01';
+
 extends 'HTML::TableContent::Element';
 
-has caption => (
-    is => 'rw',
-);
+has caption => ( is => 'rw', );
 
-has [ qw(headers rows) ] => (
-    is => 'rw',
-    lazy => 1,
-    default => sub { [ ] }
+has [qw(headers rows)] => (
+    is      => 'rw',
+    lazy    => 1,
+    default => sub { [] },
 );
 
 sub all_rows {
@@ -48,56 +48,80 @@ sub get_first_header {
 
 sub headers_spec {
     my $self = shift;
-    
+
     my $headers = {};
-    map { $headers->{$_->data->[0]}++ } $self->all_headers;  
+    map { $headers->{ $_->data->[0] }++ } $self->all_headers;
     return $headers;
 }
 
 sub header_exists {
-    my ($self, @headers) = @_;
+    my ( $self, @headers ) = @_;
 
-    my $headers_spec =  $self->headers_spec;
-    return 1 if grep { $headers_spec->{$_} } @headers;
-    return undef;
+    my $headers_spec = $self->headers_spec;
+    for (@headers) { return 1 if $headers_spec->{$_} }
+    return 0;
 }
 
-sub _filter_headers {
-    my ($self, @headers) = @_;
-
-    my $headers = [ ];
-    foreach my $header ( $self->all_headers ) {
-        push @{ $headers }, $header 
-            if grep { $header->text =~ /$_/ } @headers;
-    }
-
-    $self->headers($headers);
+sub get_header_column {
+    my ( $self, $column ) = @_;
     
-    foreach my $row ( $self->all_rows ) {
-        $row->_filter_headers($headers);
+    my @cells;
+    for my $header ($self->all_headers) {
+        if ( $header->text =~ m{$column}xms ) {
+            for ( $header->all_cells ) {
+                push @cells, $_;
+            }
+        }
     }
+    return \@cells;
+}
+
+sub get_header_column_text {
+    my ($self, $column) = @_;
+    my $cells = $self->get_header_column($column);
+    my @cell_text = map { $_->text } @{ $cells };
+    return \@cell_text;
 }
 
 around raw => sub {
-    my ($orig, $self) = (shift, shift);
+    my ( $orig, $self ) = ( shift, shift );
 
     my $table = $self->$orig(@_);
-    
-    $table->{caption} = $self->caption->text 
-        if defined $self->caption;
-  
-    $table->{headers} = [ ];
-    foreach my $header ($self->all_headers) {
-        push @{ $table->{headers} }, $header->raw; 
+
+    if ( defined $self->caption ) { $table->{caption} = $self->caption->text }
+
+    $table->{headers} = [];
+    foreach my $header ( $self->all_headers ) {
+        push @{ $table->{headers} }, $header->raw;
     }
 
-    $table->{rows} = [ ];
-    foreach my $row ($self->all_rows) {
-        push @{ $table->{rows} }, $row->raw; 
+    $table->{rows} = [];
+    foreach my $row ( $self->all_rows ) {
+        push @{ $table->{rows} }, $row->raw;
     }
 
     return $table;
 };
+
+sub _filter_headers {
+    my ( $self, @headers ) = @_;
+
+    my $headers = [];
+    foreach my $header ( $self->all_headers ) {
+        for (@headers) {
+            if ( $header->text =~ /$_/ ) {
+                push @{$headers}, $header;
+            }
+        }
+    }
+
+    $self->headers($headers);
+
+    foreach my $row ( $self->all_rows ) {
+        $row->_filter_headers($headers);
+    }
+
+}
 
 __PACKAGE__->meta->make_immutable;
 
@@ -135,7 +159,7 @@ Version 0.01
  
 =head1 DESCRIPTION
 
-=head1 METHODS
+=head1 SUBROUTINES/METHODS
 
 =head2 attributes
 
@@ -145,13 +169,13 @@ HashRef of Table attributes
 
 =head2 class
 
-Table tag class if found, default is undef.
+Table tag class if found.
 
     $table->class;
 
 =head2 id
 
-Table id if found, default is undef.
+Table id if found.
 
     $table->id;
 
@@ -178,6 +202,18 @@ Array of HTML::TableContent::Header's
 Number of headers found in table
 
     $table->header_count;
+
+=head2 get_header_column
+
+Returns an array of HTML::TableContent::Table::Row::Cell's which belong to that column.
+
+    $table->get_header_column;
+
+=head2 get_header_column_text
+
+Return an array of the cell's text.
+
+    $table->get_header_column_text;
 
 =head2 get_header
 
@@ -238,6 +274,16 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =back
 
 =head1 ACKNOWLEDGEMENTS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
+
+=head1 DEPENDENCIES
+
+=head1 BUGS AND LIMITATIONS
 
 =head1 LICENSE AND COPYRIGHT
 

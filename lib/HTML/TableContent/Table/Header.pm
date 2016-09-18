@@ -2,14 +2,16 @@ package HTML::TableContent::Table::Header;
 
 use Moo;
 
+our $VERSION = '0.01';
+
 extends 'HTML::TableContent::Element';
 
 __PACKAGE__->meta->make_immutable;
 
 has 'cells' => (
-    is => 'rw',
-    lazy => 1,
-    default => sub { [ ] }
+    is      => 'rw',
+    lazy    => 1,
+    default => sub { [] },
 );
 
 sub cell_count {
@@ -61,7 +63,9 @@ Version 0.01
 
 =head1 DESCRIPTION
 
-=head1 METHODS
+Table Header Base Class.
+
+=head1 SUBROUTINES/METHODS
 
 =head2 cells
 
@@ -131,7 +135,15 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
 =head1 SUPPORT
 
-=back
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
+
+=head1 DEPENDENCIES
+
+=head1 BUGS AND LIMITATIONS
 
 =head1 ACKNOWLEDGEMENTS
 

@@ -2,11 +2,11 @@ package HTML::TableContent::Table::Row::Cell;
 
 use Moo;
 
+our $VERSION = '0.01';
+
 extends 'HTML::TableContent::Element';
 
-has 'header' => (
-    is => 'rw',
-);
+has 'header' => ( is => 'rw', );
 
 __PACKAGE__->meta->make_immutable;
 
@@ -41,6 +41,8 @@ Version 0.01
 =cut
 
 =head1 DESCRIPTION
+
+=head1 SUBROUTINES/METHODS
 
 =head1 METHODS
 
@@ -94,7 +96,15 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
 =head1 SUPPORT
 
-=back
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
+
+=head1 DEPENDENCIES
+
+=head1 BUGS AND LIMITATIONS
 
 =head1 ACKNOWLEDGEMENTS
 

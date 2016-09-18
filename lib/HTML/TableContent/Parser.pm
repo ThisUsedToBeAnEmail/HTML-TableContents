@@ -2,6 +2,8 @@ package HTML::TableContent::Parser;
 
 use Moo;
 
+our $VERSION = '0.01';
+
 extends 'HTML::Parser';
 
 use HTML::TableContent::Table;
@@ -11,57 +13,71 @@ use HTML::TableContent::Table::Row::Cell;
 use HTML::TableContent::Table::Caption;
 
 has current_tables => (
-    is => 'rw',
-    lazy => 1,
+    is      => 'rw',
+    lazy    => 1,
     clearer => 1,
-    default => sub { [ ] }
+    default => sub { [] },
 );
 
-has [ qw(current_table current_caption current_row current_header current_cell current_element) ] => (
-    is => 'rw',
-    lazy => 1,
+has [
+    qw(current_table current_caption current_row current_header current_cell current_element)
+  ] => (
+    is      => 'rw',
+    lazy    => 1,
     clearer => 1,
-);
+  );
 
 has options => (
-    is => 'ro',
-    lazy => 1,
+    is      => 'ro',
+    lazy    => 1,
     builder => 1,
 );
 
 sub _build_options {
     return {
         table => {
-            class => 'Table',
-            store => [qw/current_table/],
+            class       => 'Table',
+            store       => [qw/current_table/],
             push_action => '_push_table',
-            clear => [qw/current_table current_row current_cell current_header current_element/],
+            clear       => [
+                qw/current_table current_row current_cell current_header current_element/
+            ],
         },
         th => {
-            class => 'Table::Header',
-            store => [qw/current_header current_element/],
+            class       => 'Table::Header',
+            store       => [qw/current_header current_element/],
             push_action => '_push_header',
-            clear => [qw/current_row current_cell current_header current_element/],
+            clear =>
+              [qw/current_row current_cell current_header current_element/],
         },
         tr => {
-            class => 'Table::Row',
-            store => [qw/current_row current_element/],
+            class       => 'Table::Row',
+            store       => [qw/current_row current_element/],
             push_action => '_push_row',
-            clear => [qw/current_row current_cell current_header current_element/],
-        }, 
+            clear =>
+              [qw/current_row current_cell current_header current_element/],
+        },
         td => {
-            class => 'Table::Row::Cell',
-            store => [qw/current_cell current_element/], 
+            class       => 'Table::Row::Cell',
+            store       => [qw/current_cell current_element/],
             push_action => '_push_cell',
-            clear => [qw/current_cell current_header current_element/],
+            clear       => [qw/current_cell current_header current_element/],
         },
         caption => {
-            class => 'Table::Caption',
-            store => [qw/current_element/],
+            class       => 'Table::Caption',
+            store       => [qw/current_element/],
             push_action => '_push_caption',
-            clear => [qw/current_element/]
+            clear       => [qw/current_element/]
         }
-   }
+    };
+}
+
+sub all_current_tables {
+    return @{ shift->current_tables };
+}
+
+sub count_current_tables {
+    return scalar @{ shift->current_tables };
 }
 
 sub current_cell_index {
@@ -74,7 +90,7 @@ sub current_cell_header {
     my $self = shift;
 
     my $cell_index = $self->current_cell_index;
-    my $header = $self->current_table->headers->[$cell_index];
+    my $header     = $self->current_table->headers->[$cell_index];
 
     push @{ $header->cells }, $self->current_cell;
 
@@ -82,15 +98,15 @@ sub current_cell_header {
 }
 
 sub parse {
-    my ($self, $data) = @_;
-    
+    my ( $self, $data ) = @_;
+
     $self->SUPER::parse($data);
 
     return $self->current_tables;
 }
 
 sub parse_file {
-    my ($self, $file) = @_;
+    my ( $self, $file ) = @_;
 
     $self->SUPER::parse_file($file);
 
@@ -98,66 +114,85 @@ sub parse_file {
 }
 
 sub start {
-    my ($self, $tag, $attr, $attrseq, $origtext) = @_;
+    my ( $self, $tag, $attr, $attrseq, $origtext ) = @_;
 
-    $tag = lc($tag);
+    $tag = lc $tag;
 
     if ( my $store_tag = $self->options->{$tag} ) {
         my $class = 'HTML::TableContent::' . $store_tag->{class};
         my $table = $class->new($attr);
-        for (@{ $store_tag->{store} }) {
+        for ( @{ $store_tag->{store} } ) {
             $self->$_($table);
         }
     }
+
+    return;
 }
 
 sub text {
-    my ($self, $text) = @_;
+    my ( $self, $text ) = @_;
 
     if ( my $elem = $self->current_element ) {
-       push @{ $elem->data }, $text if $text =~ m{\w+}xms;
+        if ( $text =~ m{\w+}xms ) {
+            push @{ $elem->data }, $text;
+        }
     }
+
+    return;
 }
 
 sub end {
-    my ($self, $tag, $origtext) = @_;
-    $tag = lc($tag);
+    my ( $self, $tag, $origtext ) = @_;
+    $tag = lc $tag;
 
     if ( my $clear = $self->options->{$tag} ) {
-       my $push_action = $clear->{push_action};
-       $self->$push_action;
-       for ( @{$clear->{clear}} ) { my $clearer = 'clear_' . $_; $self->$clearer; }
-   }
+        my $push_action = $clear->{push_action};
+        $self->$push_action;
+        for ( @{ $clear->{clear} } ) {
+            my $clearer = 'clear_' . $_;
+            $self->$clearer;
+        }
+    }
+
+    return;
 }
 
 sub _push_table {
     my $self = shift;
-    push @{$self->current_tables}, $self->current_table
-        if defined $self->current_table;
+    if ( defined $self->current_table ) {
+        push @{ $self->current_tables }, $self->current_table;
+    }
+    return;
 }
 
 sub _push_header {
     my $self = shift;
-    push @{$self->current_table->headers}, $self->current_header
-        if defined $self->current_header;
+    if ( defined $self->current_header ) {
+        push @{ $self->current_table->headers }, $self->current_header;
+    }
+    return;
 }
 
 sub _push_row {
     my $self = shift;
-    push @{$self->current_table->rows}, $self->current_row 
-        if defined $self->current_row;
+    if ( defined $self->current_row ) {
+        push @{ $self->current_table->rows }, $self->current_row;
+    }
+    return;
 }
 
 sub _push_cell {
     my $self = shift;
-    $self->current_cell->header($self->current_cell_header);
-    push @{$self->current_row->cells}, $self->current_cell
-        if defined $self->current_cell;
+    if ( defined $self->current_cell ) {
+        $self->current_cell->header( $self->current_cell_header );
+        push @{ $self->current_row->cells }, $self->current_cell;
+    }
+    return;
 }
 
 sub _push_caption {
     my $self = shift;
-    $self->current_table->caption($self->current_element);
+    return $self->current_table->caption( $self->current_element );
 }
 
 1;
@@ -166,7 +201,7 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent::Store
+HTML::TableContent::Parser
 
 =head1 VERSION
 
@@ -174,15 +209,70 @@ Version 0.01
 
 =cut
 
+=head1 SYNOPSIS
+
+    my $t = HTML::TableContent->new();
+
+    $t->parser->parse($html);
+
+    # most recently parsed tables
+    my $last_parsed = $t->parser->current_tables;
+
+    for my $table ( @{ $last_parsed } ) {
+        ...
+    }
+
+=head1 DESCRIPTION
+
+HTML::Parser subclass.
+
+=head1 SUBROUTINES/METHODS
+
+=head2 parse
+
+Parse $string as a chunk of html.
+
+    $parser->parse($string);
+
+=head2 parse_file
+
+Parse a file that contains html.
+
+    $parser->parse_file($string);
+
+=head2 current_tables
+
+ArrayRef consisiting of the last parsed tables.
+
+    $parser->current_tables;
+
+=head2 all_current_tables
+
+Array consisiting of the last parsed tables.
+
+    $parser->all_current_tables;
+
+=head2 count_current_tables
+
+Count of the current tables.
+
+    $parser->count_current_tables;
+
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
-=head1 BUGS
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
+
+=head1 DEPENDENCIES
+
+=head1 BUGS AND LIMITATIONS
 
 =head1 SUPPORT
 
-=back
+=head1 DIAGNOSTICS
 
 =head1 ACKNOWLEDGEMENTS
 

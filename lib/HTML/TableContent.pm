@@ -1,20 +1,21 @@
 package HTML::TableContent;
 
+use Carp;
 use Moo;
 
 use HTML::TableContent::Parser;
 
-our $VERSION = '0.14';
+our $VERSION = '0.01';
 
 has parser => (
-    is => 'rw',
-    default => sub { return HTML::TableContent::Parser->new(); },
+    is      => 'rw',
+    default => sub { return HTML::TableContent::Parser->new() },
 );
 
 has tables => (
-    is => 'rw',
-    lazy => 1,
-    default => sub { [ ] }
+    is      => 'rw',
+    lazy    => 1,
+    default => sub { [] },
 );
 
 sub all_tables {
@@ -22,7 +23,7 @@ sub all_tables {
 }
 
 sub get_table {
-    return shift->tables->[shift]; 
+    return shift->tables->[shift];
 }
 
 sub get_first_table {
@@ -34,52 +35,51 @@ sub table_count {
 }
 
 sub filter_tables {
-    my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
 
-    my $tables = [ ];
-    
-    my @headers = ( );
-    if (defined $args{headers}) {
-       push @headers, @{ $args{headers} };
-    } elsif ( defined $args{header} ) {
+    my $tables = [];
+
+    my @headers = ();
+    if ( defined $args{headers} ) {
+        push @headers, @{ $args{headers} };
+    }
+    elsif ( defined $args{header} ) {
         push @headers, $args{header};
     }
-    
+
     foreach my $table ( $self->all_tables ) {
         if ( $table->header_exists(@headers) ) {
-            $table->_filter_headers(@headers);  
-            push @{ $tables }, $table;
+            $table->_filter_headers(@headers);
+            push @{$tables}, $table;
         }
     }
 
-    if ( $args{flex} && ! scalar @{ $tables } ) {
-        warn sprintf(
-            "none of the passed headers exist in any of the tables 
-                aborting filter - %s"
-                , join ' ', @headers);
-        return;    
+    if ( $args{flex} && !scalar @{$tables} ) {
+        carp 'none of the passed headers exist in any of the tables aborting filter - %s',
+          join q{ }, @headers;
+        return;
     }
 
-    $self->tables($tables);    
+    return $self->tables($tables);
 }
 
 sub headers_spec {
     my $self = shift;
-    
+
     my $headers = {};
-    foreach my $table ( $self->all_tables ) { 
-       map { $headers->{$_->data->[0]}++ } $table->all_headers;
+    for my $table ( $self->all_tables ) {
+        for ( $table->all_headers ) { $headers->{ $_->data->[0] }++ }
     }
-    
+
     return $headers;
 }
 
-sub headers_exists {
-    my ($self, @headers) = @_;
+sub headers_exist {
+    my ( $self, @headers ) = @_;
 
     my $header_spec = $self->headers_spec;
 
-    return 1 if grep { exists $header_spec->{$_} } @headers;
+    for (@headers) { return 1 if $header_spec->{$_} }
 
     return 0;
 }
@@ -87,29 +87,37 @@ sub headers_exists {
 sub raw {
     my $self = shift;
 
-    my $tables = [ ];
+    my $tables = [];
     foreach my $table ( $self->all_tables ) {
-       push @{ $tables }, $table->raw; 
+        push @{$tables}, $table->raw;
     }
-    
+
     return $tables;
 }
 
 sub parse {
-    my ($self, $data) = @_;
+    my ( $self, $data ) = @_;
 
     $self->parser->clear_current_tables;
     my $current_tables = $self->parser->parse($data);
-    push @{ $self->tables }, @{ $current_tables };
+    push @{ $self->tables }, @{$current_tables};
+    return $current_tables;
 }
 
 sub parse_file {
-    my ($self, $file) = @_;
+    my ( $self, $file ) = @_;
 
     $self->parser->clear_current_tables;
     my $current_tables = $self->parser->parse_file($file);
-    push @{ $self->tables }, @{ $current_tables };
+    push @{ $self->tables }, @{$current_tables};
+    return $current_tables;
 }
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
 
 =head1 NAME
 
@@ -127,15 +135,25 @@ Version 0.01
     my $t = HTML::TableContent->new();
     $t->parse_file('test.html'); 
    
+    my @cell_ids = ( );
     foreach my $table ($t->all_tables) {
-        ....
+        push @cell_ids, map { $_->id } @{ $table->get_header_column('Email') };
     }
- 
+
+    .....
+
+    my $first_table = $t->get_first_table;
+    my $first_row = $first_table->get_first_row;
+    
+    foreach my $row ($t->all_rows) {
+        push @column, $row->cells->[0];
+    }
+
 =head1 DESCRIPTION
 
-Parse data from tables embeded in html.
+Parse content from HTML tables.
 
-=head1 METHODS
+=head1 SUBROUTINES/METHODS
 
 =head2 parse
 
@@ -151,7 +169,7 @@ Parse a file that contains html.
 
 =head2 raw
 
-Return underlining data structure
+Return underlying data structure
 
     $t->raw;    
 
@@ -175,13 +193,13 @@ Count number of tables found/stored.
 
 =head2 get_table
 
-Get table by index
+Get table by index.
 
     $t->get_table($index);
 
 =head2 get_first_table
 
-Get first table
+Get first table.
 
     $t->get_first_table;
 
@@ -205,17 +223,25 @@ Sometimes you want a little more flexibility.. i.e you want to keep your tables 
 
     $t->filter_tables(headers => qw/Name Email/, flex => 1);
 
-=head2 headers_exists
+=head2 headers_exist
 
-Pass in an Array of headers if one of the headers match 1 is returned.
+Pass an Array of headers if one of the headers match the truth is returned.
 
-    $t->headers_exists(qw/Name Email/);
+    $t->headers_exist(qw/Name Email/);
 
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
-=head1 BUGS
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
+
+=head1 DEPENDENCIES
+
+=head1 BUGS AND LIMITATIONS
 
 Please report any bugs or feature requests to C<bug-html-tablecontentparser at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContentParser>.  I will be notified, and then you'll
@@ -293,4 +319,3 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; 

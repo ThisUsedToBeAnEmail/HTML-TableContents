@@ -2,35 +2,37 @@ package HTML::TableContent::Element;
 
 use Moo;
 
-around BUILDARGS => sub {
-    my ($orig, $class, $args) = @_;
+our $VERSION = '0.01';
 
-    return $class->$orig(attributes => $args);
+around BUILDARGS => sub {
+    my ( $orig, $class, $args ) = @_;
+
+    return $class->$orig( attributes => $args );
 };
 
 has attributes => (
-    is => 'rw',
-    default => sub { { } }
+    is      => 'rw',
+    default => sub { {} }
 );
 
 has data => (
-    is => 'rw',   
-    default => sub { [ ] }
+    is      => 'rw',
+    default => sub { [] }
 );
 
-sub text { join ' ', @{ shift->data }; }
+sub text { return join q{ }, @{ shift->data }; }
 
-sub class { shift->attributes->{class}; }
+sub class { return shift->attributes->{class}; }
 
-sub id { shift->attributes->{id}; }
+sub id { return shift->attributes->{id}; }
 
-sub raw { 
+sub raw {
     my $self = shift;
-    
-    my $args = $self->attributes; 
+
+    my $args = $self->attributes;
 
     if ( scalar @{ $self->data } ) {
-        $args->{text} = $self->text; 
+        $args->{text} = $self->text;
         $args->{data} = $self->data;
     }
 
@@ -53,13 +55,22 @@ Version 0.01
 
 =cut
 
+=head1 SYNOPSIS
+
+    $element->attributes;
+    $element->data;
+
+    $element->text;
+    $element->class;
+    $element->id;
+
 =head1 Description
 
 Base for HTML::TableContent::Table, HTML::TableContent::Table::Header, HTML::TableContent::Table::Row, HTML::TableContent::Table::Row::Cell and HTML::TableContent::Table::Caption 
 
 =cut
 
-=head1 Methods
+=head1 SUBROUTINES/METHODS
 
 =head2 attributes
 
@@ -95,11 +106,17 @@ Element tag's id if found.
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
-=head1 BUGS
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
+
+=head1 DEPENDENCIES
+
+=head1 BUGS AND LIMITATIONS
 
 =head1 SUPPORT
 
-=back
+=head1 DIAGNOSTICS
 
 =head1 ACKNOWLEDGEMENTS
     

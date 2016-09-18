@@ -2,12 +2,14 @@ package HTML::TableContent::Table::Row;
 
 use Moo;
 
+our $VERSION = '0.01';
+
 extends 'HTML::TableContent::Element';
 
 has cells => (
-    is => 'rw',
-    lazy => 1,
-    default => sub { [ ] }
+    is      => 'rw',
+    lazy    => 1,
+    default => sub { [] },
 );
 
 sub cell_count {
@@ -27,20 +29,24 @@ sub get_first_cell {
 }
 
 sub _filter_headers {
-    my ($self, $headers) = @_;
+    my ( $self, $headers ) = @_;
 
-    my $cells = [ ];
+    my $cells = [];
     foreach my $cell ( $self->all_cells ) {
-        push @{$cells}, $cell if grep { $cell->header->text eq $_->text } @{ $headers }; 
+        for ( @{$headers} ) {
+            if ( $cell->header->text eq $_->text ) {
+                push @{$cells}, $cell;
+            }
+        }
     }
-    $self->cells($cells);
+    return $self->cells($cells);
 }
 
 around raw => sub {
-    my ($orig, $self) = (shift, shift);
+    my ( $orig, $self ) = ( shift, shift );
 
     my $row = $self->$orig(@_);
-    $row->{cells} = [ ];
+    $row->{cells} = [];
     foreach my $cell ( $self->all_cells ) {
         push @{ $row->{cells} }, $cell->raw;
     }
@@ -81,7 +87,7 @@ Version 0.01
 
 =head1 DESCRIPTION
 
-=head1 METHODS
+=head1 SUBROUTINES/METHODS
 
 =head2 cells
 
@@ -148,6 +154,16 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =back
 
 =head1 ACKNOWLEDGEMENTS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
+
+=head1 DEPENDENCIES
+
+=head1 BUGS AND LIMITATIONS
 
 =head1 LICENSE AND COPYRIGHT
 

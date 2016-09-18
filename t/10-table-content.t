@@ -18,7 +18,7 @@ subtest "basic_two_column_table" => sub {
           'Savings' => 1,
           'Month' => 2
         },
-        headers_exists => qw/Savings/,
+        headers_exist => qw/Savings/,
         raw => [
           {
             'class' => 'two-columns',
@@ -205,7 +205,7 @@ subtest "basic_two_column_table_file" => sub {
           'Savings' => 1,
           'Month' => 2
         },
-        headers_exists => qw/Savings/,
+        headers_exist => qw/Savings/,
         raw => [
           {
             'class' => 'two-columns',
@@ -408,7 +408,7 @@ sub run_tests {
 
     is_deeply( $t->headers_spec, $args->{headers_spec}, "expected header spec" );
 
-    is($t->headers_exists($args->{headers_exists}), 1, "okay header exists: $args->{headers_exists}" );
+    is($t->headers_exist($args->{headers_exist}), 1, "okay header exists: $args->{headers_exist}" );
 
     is_deeply($t->raw, $args->{raw}, "expected raw structure");
        

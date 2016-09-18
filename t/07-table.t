@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 9;
+    plan tests => 10;
     my $html = open_file('t/html/page-two-tables.html');
     run_tests({
         html => $html,
@@ -84,11 +84,15 @@ subtest "basic_two_column_table" => sub {
           },
         get_first_header => 1,
         get_first_row => 1,
+        get_header_column => [
+            '$100',
+            '$100'
+        ],
     });
 };
 
 subtest "basic_two_column_table_file" => sub {
-    plan tests => 9;
+    plan tests => 10;
     my $file = 't/html/page-two-tables.html';
     run_tests({
         file => $file,
@@ -164,7 +168,10 @@ subtest "basic_two_column_table_file" => sub {
           },
         get_first_header => 1,
         get_first_row => 1,
-
+        get_header_column => [
+            '$100',
+            '$100'
+        ]
    });
 };
 
@@ -185,7 +192,7 @@ sub run_tests {
     my $args = shift;
 
     my $t = HTML::TableContent->new();
-    
+
     if (my $html = $args->{html} ) {    
         ok($t->parse($args->{html}), "parse html into HTML::TableContent");
     } else {
@@ -207,6 +214,11 @@ sub run_tests {
     ok( $table->get_first_row, "okay get first row" );
 
     ok( $table->get_first_header, "okay get first header" );
+
+    is_deeply($table->get_header_column_text('Savings'), $args->{get_header_column}, "okay get_header_column");
+
+
+
 }
 
 1;
