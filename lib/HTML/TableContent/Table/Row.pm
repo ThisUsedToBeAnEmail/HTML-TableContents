@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row;
 
 use Moo;
 
-with 'HTML::TableContent::Role::Content';
+extends 'HTML::TableContent::Element';
 
 has cells => (
     is => 'rw',
@@ -36,13 +36,13 @@ sub _filter_headers {
     $self->cells($cells);
 }
 
-around raw_me => sub {
+around raw => sub {
     my ($orig, $self) = (shift, shift);
 
     my $row = $self->$orig(@_);
     $row->{cells} = [ ];
     foreach my $cell ( $self->all_cells ) {
-        push @{ $row->{cells} }, $cell->raw_me;
+        push @{ $row->{cells} }, $cell->raw;
     }
     return $row;
 };

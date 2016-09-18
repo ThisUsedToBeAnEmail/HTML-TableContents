@@ -81,7 +81,7 @@ sub raw {
 
     my $tables = [ ];
     foreach my $table ( $self->all_tables ) {
-       push @{ $tables }, $table->raw_me; 
+       push @{ $tables }, $table->raw; 
     }
     
     return $tables;

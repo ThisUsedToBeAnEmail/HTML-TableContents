@@ -3,7 +3,7 @@ package HTML::TableContent::Table;
 use Moo;
 use Data::Dumper;
 
-with 'HTML::TableContent::Role::Content';
+extends 'HTML::TableContent::Element';
 
 has caption => (
     is => 'rw',
@@ -73,7 +73,7 @@ sub _filter_headers {
     }
 }
 
-around raw_me => sub {
+around raw => sub {
     my ($orig, $self) = (shift, shift);
 
     my $table = $self->$orig(@_);
@@ -83,12 +83,12 @@ around raw_me => sub {
   
     $table->{headers} = [ ];
     foreach my $header ($self->all_headers) {
-        push @{ $table->{headers} }, $header->raw_me; 
+        push @{ $table->{headers} }, $header->raw; 
     }
 
     $table->{rows} = [ ];
     foreach my $row ($self->all_rows) {
-        push @{ $table->{rows} }, $row->raw_me; 
+        push @{ $table->{rows} }, $row->raw; 
     }
 
     return $table;

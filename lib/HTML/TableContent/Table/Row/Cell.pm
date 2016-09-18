@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row::Cell;
 
 use Moo;
 
-with 'HTML::TableContent::Role::Content';
+extends 'HTML::TableContent::Element';
 
 has 'header' => (
     is => 'rw',

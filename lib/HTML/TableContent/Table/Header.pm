@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Header;
 
 use Moo;
 
-with 'HTML::TableContent::Role::Content';
+extends 'HTML::TableContent::Element';
 
 __PACKAGE__->meta->make_immutable;
 
