@@ -1,10 +1,10 @@
 # NAME
 
-HTML::TableContent
+HTML::TableContent - Extract table content from HTML.
 
 # VERSION
 
-Version 0.04 - Extract table content from HTML.
+Version 0.05 
 
 # SYNOPSIS
 

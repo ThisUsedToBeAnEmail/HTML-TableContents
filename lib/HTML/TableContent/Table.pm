@@ -2,7 +2,7 @@ package HTML::TableContent::Table;
 
 use Moo;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 extends 'HTML::TableContent::Element';
 
@@ -172,7 +172,7 @@ HTML::TableContent::Table - Base class for table's
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
