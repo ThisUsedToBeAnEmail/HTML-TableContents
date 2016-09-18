@@ -113,12 +113,6 @@ Pass an Array of headers if one of the headers match the truth is returned.
 
 LNATION, `<thisusedtobeanemail at gmail.com>`
 
-# DIAGNOSTICS
-
-# CONFIGURATION AND ENVIRONMENT 
-
-# INCOMPATIBILITIES
-
 # DEPENDENCIES
 
 [Moo](https://metacpan.org/pod/Moo)
@@ -160,6 +154,12 @@ You can also look for information at:
 - Search CPAN
 
     [http://search.cpan.org/dist/HTML-TableContentParser/](http://search.cpan.org/dist/HTML-TableContentParser/)
+
+# DIAGNOSTICS
+
+# CONFIGURATION AND ENVIRONMENT 
+
+# INCOMPATIBILITIES
 
 # ACKNOWLEDGEMENTS
 

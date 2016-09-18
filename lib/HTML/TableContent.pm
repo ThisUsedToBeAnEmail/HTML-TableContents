@@ -236,12 +236,6 @@ Pass an Array of headers if one of the headers match the truth is returned.
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
-=head1 DIAGNOSTICS
-
-=head1 CONFIGURATION AND ENVIRONMENT 
-
-=head1 INCOMPATIBILITIES
-
 =head1 DEPENDENCIES
 
 L<Moo>
@@ -287,6 +281,12 @@ L<http://cpanratings.perl.org/d/HTML-TableContentParser>
 L<http://search.cpan.org/dist/HTML-TableContentParser/>
 
 =back
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
 
 =head1 ACKNOWLEDGEMENTS
 
