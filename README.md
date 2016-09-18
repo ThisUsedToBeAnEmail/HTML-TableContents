@@ -4,7 +4,7 @@ HTML::TableContent
 
 # VERSION
 
-Version 0.01
+Version 0.02
 
 # SYNOPSIS
 
@@ -115,14 +115,14 @@ LNATION, `<thisusedtobeanemail at gmail.com>`
 
 # DEPENDENCIES
 
-[Moo](https://metacpan.org/pod/Moo)
-[HTML::Parser](https://metacpan.org/pod/HTML::Parser)
+[Moo](https://metacpan.org/pod/Moo),
+[HTML::Parser](https://metacpan.org/pod/HTML::Parser),
 
-[HTML::TableContent::Parser](https://metacpan.org/pod/HTML::TableContent::Parser)
-[HTML::TableContent::Table](https://metacpan.org/pod/HTML::TableContent::Table)
-[HTML::TableContent::Table::Caption](https://metacpan.org/pod/HTML::TableContent::Table::Caption)
-[HTML::TableContent::Table::Header](https://metacpan.org/pod/HTML::TableContent::Table::Header)
-[HTML::TableContent::Table::Row](https://metacpan.org/pod/HTML::TableContent::Table::Row)
+[HTML::TableContent::Parser](https://metacpan.org/pod/HTML::TableContent::Parser),
+[HTML::TableContent::Table](https://metacpan.org/pod/HTML::TableContent::Table),
+[HTML::TableContent::Table::Caption](https://metacpan.org/pod/HTML::TableContent::Table::Caption),
+[HTML::TableContent::Table::Header](https://metacpan.org/pod/HTML::TableContent::Table::Header),
+[HTML::TableContent::Table::Row](https://metacpan.org/pod/HTML::TableContent::Table::Row),
 [HTML::TableContent::Table::Row::Cell](https://metacpan.org/pod/HTML::TableContent::Table::Row::Cell)
 
 # BUGS AND LIMITATIONS
