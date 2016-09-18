@@ -4,7 +4,7 @@ HTML::TableContent
 
 # VERSION
 
-Version 0.02
+Version 0.04 - Extract table content from HTML.
 
 # SYNOPSIS
 
@@ -15,7 +15,7 @@ Version 0.02
     
      my @cell_ids = ( );
      foreach my $table ($t->all_tables) {
-         push @cell_ids, map { $_->id } @{ $table->get_header_column('Email') };
+         push @cell_ids, map { $_->id } @{ $table->get_col('Email') };
      }
 
      .....
@@ -85,7 +85,7 @@ Get first table.
 
 ## headers\_spec
 
-Hash containing all table headers and there occurance count.
+Hash containing all table headers and their occurance count.
 
     $t->headers_spec;
 

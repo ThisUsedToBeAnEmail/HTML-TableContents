@@ -5,7 +5,7 @@ use Moo;
 
 use HTML::TableContent::Parser;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 has parser => (
     is      => 'rw',
@@ -125,7 +125,7 @@ HTML::TableContent
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04 - Extract table content from HTML.
 
 =cut
 
@@ -138,7 +138,7 @@ Version 0.03
    
     my @cell_ids = ( );
     foreach my $table ($t->all_tables) {
-        push @cell_ids, map { $_->id } @{ $table->get_header_column('Email') };
+        push @cell_ids, map { $_->id } @{ $table->get_col('Email') };
     }
 
     .....
@@ -153,10 +153,6 @@ Version 0.03
     }
 
 =head1 DESCRIPTION
-
-Extract table content from HTML.
-
-=head1 ABSTRACT
 
 Extract table content from HTML.
 
@@ -212,7 +208,7 @@ Get first table.
 
 =head2 headers_spec
 
-Hash containing all table headers and there occurance count.
+Hash containing all table headers and their occurance count.
 
     $t->headers_spec;
 

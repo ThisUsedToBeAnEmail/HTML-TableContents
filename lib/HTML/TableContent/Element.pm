@@ -2,7 +2,7 @@ package HTML::TableContent::Element;
 
 use Moo;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -49,11 +49,11 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent::Element
+HTML::TableContent::Element - attributes, text, data, class, id
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 

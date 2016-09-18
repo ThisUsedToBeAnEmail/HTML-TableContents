@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Header;
 
 use Moo;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 extends 'HTML::TableContent::Element';
 
@@ -40,8 +40,8 @@ HTML::TableContent::Table::Header
 
 =head1 VERSION
 
-Version 0.03
-
+Version 0.04 - base class for table headers.
+ 
 =head1 SYNOPSIS
 
     use HTML::TableContent;

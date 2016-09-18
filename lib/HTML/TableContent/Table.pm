@@ -2,7 +2,7 @@ package HTML::TableContent::Table;
 
 use Moo;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 extends 'HTML::TableContent::Element';
 
@@ -61,6 +61,20 @@ sub header_exists {
     for (@headers) { return 1 if $headers_spec->{ lc $_ } }
     return 0;
 }
+
+sub get_col {
+    my ($self, $col) = @_;
+
+    my %args = ( header => $col );
+    return $self->get_header_column(%args);
+}
+
+sub get_col_text {
+    my ($self, $col) = @_;
+
+    my %args = ( header => $col );
+    return $self->get_header_column_text(%args);
+}   
 
 sub get_header_column {
     my ( $self, %args ) = @_;
@@ -154,11 +168,11 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent::Table
+HTML::TableContent::Table - Base class for table's 
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
@@ -179,8 +193,9 @@ Version 0.03
     foreach my $row ($table->all_rows) {
         ...
     }
- 
-    my $column = $table->get_header_column_text(header => 'Savings', dedupe => 1);
+
+    my $columns_obj = $table->get_col('Savings');
+    my $columns = $table->get_header_column_text(header => 'Savings', dedupe => 1);
 
 =head1 DESCRIPTION
 
@@ -245,6 +260,18 @@ Sometimes you may want to dedupe the column that is returned. This is done based
 Return an array of the cell's text.
 
     $table->get_header_column_text(header => 'Email', dedupe => 1);
+
+=head2 get_col
+
+Shorthand for get_header_column(header => '');
+
+    $table->get_col('Email');
+
+=head2 get_col_text
+
+Shorthand for get_header_column_text(header => '')
+
+    $table->get_col_text('Email');
 
 =head2 get_header
 

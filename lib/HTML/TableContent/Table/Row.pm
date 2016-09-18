@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row;
 
 use Moo;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 extends 'HTML::TableContent::Element';
 
@@ -61,11 +61,11 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent::Table::Row
+HTML::TableContent::Table::Row - base class for table rows.
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =head1 SYNOPSIS
 
@@ -152,8 +152,6 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =head1 BUGS
 
 =head1 SUPPORT
-
-=back
 
 =head1 ACKNOWLEDGEMENTS
 

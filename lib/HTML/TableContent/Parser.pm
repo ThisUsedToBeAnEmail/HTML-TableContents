@@ -2,7 +2,7 @@ package HTML::TableContent::Parser;
 
 use Moo;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 extends 'HTML::Parser';
 
@@ -201,11 +201,11 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent::Parser
+HTML::TableContent::Parser - HTML::Parser subclass.
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 

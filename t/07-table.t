@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 11;
+    plan tests => 12;
     my $html = open_file('t/html/page-two-tables.html');
     run_tests({
         html => $html,
@@ -95,7 +95,7 @@ subtest "basic_two_column_table" => sub {
 };
 
 subtest "basic_two_column_table_file" => sub {
-    plan tests => 11;
+    plan tests => 12;
     my $file = 't/html/page-two-tables.html';
     run_tests({
         file => $file,
@@ -221,6 +221,8 @@ sub run_tests {
 
     ok( $table->get_first_header, "okay get first header" );
 
+    is_deeply($table->get_col_text('Savings'), $args->{get_header_column}, "okay get_header_column");
+  
     is_deeply($table->get_header_column_text(header => 'Savings'), $args->{get_header_column}, "okay get_header_column");
 
     is_deeply($table->get_header_column_text(header => 'Savings', dedupe => 1), $args->{get_dedupe_header_column}, "okay dedupe get_header_column");
