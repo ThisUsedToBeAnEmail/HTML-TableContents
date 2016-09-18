@@ -133,6 +133,7 @@ Version 0.01
 
     use HTML::TableContent;
     my $t = HTML::TableContent->new();
+    
     $t->parse_file('test.html'); 
    
     my @cell_ids = ( );
@@ -142,10 +143,12 @@ Version 0.01
 
     .....
 
+    $t->parse($html);
+
     my $first_table = $t->get_first_table;
     my $first_row = $first_table->get_first_row;
     
-    foreach my $row ($t->all_rows) {
+    foreach my $row ($first_table->all_rows) {
         push @column, $row->cells->[0];
     }
 
@@ -203,11 +206,11 @@ Get first table.
 
     $t->get_first_table;
 
-=head2 header_spec
+=head2 headers_spec
 
 Hash containing all table headers and there occurance count.
 
-    $t->header_spec;
+    $t->headers_spec;
 
 =head2 filter_tables
 

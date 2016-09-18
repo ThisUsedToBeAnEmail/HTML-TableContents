@@ -8,20 +8,32 @@ Version 0.01
 
 # SYNOPSIS
 
-       use HTML::TableContent;
-       my $t = HTML::TableContent->new();
-       $t->parse_file('test.html'); 
-      
-       foreach my $table ($t->all_tables) {
-           ....
-       }
+     use HTML::TableContent;
+     my $t = HTML::TableContent->new();
+     
+     $t->parse_file('test.html'); 
     
+     my @cell_ids = ( );
+     foreach my $table ($t->all_tables) {
+         push @cell_ids, map { $_->id } @{ $table->get_header_column('Email') };
+     }
+
+     .....
+
+     $t->parse($html);
+
+     my $first_table = $t->get_first_table;
+     my $first_row = $first_table->get_first_row;
+     
+     foreach my $row ($first_table->all_rows) {
+         push @column, $row->cells->[0];
+     }
 
 # DESCRIPTION
 
-Parse data from tables embeded in html.
+Extract table content from HTML.
 
-# METHODS
+# SUBROUTINES/METHODS
 
 ## parse
 
@@ -37,19 +49,19 @@ Parse a file that contains html.
 
 ## raw
 
-Return underlining data structure
+Return underlying data structure
 
     $t->raw;    
 
 ## tables
 
-Array Ref consisting of HTML::TableContent::Table's
+Array Ref containing HTML::TableContent::Table's
 
     $t->tables;
 
 ## all\_tables
 
-Array consisting of HTML::TableContent::Table's
+Array containing HTML::TableContent::Table's
 
     $t->all_tables;
 
@@ -61,21 +73,21 @@ Count number of tables found/stored.
 
 ## get\_table
 
-Get table by index
+Get table by index.
 
     $t->get_table($index);
 
 ## get\_first\_table
 
-Get first table
+Get first table.
 
     $t->get_first_table;
 
-## header\_spec
+## headers\_spec
 
 Hash containing all table headers and there occurance count.
 
-    $t->header_spec;
+    $t->headers_spec;
 
 ## filter\_tables
 
@@ -91,17 +103,25 @@ Sometimes you want a little more flexibility.. i.e you want to keep your tables 
 
     $t->filter_tables(headers => qw/Name Email/, flex => 1);
 
-## headers\_exists
+## headers\_exist
 
-Pass in an Array of headers if one of the headers match 1 is returned.
+Pass an Array of headers if one of the headers match the truth is returned.
 
-    $t->headers_exists(qw/Name Email/);
+    $t->headers_exist(qw/Name Email/);
 
 # AUTHOR
 
 LNATION, `<thisusedtobeanemail at gmail.com>`
 
-# BUGS
+# DIAGNOSTICS
+
+# CONFIGURATION AND ENVIRONMENT 
+
+# INCOMPATIBILITIES
+
+# DEPENDENCIES
+
+# BUGS AND LIMITATIONS
 
 Please report any bugs or feature requests to `bug-html-tablecontentparser at rt.cpan.org`, or through
 the web interface at [http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContentParser](http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContentParser).  I will be notified, and then you'll
