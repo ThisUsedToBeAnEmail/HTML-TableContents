@@ -12,7 +12,7 @@ subtest "basic_two_column_table" => sub {
     my $html = open_file('t/html/simple-two-column-table.html');
     run_tests({
         html => $html,
-        raw_me => {
+        raw_me => [ {
           'headers' => [
                          {
                            'data' => [
@@ -73,12 +73,12 @@ subtest "basic_two_column_table" => sub {
                       }
                     ],
           'class' => 'two-columns'
-        }, 
+        }, ],
     });
     run_tests({
         html => $html,
         headers => [qw/Month/],
-        raw_me => {
+        raw_me => [ {
           'rows' => [
                       {
                         'class' => 'two-column-odd',
@@ -118,7 +118,7 @@ subtest "basic_two_column_table" => sub {
                            'text' => 'Month'
                          }
                        ]
-        }, 
+        }, ], 
     });
 };
 
@@ -146,7 +146,7 @@ sub run_tests {
         $t->filter_headers(@{ $headers });
     }
    
-    is_deeply($t->raw_me, $args->{raw_me}, "raw data structure as expected");
+    is_deeply($t->raw, $args->{raw_me}, "raw data structure as expected");
 }
 
 1;

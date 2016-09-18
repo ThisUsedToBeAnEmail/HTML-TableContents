@@ -1,20 +1,14 @@
 package HTML::TableContent;
 
 use Moo;
-extends 'HTML::Parser';
 
-use HTML::TableContent::Store;
-use HTML::TableContent::Table;
-use HTML::TableContent::Table::Header;
-use HTML::TableContent::Table::Row;
-use HTML::TableContent::Table::Row::Cell;
-use HTML::TableContent::Table::Caption;
+use HTML::TableContent::Parser;
 
 our $VERSION = '0.14';
 
-has store => (
+has parser => (
     is => 'rw',
-    default => sub { return HTML::TableContent::Store->new(); },
+    default => sub { return HTML::TableContent::Parser->new(); },
 );
 
 has tables => (
@@ -37,16 +31,6 @@ sub get_first_table {
 
 sub table_count {
     return scalar @{ shift->tables };
-}
-
-sub headers_exists {
-    my ($self, @headers) = @_;
-
-    foreach my $table ( $self->all_tables ) {
-        return 1 if $table->header_exists(@headers);
-    }
-
-    return 0;
 }
 
 sub filter_headers {
@@ -82,96 +66,41 @@ sub headers_spec {
     return $headers;
 }
 
-sub raw_me {
+sub headers_exists {
+    my ($self, @headers) = @_;
+
+    my $header_spec = $self->headers_spec;
+
+    return 1 if grep { exists $header_spec->{$_} } @headers;
+
+    return 0;
+}
+
+sub raw {
     my $self = shift;
 
-    my @tables;
+    my $tables = [ ];
     foreach my $table ( $self->all_tables ) {
-       push @tables, $table->raw_me; 
+       push @{ $tables }, $table->raw_me; 
     }
     
-    return @tables;
+    return $tables;
 }
 
 sub parse {
     my ($self, $data) = @_;
-    
-    $self->SUPER::parse($data);
 
-    return $self->tables;
+    $self->parser->clear_current_tables;
+    my $current_tables = $self->parser->parse($data);
+    push @{ $self->tables }, @{ $current_tables };
 }
 
 sub parse_file {
     my ($self, $file) = @_;
 
-    $self->SUPER::parse_file($file);
-
-    return $self->tables;
-}
-
-sub start {
-    my ($self, $tag, $attr, $attrseq, $origtext) = @_;
-
-    $tag = lc($tag);
-
-    if ( my $store_tag = $self->store->options->{$tag} ) {
-        my $class = 'HTML::TableContent::' . $store_tag->{class};
-        my $table = $class->new($attr);
-        for (@{ $store_tag->{store} }) {
-            $self->store->$_($table);
-        }
-    }
-}
-
-sub text {
-    my ($self, $text) = @_;
-
-    if ( my $elem = $self->store->current_element ) {
-       push @{ $elem->data }, $text if $text =~ m{\w+}xms;
-    }
-}
-
-sub end {
-    my ($self, $tag, $origtext) = @_;
-    $tag = lc($tag);
-
-    if ( my $clear = $self->store->options->{$tag} ) {
-       my $push_action = $clear->{push_action};
-       $self->$push_action;
-       for ( @{$clear->{clear}} ) { my $clearer = 'clear_' . $_; $self->store->$clearer; }
-   }
-}
-
-sub _push_table {
-    my $self = shift;
-    push @{$self->tables}, $self->store->current_table
-        if defined $self->store->current_table;
-}
-
-sub _push_header {
-    my $self = shift;
-    push @{$self->store->current_table->headers}, $self->store->current_header
-        if defined $self->store->current_header;
-}
-
-sub _push_row {
-    my $self = shift;
-
-    push @{$self->store->current_table->rows}, $self->store->current_row 
-        if defined $self->store->current_row;
-}
-
-sub _push_cell {
-    my $self = shift;
-    
-    $self->store->current_cell->header($self->store->current_cell_header);
-    push @{$self->store->current_row->cells}, $self->store->current_cell
-        if defined $self->store->current_cell;
-}
-
-sub _push_caption {
-    my $self = shift;
-    $self->store->current_table->caption($self->store->current_element);
+    $self->parser->clear_current_tables;
+    my $current_tables = $self->parser->parse_file($file);
+    push @{ $self->tables }, @{ $current_tables };
 }
 
 =head1 NAME
@@ -212,6 +141,12 @@ Parse a file that contains html.
 
     $t->parse_file($string);
 
+=head2 raw
+
+Return underlining data structure
+
+    $t->raw;    
+
 =head2 tables
 
 Array Ref consisting of HTML::TableContent::Table's
@@ -242,6 +177,24 @@ Get first table
 
     $t->get_first_table;
 
+=head2 header_spec
+
+Hash containing all headers and there occurance count in the currently stored tables.
+
+    $t->header_spec;
+
+=head2 filter_headers
+
+Filter all tables by a list of headers, only one header in the list has to match for the filter to run. If no headers match no filter gets applied.
+
+    $t->filter_headers(qw/Name Email/);
+
+=head2 headers_exists
+
+Pass in an Array of headers if one of the headers match 1 is returned.
+
+    $t->headers_exists(qw/Name Email/);
+
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>
@@ -257,7 +210,6 @@ automatically be notified of progress on your bug as I make changes.
 You can find documentation for this module with the perldoc command.
 
     perldoc HTML::TableContentParser
-
 
 You can also look for information at:
 
@@ -322,7 +274,6 @@ YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 
 =cut
 

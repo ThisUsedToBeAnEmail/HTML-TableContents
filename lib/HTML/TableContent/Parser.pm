@@ -1,6 +1,21 @@
-package HTML::TableContent::Store;
+package HTML::TableContent::Parser;
 
 use Moo;
+
+extends 'HTML::Parser';
+
+use HTML::TableContent::Table;
+use HTML::TableContent::Table::Header;
+use HTML::TableContent::Table::Row;
+use HTML::TableContent::Table::Row::Cell;
+use HTML::TableContent::Table::Caption;
+
+has current_tables => (
+    is => 'rw',
+    lazy => 1,
+    clearer => 1,
+    default => sub { [ ] }
+);
 
 has [ qw(current_table current_caption current_row current_header current_cell current_element) ] => (
     is => 'rw',
@@ -66,7 +81,84 @@ sub current_cell_header {
     return $header;
 }
 
-__PACKAGE__->meta->make_immutable;
+sub parse {
+    my ($self, $data) = @_;
+    
+    $self->SUPER::parse($data);
+
+    return $self->current_tables;
+}
+
+sub parse_file {
+    my ($self, $file) = @_;
+
+    $self->SUPER::parse_file($file);
+
+    return $self->current_tables;
+}
+
+sub start {
+    my ($self, $tag, $attr, $attrseq, $origtext) = @_;
+
+    $tag = lc($tag);
+
+    if ( my $store_tag = $self->options->{$tag} ) {
+        my $class = 'HTML::TableContent::' . $store_tag->{class};
+        my $table = $class->new($attr);
+        for (@{ $store_tag->{store} }) {
+            $self->$_($table);
+        }
+    }
+}
+
+sub text {
+    my ($self, $text) = @_;
+
+    if ( my $elem = $self->current_element ) {
+       push @{ $elem->data }, $text if $text =~ m{\w+}xms;
+    }
+}
+
+sub end {
+    my ($self, $tag, $origtext) = @_;
+    $tag = lc($tag);
+
+    if ( my $clear = $self->options->{$tag} ) {
+       my $push_action = $clear->{push_action};
+       $self->$push_action;
+       for ( @{$clear->{clear}} ) { my $clearer = 'clear_' . $_; $self->$clearer; }
+   }
+}
+
+sub _push_table {
+    my $self = shift;
+    push @{$self->current_tables}, $self->current_table
+        if defined $self->current_table;
+}
+
+sub _push_header {
+    my $self = shift;
+    push @{$self->current_table->headers}, $self->current_header
+        if defined $self->current_header;
+}
+
+sub _push_row {
+    my $self = shift;
+    push @{$self->current_table->rows}, $self->current_row 
+        if defined $self->current_row;
+}
+
+sub _push_cell {
+    my $self = shift;
+    $self->current_cell->header($self->current_cell_header);
+    push @{$self->current_row->cells}, $self->current_cell
+        if defined $self->current_cell;
+}
+
+sub _push_caption {
+    my $self = shift;
+    $self->current_table->caption($self->current_element);
+}
 
 1;
 
