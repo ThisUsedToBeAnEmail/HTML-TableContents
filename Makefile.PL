@@ -7,7 +7,6 @@ WriteMakefile(
     NAME             => 'HTML::TableContent',
     AUTHOR           => q{LNATION <thisusedtobeanemail@gmail.com>},
     VERSION_FROM     => 'lib/HTML/TableContent.pm',
-    ABSTRACT_FROM    => 'lib/HTML/TableContent.pm',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.006,
