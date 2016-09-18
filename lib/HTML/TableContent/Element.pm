@@ -2,7 +2,7 @@ package HTML::TableContent::Element;
 
 use Moo;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -53,7 +53,7 @@ HTML::TableContent::Element
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
@@ -116,14 +116,14 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
 =head1 DEPENDENCIES
 
-L<Moo>
-L<HTML::Parser>
+L<Moo>,
+L<HTML::Parser>,
 
-L<HTML::TableContent::Parser>
-L<HTML::TableContent::Table>
-L<HTML::TableContent::Table::Caption>
-L<HTML::TableContent::Table::Header>
-L<HTML::TableContent::Table::Row>
+L<HTML::TableContent::Parser>,
+L<HTML::TableContent::Table>,
+L<HTML::TableContent::Table::Caption>,
+L<HTML::TableContent::Table::Header>,
+L<HTML::TableContent::Table::Row>,
 L<HTML::TableContent::Table::Row::Cell>
 
 =head1 BUGS AND LIMITATIONS

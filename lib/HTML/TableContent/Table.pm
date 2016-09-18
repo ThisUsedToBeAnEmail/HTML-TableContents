@@ -2,7 +2,7 @@ package HTML::TableContent::Table;
 
 use Moo;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 extends 'HTML::TableContent::Element';
 
@@ -158,7 +158,7 @@ HTML::TableContent::Table
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
@@ -296,7 +296,19 @@ Return underlying data structure
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
-=head1 BUGS
+=head1 DEPENDENCIES
+
+L<Moo>,
+L<HTML::Parser>,
+
+L<HTML::TableContent::Parser>,
+L<HTML::TableContent::Table>,
+L<HTML::TableContent::Table::Caption>,
+L<HTML::TableContent::Table::Header>,
+L<HTML::TableContent::Table::Row>,
+L<HTML::TableContent::Table::Row::Cell>
+
+=head1 BUGS AND LIMITATIONS
 
 =head1 ACKNOWLEDGEMENTS
 
@@ -305,20 +317,6 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =head1 CONFIGURATION AND ENVIRONMENT 
 
 =head1 INCOMPATIBILITIES
-
-=head1 DEPENDENCIES
-
-L<Moo>
-L<HTML::Parser>
-
-L<HTML::TableContent::Parser>
-L<HTML::TableContent::Table>
-L<HTML::TableContent::Table::Caption>
-L<HTML::TableContent::Table::Header>
-L<HTML::TableContent::Table::Row>
-L<HTML::TableContent::Table::Row::Cell>
-
-=head1 BUGS AND LIMITATIONS
 
 =head1 LICENSE AND COPYRIGHT
 
