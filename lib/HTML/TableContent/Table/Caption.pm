@@ -68,6 +68,12 @@ Caption tag id if found.
 
     $caption->id;
 
+=head2 raw
+
+Return underlying data structure
+
+    $row->raw
+
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>

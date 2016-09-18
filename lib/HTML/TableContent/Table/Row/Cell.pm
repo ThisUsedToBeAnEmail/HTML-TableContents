@@ -44,6 +44,12 @@ Version 0.01
 
 =head1 METHODS
 
+=head2 raw
+
+Return underlying data structure
+
+    $row->raw
+
 =head2 data
 
 ArrayRef of Text elements

@@ -1,7 +1,6 @@
 package HTML::TableContent::Table;
 
 use Moo;
-use Data::Dumper;
 
 extends 'HTML::TableContent::Element';
 
@@ -47,13 +46,19 @@ sub get_first_header {
     return shift->get_header(0);
 }
 
+sub headers_spec {
+    my $self = shift;
+    
+    my $headers = {};
+    map { $headers->{$_->data->[0]}++ } $self->all_headers;  
+    return $headers;
+}
+
 sub header_exists {
     my ($self, @headers) = @_;
 
-    foreach my $header ( $self->all_headers ) {
-        return 1 if grep { $header->text =~ /$_/ } @headers;
-    }
-
+    my $headers_spec =  $self->headers_spec;
+    return 1 if grep { $headers_spec->{$_} } @headers;
     return undef;
 }
 
@@ -215,6 +220,12 @@ Get row from table by index.
 Get first row in the table.
 
     $table->get_first_row;
+
+=head2 raw
+
+Return underlying data structure
+
+    $row->raw
 
 =head1 AUTHOR
 

@@ -141,9 +141,8 @@ sub run_tests {
     
     ok($t->parse($args->{html}), "parse html into HTML::TableContent");
 
-    use Data::Dumper;
     if (my $headers = $args->{headers}) {
-        $t->filter_headers(@{ $headers });
+        $t->filter_tables(headers => $headers);
     }
    
     is_deeply($t->raw, $args->{raw_me}, "raw data structure as expected");

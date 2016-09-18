@@ -113,6 +113,12 @@ Count number of Cell's inside the Row.
 
     $row->cell_count
 
+=head2 raw
+
+Return underlying data structure
+
+    $row->raw
+
 =head2 attributes
 
 HashRef consiting of the tags attributes

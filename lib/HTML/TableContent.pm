@@ -33,10 +33,18 @@ sub table_count {
     return scalar @{ shift->tables };
 }
 
-sub filter_headers {
-    my ($self, @headers) = @_;
+sub filter_tables {
+    my ($self, %args) = @_;
 
     my $tables = [ ];
+    
+    my @headers = ( );
+    if (defined $args{headers}) {
+       push @headers, @{ $args{headers} };
+    } elsif ( defined $args{header} ) {
+        push @headers, $args{header};
+    }
+    
     foreach my $table ( $self->all_tables ) {
         if ( $table->header_exists(@headers) ) {
             $table->_filter_headers(@headers);  
@@ -44,7 +52,7 @@ sub filter_headers {
         }
     }
 
-    if ( ! scalar @{ $tables } ) {
+    if ( $args{flex} && ! scalar @{ $tables } ) {
         warn sprintf(
             "none of the passed headers exist in any of the tables 
                 aborting filter - %s"
@@ -125,7 +133,7 @@ Version 0.01
  
 =head1 DESCRIPTION
 
-This module parses the contents of a table from a string or file containing HTML. Each time a table is encountered, the data gets pushed into an array consisting of HTML::TableContent::Table's. 
+Parse data from tables embeded in html.
 
 =head1 METHODS
 
@@ -179,15 +187,23 @@ Get first table
 
 =head2 header_spec
 
-Hash containing all headers and there occurance count in the currently stored tables.
+Hash containing all table headers and there occurance count.
 
     $t->header_spec;
 
-=head2 filter_headers
+=head2 filter_tables
 
-Filter all tables by a list of headers, only one header in the list has to match for the filter to run. If no headers match no filter gets applied.
+Filter all tables by a list of headers, only one header in the list has to match for the filter to run.
 
-    $t->filter_headers(qw/Name Email/);
+    $t->filter_tables(headers => qw/Name Email/);
+
+Filter all tables for a single column.
+
+    $t->filter_tables(header => 'Name');
+
+Sometimes you want a little more flexibility.. i.e you want to keep your tables if none of the headers exist.
+
+    $t->filter_tables(headers => qw/Name Email/, flex => 1);
 
 =head2 headers_exists
 
@@ -277,4 +293,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of HTML::TableContentParser
+1; 

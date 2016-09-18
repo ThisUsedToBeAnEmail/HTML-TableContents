@@ -276,12 +276,12 @@ sub run_tests {
     is($t->table_count, $args->{table_count}, "expected table count: $args->{table_count}");
     
     ok(my $header_spec = $t->headers_spec);
-    use Data::Dumper; 
+    
     is_deeply($header_spec, $args->{header_spec}, "expected header spec");
 
     is($t->tables->[0]->header_count, $args->{header_count}, "header count: $args->{header_count}");
 
-    ok($t->filter_headers(@{$args->{filter_headers}}));    
+    ok($t->filter_tables(headers => $args->{filter_headers}));    
 
     is($t->tables->[0]->header_count, $args->{after_header_count}, "expected after header count $args->{after_header_count}");
 

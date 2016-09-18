@@ -12,6 +12,10 @@ has 'cells' => (
     default => sub { [ ] }
 );
 
+sub cell_count {
+    return scalar @{ shift->cells };
+}
+
 sub all_cells {
     return @{ shift->cells };
 }
@@ -112,6 +116,12 @@ Header tag class if found.
 Header tag id if found.
 
     $header->id;
+
+=head2 raw
+
+Return underlying data structure
+
+    $row->raw
 
 =head1 AUTHOR
 

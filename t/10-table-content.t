@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 7;
+    plan tests => 8;
     my $html = open_file('t/html/page-two-tables.html');
     run_tests({
         html => $html,
@@ -195,7 +195,7 @@ subtest "basic_two_column_table" => sub {
 
 
 subtest "basic_two_column_table_file" => sub {
-    plan tests => 7;
+    plan tests => 8;
     my $file = 't/html/page-two-tables.html';
     run_tests({
         file => $file,
@@ -403,14 +403,16 @@ sub run_tests {
     } else {
         ok($t->parse_file($args->{file}, "parse file into HTML::TableContent"));
     }
-    
+   
+    is($t->table_count, $args->{table_count}, "expected table count");
+
     is_deeply( $t->headers_spec, $args->{headers_spec}, "expected header spec" );
 
     is($t->headers_exists($args->{headers_exists}), 1, "okay header exists: $args->{headers_exists}" );
 
     is_deeply($t->raw, $args->{raw}, "expected raw structure");
        
-    ok($t->filter_headers($args->{filter_headers}), "filter tables: $args->{filter_headers}");
+    ok($t->filter_tables(header => $args->{filter_headers}), "filter tables: $args->{filter_headers}");
     
     is_deeply($t->raw, $args->{filtered_raw}, "expected filtered raw structure");
    

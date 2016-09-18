@@ -37,13 +37,15 @@ sub raw {
     return $args;
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
 
 __END__
 
 =head1 NAME
 
-HTML::TableContent::Role::Content
+HTML::TableContent::Element
 
 =head1 VERSION
 
@@ -57,6 +59,50 @@ Base for HTML::TableContent::Table, HTML::TableContent::Table::Header, HTML::Tab
 
 =cut
 
+=head1 Methods
+
+=head2 attributes
+
+hash consisting of the html attributes belonding to the current element.
+
+    $element->attributes;
+
+=head2 data
+
+Array of text strings belonging to the current element.
+
+    $element->data;
+
+=head2 text
+
+Join ' ' the elements data
+
+    $element->text;
+
+=head2 class
+
+Element tag's class if found.
+
+    $element->class;
+
+=head2 id
+
+Element tag's id if found.
+
+    $element->id;
+
+=head1 AUTHOR
+
+LNATION, C<< <thisusedtobeanemail at gmail.com> >>
+
+=head1 BUGS
+
+=head1 SUPPORT
+
+=back
+
+=head1 ACKNOWLEDGEMENTS
+    
 =head1 LICENSE AND COPYRIGHT
 
 Copyright 2016 LNATION.
