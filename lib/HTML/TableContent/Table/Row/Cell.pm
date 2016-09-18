@@ -66,7 +66,7 @@ data as a string joined with a  ' '
 
 =head2 header
 
-Column Header, HTML::TableContent::Table::Header.
+Column Header, L<HTML::TableContent::Table::Header>.
 
     $cell->header;
 
@@ -103,6 +103,18 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =head1 INCOMPATIBILITIES
 
 =head1 DEPENDENCIES
+
+L<Moo>
+L<HTML::Parser>
+
+L<HTML::TableContent::Parser>
+L<HTML::TableContent::Table>
+L<HTML::TableContent::Table::Caption>
+L<HTML::TableContent::Table::Header>
+L<HTML::TableContent::Table::Row>
+L<HTML::TableContent::Table::Row::Cell>
+
+
 
 =head1 BUGS AND LIMITATIONS
 

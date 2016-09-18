@@ -91,13 +91,13 @@ Version 0.01
 
 =head2 cells
 
-ArrayRef of HTML::TableContent::Row::Cell's
+ArrayRef of L<HTML::TableContent::Row::Cell>'s
 
     $row->cells;
 
 =head2 all_cells
 
-Array of HTML::TableContent::Row::Cell's
+Array of L<HTML::TableContent::Row::Cell>'s
 
     $row->all_cells;
 
@@ -162,6 +162,16 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =head1 INCOMPATIBILITIES
 
 =head1 DEPENDENCIES
+
+L<Moo>
+L<HTML::Parser>
+
+L<HTML::TableContent::Parser>
+L<HTML::TableContent::Table>
+L<HTML::TableContent::Table::Caption>
+L<HTML::TableContent::Table::Header>
+L<HTML::TableContent::Table::Row>
+L<HTML::TableContent::Table::Row::Cell>
 
 =head1 BUGS AND LIMITATIONS
 

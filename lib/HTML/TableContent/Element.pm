@@ -68,7 +68,9 @@ Version 0.01
 
 =head1 Description
 
-Base for HTML::TableContent::Table, HTML::TableContent::Table::Header, HTML::TableContent::Table::Row, HTML::TableContent::Table::Row::Cell and HTML::TableContent::Table::Caption 
+Base for L<HTML::TableContent::Table>, L<HTML::TableContent::Table::Header>,
+L<HTML::TableContent::Table::Row>, L<HTML::TableContent::Table::Row::Cell> 
+and L<HTML::TableContent::Table::Caption> 
 
 =cut
 
@@ -113,6 +115,16 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =head1 INCOMPATIBILITIES
 
 =head1 DEPENDENCIES
+
+L<Moo>
+L<HTML::Parser>
+
+L<HTML::TableContent::Parser>
+L<HTML::TableContent::Table>
+L<HTML::TableContent::Table::Caption>
+L<HTML::TableContent::Table::Header>
+L<HTML::TableContent::Table::Row>
+L<HTML::TableContent::Table::Row::Cell>
 
 =head1 BUGS AND LIMITATIONS
 

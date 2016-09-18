@@ -69,13 +69,13 @@ Table Header Base Class.
 
 =head2 cells
 
-ArrayRef of Associated cells to this header HTML::TableContent::Table::Row::Cell's 
+ArrayRef of Associated cells to this header L<HTML::TableContent::Table::Row::Cell>'s 
 
     $header->cells;
 
 =head2 all_cells
 
-Array of Associated cells to this header HTML::TableContent::Table::Row::Cell's
+Array of Associated cells to this header L<HTML::TableContent::Table::Row::Cell>'s
 
     $header->all_cells;
 
@@ -142,6 +142,16 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =head1 INCOMPATIBILITIES
 
 =head1 DEPENDENCIES
+
+L<Moo>
+L<HTML::Parser>
+
+L<HTML::TableContent::Parser>
+L<HTML::TableContent::Table>
+L<HTML::TableContent::Table::Caption>
+L<HTML::TableContent::Table::Header>
+L<HTML::TableContent::Table::Row>
+L<HTML::TableContent::Table::Row::Cell>
 
 =head1 BUGS AND LIMITATIONS
 

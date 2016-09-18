@@ -212,13 +212,13 @@ Table caption if found, see HTML::TableContent::Caption.
 
 =head2 headers
 
-Array Ref of HTML::TableContent::Header's
+Array Ref of L<HTML::TableContent::Header>'s
 
     $table->headers;
 
 =head2 all_headers
 
-Array of HTML::TableContent::Header's
+Array of L<HTML::TableContent::Header>'s
 
     $table->all_headers;
 
@@ -258,13 +258,13 @@ Get first header in the table.
 
 =head2 rows
 
-Array Ref of HTML::TableContent::Row's
+Array Ref of L<HTML::TableContent::Row>'s
 
     $table->rows;
 
 =head2 all_rows
 
-Array of HTML::TableContent::Row's
+Array of L<HTML::TableContent::Row>'s
 
     $table->all_rows;
 
@@ -298,10 +298,6 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 
 =head1 BUGS
 
-=head1 SUPPORT
-
-=back
-
 =head1 ACKNOWLEDGEMENTS
 
 =head1 DIAGNOSTICS
@@ -311,6 +307,16 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =head1 INCOMPATIBILITIES
 
 =head1 DEPENDENCIES
+
+L<Moo>
+L<HTML::Parser>
+
+L<HTML::TableContent::Parser>
+L<HTML::TableContent::Table>
+L<HTML::TableContent::Table::Caption>
+L<HTML::TableContent::Table::Header>
+L<HTML::TableContent::Table::Row>
+L<HTML::TableContent::Table::Row::Cell>
 
 =head1 BUGS AND LIMITATIONS
 

@@ -178,13 +178,13 @@ Return underlying data structure
 
 =head2 tables
 
-Array Ref containing HTML::TableContent::Table's
+Array Ref containing L<HTML::TableContent::Table>'s
 
     $t->tables;
 
 =head2 all_tables
 
-Array containing HTML::TableContent::Table's
+Array containing L<HTML::TableContent::Table>'s
 
     $t->all_tables;
 
@@ -243,6 +243,16 @@ LNATION, C<< <thisusedtobeanemail at gmail.com> >>
 =head1 INCOMPATIBILITIES
 
 =head1 DEPENDENCIES
+
+L<Moo>
+L<HTML::Parser>
+
+L<HTML::TableContent::Parser>
+L<HTML::TableContent::Table>
+L<HTML::TableContent::Table::Caption>
+L<HTML::TableContent::Table::Header>
+L<HTML::TableContent::Table::Row>
+L<HTML::TableContent::Table::Row::Cell>
 
 =head1 BUGS AND LIMITATIONS
 
