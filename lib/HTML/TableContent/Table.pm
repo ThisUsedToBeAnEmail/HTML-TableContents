@@ -2,7 +2,7 @@ package HTML::TableContent::Table;
 
 use Moo;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 extends 'HTML::TableContent::Element';
 
@@ -158,7 +158,7 @@ HTML::TableContent::Table
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
@@ -183,6 +183,8 @@ Version 0.02
     my $column = $table->get_header_column_text(header => 'Savings', dedupe => 1);
 
 =head1 DESCRIPTION
+
+Base class for Table 
 
 =head1 SUBROUTINES/METHODS
 

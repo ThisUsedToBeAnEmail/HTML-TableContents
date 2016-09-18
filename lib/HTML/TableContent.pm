@@ -5,7 +5,7 @@ use Moo;
 
 use HTML::TableContent::Parser;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 has parser => (
     is      => 'rw',
@@ -125,7 +125,7 @@ HTML::TableContent
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
@@ -153,6 +153,10 @@ Version 0.02
     }
 
 =head1 DESCRIPTION
+
+Extract table content from HTML.
+
+=head1 ABSTRACT
 
 Extract table content from HTML.
 

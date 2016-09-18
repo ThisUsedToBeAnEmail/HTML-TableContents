@@ -17,8 +17,9 @@ WriteMakefile(
         'Test::More' => 0,
     },
     PREREQ_PM => {
-        'Moo'              => 1.001001,
-        'HTML::Parser'     => 3.71,
+        'Carp'             => "1.22",
+        'Moo'              => "1.001001",
+        'HTML::Parser'     => "3.71",
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'HTML-TableContent-*' },

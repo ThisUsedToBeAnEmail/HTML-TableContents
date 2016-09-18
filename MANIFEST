@@ -10,7 +10,33 @@ lib/HTML/TableContent/Table/Row/Cell.pm
 Makefile.PL
 MANIFEST			This list of files
 README
+README.md
 t/00-load.t
 t/manifest.t
 t/pod-coverage.t
+t/01-parse.t
+t/02-parse-file.t
+t/03-parse-filter_headers.t
+t/04-parse_file_filter_headers.t
+t/05-parse-raw-me.t
+t/06-parse-file-raw-me.t
+t/07-table.t
+t/08-row.t
+t/09-header.t
+t/10-table-content.t
 t/pod.t
+t/html/facebook.html
+t/html/catch.html
+t/html/page-random-tables.html
+t/html/page-three-tables.html
+t/html/page-two-tables-columns.html
+t/html/page-two-tables.html
+t/html/simple-one-column-table.html
+t/html/simple-one-html-column.html
+t/html/simple-three-column-table.html
+t/html/simple-two-column-table.html
+t/html/three-three-column-tables.html
+t/html/three-three-html-columns.html
+t/html/two-two-column-tables.html
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)

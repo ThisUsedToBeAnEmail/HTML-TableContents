@@ -2,7 +2,7 @@ package HTML::TableContent::Parser;
 
 use Moo;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 extends 'HTML::Parser';
 
@@ -205,7 +205,7 @@ HTML::TableContent::Parser
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 

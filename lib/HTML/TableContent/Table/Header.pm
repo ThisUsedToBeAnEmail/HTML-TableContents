@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Header;
 
 use Moo;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 extends 'HTML::TableContent::Element';
 
@@ -40,7 +40,7 @@ HTML::TableContent::Table::Header
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
