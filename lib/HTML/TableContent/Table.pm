@@ -50,7 +50,7 @@ sub headers_spec {
     my $self = shift;
 
     my $headers = {};
-    map { $headers->{ $_->data->[0] }++ } $self->all_headers;
+    map { $headers->{ $_->lc_text }++ } $self->all_headers;
     return $headers;
 }
 
@@ -58,29 +58,51 @@ sub header_exists {
     my ( $self, @headers ) = @_;
 
     my $headers_spec = $self->headers_spec;
-    for (@headers) { return 1 if $headers_spec->{$_} }
+    for (@headers) { return 1 if $headers_spec->{ lc $_ } }
     return 0;
 }
 
 sub get_header_column {
-    my ( $self, $column ) = @_;
-    
-    my @cells;
-    for my $header ($self->all_headers) {
-        if ( $header->text =~ m{$column}xms ) {
+    my ( $self, %args ) = @_;
+
+    my @cells  = ();
+    my $column = $args{header};
+    foreach my $header ( $self->all_headers ) {
+        if ( $header->lc_text =~ m{$column}ixms ) {
             for ( $header->all_cells ) {
                 push @cells, $_;
             }
         }
     }
+
+    if ( defined $args{dedupe} ) {
+        @cells = $self->_dedupe_object_array_not_losing_order(@cells);
+    }
+
     return \@cells;
 }
 
 sub get_header_column_text {
-    my ($self, $column) = @_;
-    my $cells = $self->get_header_column($column);
-    my @cell_text = map { $_->text } @{ $cells };
+    my ( $self, %args ) = @_;
+    my $cells = $self->get_header_column(%args);
+    my @cell_text = map { $_->text } @{$cells};
     return \@cell_text;
+}
+
+sub _dedupe_object_array_not_losing_order {
+    my ( $self, @items ) = @_;
+
+    # someone could probably do this in one line :)
+    my %args;
+    my @new_items = ();
+    foreach my $item (@items) {
+        if ( !defined $args{ $item->text } ) {
+            $args{ $item->text }++;
+            push @new_items, $item;
+        }
+    }
+
+    return @new_items;
 }
 
 around raw => sub {
@@ -109,7 +131,7 @@ sub _filter_headers {
     my $headers = [];
     foreach my $header ( $self->all_headers ) {
         for (@headers) {
-            if ( $header->text =~ /$_/ ) {
+            if ( $header->lc_text =~ m/$_/ims ) {
                 push @{$headers}, $header;
             }
         }
@@ -121,6 +143,7 @@ sub _filter_headers {
         $row->_filter_headers($headers);
     }
 
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -157,6 +180,8 @@ Version 0.01
         ...
     }
  
+    my $column = $table->get_header_column_text(header => 'Savings', dedupe => 1);
+
 =head1 DESCRIPTION
 
 =head1 SUBROUTINES/METHODS
@@ -207,13 +232,17 @@ Number of headers found in table
 
 Returns an array of HTML::TableContent::Table::Row::Cell's which belong to that column.
 
-    $table->get_header_column;
+    $table->get_header_column(header => 'Savings');
+
+Sometimes you may want to dedupe the column that is returned. This is done based on the cell's text value.
+
+    $table->get_header_column(header => 'Email', dedupe => 1)
 
 =head2 get_header_column_text
 
 Return an array of the cell's text.
 
-    $table->get_header_column_text;
+    $table->get_header_column_text(header => 'Email', dedupe => 1);
 
 =head2 get_header
 

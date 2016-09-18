@@ -14,15 +14,15 @@ subtest "basic_two_column_table" => sub {
         html => $html,
         table_count => 1,
         header_spec => {
-            'Savings' => 1,
-            'Month' => 1
+            'savings' => 1,
+            'month' => 1
         },
         header_count => 2,
-        filter_headers => ['Savings', 'Month'],
+        filter_headers => ['savings', 'month'],
         after_header_count => 2,
         after_header_spec => {
-            'Savings' => 1,
-            'Month' => 1,
+            'savings' => 1,
+            'month' => 1,
         },
         after_table_count => 1,
     });
@@ -30,14 +30,14 @@ subtest "basic_two_column_table" => sub {
         html => $html,
         table_count => 1,
         header_spec => {
-            'Savings' => 1,
-            'Month' => 1
+            'savings' => 1,
+            'month' => 1
         },
         header_count => 2,
-        filter_headers => ['Savings'],
+        filter_headers => ['savings'],
         after_header_count => 1,
         after_header_spec => {
-            'Savings' => 1
+            'savings' => 1
         },
         after_table_count => 1,
     });
@@ -50,17 +50,17 @@ subtest "simple_three_column_table" => sub {
         html => $html,
         table_count => 1,
         header_spec => {
-            'Last Name' => 1,
-            'First Name' => 1,
-            'Email' => 1
+            'last name' => 1,
+            'first name' => 1,
+            'email' => 1
         },
         header_count => 3,
-        filter_headers => ['First Name', 'Last Name', 'Email'],
+        filter_headers => ['first name', 'last name', 'email'],
         after_header_count => 3,
         after_header_spec => {
-            'First Name' => 1,
-            'Last Name' => 1,
-            'Email' => 1,
+            'first name' => 1,
+            'last name' => 1,
+            'email' => 1,
         },
         after_table_count => 1,
     });
@@ -68,16 +68,16 @@ subtest "simple_three_column_table" => sub {
         html => $html,
         table_count => 1,
          header_spec => {
-            'Last Name' => 1,
-            'First Name' => 1,
-            'Email' => 1
+            'last name' => 1,
+            'first name' => 1,
+            'email' => 1
         },
         header_count => 3,
-        filter_headers => ['First Name', 'Email'],
+        filter_headers => ['first name', 'email'],
         after_header_count => 2,
         after_header_spec => {
-            'First Name' => 1,
-            'Email' => 1,
+            'first name' => 1,
+            'email' => 1,
         },
         after_table_count => 1,
     });
@@ -85,16 +85,16 @@ subtest "simple_three_column_table" => sub {
         html => $html,
         table_count => 1,
         header_spec => {
-            'Last Name' => 1,
-            'First Name' => 1,
-            'Email' => 1
+            'last name' => 1,
+            'first name' => 1,
+            'email' => 1
         },
         header_count => 3,
         first_table_header_count => 3,
-        filter_headers => ['Email'],
+        filter_headers => ['email'],
         after_header_count => 1,
         after_header_spec => {
-            'Email' => 1,
+            'email' => 1,
         },
         after_table_count => 1,
     });
@@ -107,17 +107,17 @@ subtest "page_two_tables" => sub {
         html => $html,
         table_count => 2,
         header_spec => {
-            'Expenditure' => 1,
-            'Savings' => 1,
-            'Month' => 2
+            'expenditure' => 1,
+            'savings' => 1,
+            'month' => 2
         },
-        filter_headers => [qw/Expenditure Month Savings/],
+        filter_headers => [qw/expenditure month savings/],
         header_count => 2,
         after_header_count => 2,
         after_header_spec => {
-            'Expenditure' => 1,
-            'Month' => 2,
-            'Savings' => 1,
+            'expenditure' => 1,
+            'month' => 2,
+            'savings' => 1,
         },
         after_table_count => 2,
     });
@@ -125,16 +125,16 @@ subtest "page_two_tables" => sub {
         html => $html,
         table_count => 2,
         header_spec => {
-            'Expenditure' => 1,
-            'Savings' => 1,
-            'Month' => 2
+            'expenditure' => 1,
+            'savings' => 1,
+            'month' => 2
         },
-        filter_headers => [qw/Expenditure Savings/],
+        filter_headers => [qw/expenditure savings/],
         header_count => 2,
         after_header_count => 1,
         after_header_spec => {
-            'Expenditure' => 1,
-            'Savings' => 1,
+            'expenditure' => 1,
+            'savings' => 1,
         },       
         after_table_count => 2,
     });
@@ -147,17 +147,17 @@ subtest "page_three_tables" => sub {
         html => $html,
         table_count => 3,
         header_spec => {
-          'First Name' => 3,
-          'Last Name' => 3,
-          'Email' => 3
+          'first name' => 3,
+          'last name' => 3,
+          'email' => 3
         },
         header_count => 3,
-        filter_headers => ['First Name', 'Last Name', 'Email'],
+        filter_headers => ['first name', 'last name', 'email'],
         after_header_count => 3,
         after_header_spec => {
-            'First Name' => 3,
-            'Last Name' => 3,
-            'Email' => 3,
+            'first name' => 3,
+            'last name' => 3,
+            'email' => 3,
         },
         after_table_count => 3,
     });
@@ -165,16 +165,16 @@ subtest "page_three_tables" => sub {
         html => $html,
         table_count => 3,
         header_spec => {
-          'First Name' => 3,
-          'Last Name' => 3,
-          'Email' => 3
+          'first name' => 3,
+          'last name' => 3,
+          'email' => 3
         },      
-        filter_headers => ['First Name', 'Last Name'],
+        filter_headers => ['first name', 'last name'],
         header_count => 3,
         after_header_count => 2,
         after_header_spec => {
-            'First Name' => 3,
-            'Last Name' => 3,
+            'first name' => 3,
+            'last name' => 3,
         },
         after_table_count => 3,
     });
@@ -182,15 +182,15 @@ subtest "page_three_tables" => sub {
         html => $html,
         table_count => 3,
         header_spec => {
-          'First Name' => 3,
-          'Last Name' => 3,
-          'Email' => 3
+          'first name' => 3,
+          'last name' => 3,
+          'email' => 3
         },
-        filter_headers => ['First Name'],
+        filter_headers => ['first name'],
         header_count => 3,
         after_header_count => 1,
         after_header_spec => {
-            'First Name' => 3
+            'first name' => 3
         },
         after_table_count => 3,
     });
@@ -203,21 +203,21 @@ subtest "page_three_tables" => sub {
         html => $html,
         table_count => 3,
         header_spec => {
-          'First Name' => 1,
-          'Last Name' => 1,
-          'Email' => 1,
-          'Year' => 2,
-          'Month' => 2,
-          'Savings' => 1,
-          'Expence' => 1,
+          'first name' => 1,
+          'last name' => 1,
+          'email' => 1,
+          'year' => 2,
+          'month' => 2,
+          'savings' => 1,
+          'expence' => 1,
         },
-        filter_headers => ['First Name', 'Last Name', 'Email'],
+        filter_headers => ['first name', 'last name', 'email'],
         header_count => 3,
         after_header_count => 3,
         after_header_spec => {
-            'First Name' => 1,
-            'Last Name' => 1,
-            'Email' => 1,
+            'first name' => 1,
+            'last name' => 1,
+            'email' => 1,
         }, 
         after_table_count => 1,
     });
@@ -225,19 +225,19 @@ subtest "page_three_tables" => sub {
         html => $html,
         table_count => 3,
         header_spec => {
-          'First Name' => 1,
-          'Last Name' => 1,
-          'Email' => 1,
-          'Year' => 2,
-          'Month' => 2,
-          'Savings' => 1,
-          'Expence' => 1,
+          'first name' => 1,
+          'last name' => 1,
+          'email' => 1,
+          'year' => 2,
+          'month' => 2,
+          'savings' => 1,
+          'expence' => 1,
         },
-        filter_headers => ['First Name'],
+        filter_headers => ['first name'],
         header_count => 3,
         after_header_count => 1,
         after_header_spec => {
-            'First Name' => 1
+            'first name' => 1
         },      
         after_table_count => 1,
     });
@@ -245,21 +245,21 @@ subtest "page_three_tables" => sub {
         html => $html,
         table_count => 3,
         header_spec => {
-          'First Name' => 1,
-          'Last Name' => 1,
-          'Email' => 1,
-          'Year' => 2,
-          'Month' => 2,
-          'Savings' => 1,
-          'Expence' => 1,
+          'first name' => 1,
+          'last name' => 1,
+          'email' => 1,
+          'year' => 2,
+          'month' => 2,
+          'savings' => 1,
+          'expence' => 1,
         },
-        filter_headers => [qw/Year Month Savings/],
+        filter_headers => [qw/year month savings/],
         header_count => 3,
         after_header_count => 3,
         after_header_spec => {
-            'Year' => 2,
-            'Month' => 2,
-            'Savings' => 1
+            'year' => 2,
+            'month' => 2,
+            'savings' => 1
         },
         after_table_count => 2,
     });

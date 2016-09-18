@@ -22,6 +22,8 @@ has data => (
 
 sub text { return join q{ }, @{ shift->data }; }
 
+sub lc_text { my $text = join q{ }, @{ shift->data }; return lc $text; }
+
 sub class { return shift->attributes->{class}; }
 
 sub id { return shift->attributes->{id}; }

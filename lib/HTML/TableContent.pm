@@ -68,7 +68,7 @@ sub headers_spec {
 
     my $headers = {};
     for my $table ( $self->all_tables ) {
-        for ( $table->all_headers ) { $headers->{ $_->data->[0] }++ }
+        for ( $table->all_headers ) { $headers->{ $_->lc_text }++ }
     }
 
     return $headers;
@@ -79,7 +79,7 @@ sub headers_exist {
 
     my $header_spec = $self->headers_spec;
 
-    for (@headers) { return 1 if $header_spec->{$_} }
+    for (@headers) { return 1 if $header_spec->{lc $_} }
 
     return 0;
 }

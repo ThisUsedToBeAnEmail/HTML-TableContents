@@ -14,9 +14,9 @@ subtest "basic_two_column_table" => sub {
         html => $html,
         table_count => 2,
         headers_spec => {
-          'Expenditure' => 1,
-          'Savings' => 1,
-          'Month' => 2
+          'expenditure' => 1,
+          'savings' => 1,
+          'month' => 2
         },
         headers_exist => qw/Savings/,
         raw => [
@@ -201,9 +201,9 @@ subtest "basic_two_column_table_file" => sub {
         file => $file,
         table_count => 2,
         headers_spec => {
-          'Expenditure' => 1,
-          'Savings' => 1,
-          'Month' => 2
+          'expenditure' => 1,
+          'savings' => 1,
+          'month' => 2
         },
         headers_exist => qw/Savings/,
         raw => [

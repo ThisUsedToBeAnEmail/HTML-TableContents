@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 10;
+    plan tests => 11;
     my $html = open_file('t/html/page-two-tables.html');
     run_tests({
         html => $html,
@@ -16,8 +16,8 @@ subtest "basic_two_column_table" => sub {
         row_count => 2,
         header_count => 2,
         headers_spec => {
-            'Month' => 1,
-            'Savings' => 1,
+            'month' => 1,
+            'savings' => 1,
         },
         header_exists => qw/Savings/,
         raw => {
@@ -88,11 +88,14 @@ subtest "basic_two_column_table" => sub {
             '$100',
             '$100'
         ],
+        get_dedupe_header_column => [
+            '$100',
+        ]
     });
 };
 
 subtest "basic_two_column_table_file" => sub {
-    plan tests => 10;
+    plan tests => 11;
     my $file = 't/html/page-two-tables.html';
     run_tests({
         file => $file,
@@ -100,8 +103,8 @@ subtest "basic_two_column_table_file" => sub {
         row_count => 2,
         header_count => 2,
         headers_spec => {
-            'Month' => 1,
-            'Savings' => 1,
+            'month' => 1,
+            'savings' => 1,
         },
         header_exists => qw/Savings/,
         raw => {
@@ -171,6 +174,9 @@ subtest "basic_two_column_table_file" => sub {
         get_header_column => [
             '$100',
             '$100'
+        ],
+        get_dedupe_header_column => [
+            '$100',
         ]
    });
 };
@@ -215,10 +221,9 @@ sub run_tests {
 
     ok( $table->get_first_header, "okay get first header" );
 
-    is_deeply($table->get_header_column_text('Savings'), $args->{get_header_column}, "okay get_header_column");
+    is_deeply($table->get_header_column_text(header => 'Savings'), $args->{get_header_column}, "okay get_header_column");
 
-
-
+    is_deeply($table->get_header_column_text(header => 'Savings', dedupe => 1), $args->{get_dedupe_header_column}, "okay dedupe get_header_column");
 }
 
 1;
