@@ -19,7 +19,7 @@ Version 0.01
 
 # DESCRIPTION
 
-This module parses the contents of a table from a string or file containing HTML. Each time a table is encountered, the data gets pushed into an array consisting of HTML::TableContent::Table's. 
+Parse data from tables embeded in html.
 
 # METHODS
 
@@ -34,6 +34,12 @@ Parse $string as a chunk of html.
 Parse a file that contains html.
 
     $t->parse_file($string);
+
+## raw
+
+Return underlining data structure
+
+    $t->raw;    
 
 ## tables
 
@@ -52,6 +58,44 @@ Array consisting of HTML::TableContent::Table's
 Count number of tables found/stored.
 
     $t->table_count;
+
+## get\_table
+
+Get table by index
+
+    $t->get_table($index);
+
+## get\_first\_table
+
+Get first table
+
+    $t->get_first_table;
+
+## header\_spec
+
+Hash containing all table headers and there occurance count.
+
+    $t->header_spec;
+
+## filter\_tables
+
+Filter all tables by a list of headers, only one header in the list has to match for the filter to run.
+
+    $t->filter_tables(headers => qw/Name Email/);
+
+Filter all tables for a single column.
+
+    $t->filter_tables(header => 'Name');
+
+Sometimes you want a little more flexibility.. i.e you want to keep your tables if none of the headers exist.
+
+    $t->filter_tables(headers => qw/Name Email/, flex => 1);
+
+## headers\_exists
+
+Pass in an Array of headers if one of the headers match 1 is returned.
+
+    $t->headers_exists(qw/Name Email/);
 
 # AUTHOR
 
