@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Caption;
 
 use Moo;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 extends 'HTML::TableContent::Element';
 
@@ -18,7 +18,7 @@ HTML::TableContent::Table::Caption - base class for table captions.
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =head1 SYNOPSIS
 
@@ -41,6 +41,12 @@ Version 0.05
 base class for table captions.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 raw
+
+Return underlying data structure
+
+    $row->raw
 
 =head2 data
 
@@ -71,12 +77,6 @@ Caption tag class if found.
 Caption tag id if found.
 
     $caption->id;
-
-=head2 raw
-
-Return underlying data structure
-
-    $row->raw
 
 =head1 AUTHOR
 

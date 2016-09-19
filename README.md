@@ -1,10 +1,10 @@
 # NAME
 
-HTML::TableContent - Extract table content from HTML.
+HTML::TableContent - Extract content from HTML tables.
 
 # VERSION
 
-Version 0.05 
+Version 0.06 
 
 # SYNOPSIS
 
@@ -31,7 +31,8 @@ Version 0.05
 
 # DESCRIPTION
 
-Extract table content from HTML.
+This module extracts all tables from a html document/string. It parses the data found into a set of objects
+that gives you a simple interface to query and access the exact data you desire.
 
 # SUBROUTINES/METHODS
 
@@ -51,7 +52,7 @@ Parse a file that contains html.
 
 Return underlying data structure
 
-    $t->raw;    
+    $t->raw;   
 
 ## tables
 
@@ -105,13 +106,13 @@ Sometimes you want a little more flexibility.. i.e you want to keep your tables 
 
 ## headers\_exist
 
-Pass an Array of headers if one of the headers match the truth is returned.
+Pass an Array of headers, if one of the headers match the truth is returned.
 
     $t->headers_exist(qw/Name Email/);
 
 # AUTHOR
 
-LNATION, `<thisusedtobeanemail at gmail.com>`
+Robert Acock, `<thisusedtobeanemail at gmail.com>`
 
 # DEPENDENCIES
 
@@ -128,32 +129,32 @@ LNATION, `<thisusedtobeanemail at gmail.com>`
 # BUGS AND LIMITATIONS
 
 Please report any bugs or feature requests to `bug-html-tablecontentparser at rt.cpan.org`, or through
-the web interface at [http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContentParser](http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContentParser).  I will be notified, and then you'll
+the web interface at [http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContent](http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContent).  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 # SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc HTML::TableContentParser
+    perldoc HTML::TableContent
 
 You can also look for information at:
 
 - RT: CPAN's request tracker (report bugs here)
 
-    [http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-TableContentParser](http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-TableContentParser)
+    [http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-TableContent](http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-TableContent)
 
 - AnnoCPAN: Annotated CPAN documentation
 
-    [http://annocpan.org/dist/HTML-TableContentParser](http://annocpan.org/dist/HTML-TableContentParser)
+    [http://annocpan.org/dist/HTML-TableContent](http://annocpan.org/dist/HTML-TableContent)
 
 - CPAN Ratings
 
-    [http://cpanratings.perl.org/d/HTML-TableContentParser](http://cpanratings.perl.org/d/HTML-TableContentParser)
+    [http://cpanratings.perl.org/d/HTML-TableContent](http://cpanratings.perl.org/d/HTML-TableContent)
 
 - Search CPAN
 
-    [http://search.cpan.org/dist/HTML-TableContentParser/](http://search.cpan.org/dist/HTML-TableContentParser/)
+    [http://search.cpan.org/dist/HTML-TableContent/](http://search.cpan.org/dist/HTML-TableContent/)
 
 # DIAGNOSTICS
 

@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Header;
 
 use Moo;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 extends 'HTML::TableContent::Element';
 
@@ -36,12 +36,12 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent::Table::Header
+HTML::TableContent::Table::Header - base class for table headers.
 
 =head1 VERSION
 
-Version 0.05 - base class for table headers.
- 
+Version 0.06 
+
 =head1 SYNOPSIS
 
     use HTML::TableContent;
@@ -66,6 +66,12 @@ Version 0.05 - base class for table headers.
 Table Header Base Class.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 raw
+
+Return underlying data structure
+
+    $row->raw
 
 =head2 cells
 
@@ -120,12 +126,6 @@ Header tag class if found.
 Header tag id if found.
 
     $header->id;
-
-=head2 raw
-
-Return underlying data structure
-
-    $row->raw
 
 =head1 AUTHOR
 

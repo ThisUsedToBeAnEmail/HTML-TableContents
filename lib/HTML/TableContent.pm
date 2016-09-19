@@ -5,7 +5,7 @@ use Moo;
 
 use HTML::TableContent::Parser;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 has parser => (
     is      => 'rw',
@@ -121,11 +121,11 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent - Extract table content from HTML.
+HTML::TableContent - Extract content from HTML tables.
 
 =head1 VERSION
 
-Version 0.05 
+Version 0.06 
 
 =cut
 
@@ -154,7 +154,8 @@ Version 0.05
 
 =head1 DESCRIPTION
 
-Extract table content from HTML.
+This module extracts all tables from a html document/string. It parses the data found into a set of objects
+that gives you a simple interface to query and access the exact data you desire.
 
 =head1 SUBROUTINES/METHODS
 
@@ -174,7 +175,7 @@ Parse a file that contains html.
 
 Return underlying data structure
 
-    $t->raw;    
+    $t->raw;   
 
 =head2 tables
 
@@ -228,13 +229,13 @@ Sometimes you want a little more flexibility.. i.e you want to keep your tables 
 
 =head2 headers_exist
 
-Pass an Array of headers if one of the headers match the truth is returned.
+Pass an Array of headers, if one of the headers match the truth is returned.
 
     $t->headers_exist(qw/Name Email/);
 
 =head1 AUTHOR
 
-LNATION, C<< <thisusedtobeanemail at gmail.com> >>
+Robert Acock, C<< <thisusedtobeanemail at gmail.com> >>
 
 =head1 DEPENDENCIES
 
@@ -251,14 +252,14 @@ L<HTML::TableContent::Table::Row::Cell>
 =head1 BUGS AND LIMITATIONS
 
 Please report any bugs or feature requests to C<bug-html-tablecontentparser at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContentParser>.  I will be notified, and then you'll
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-TableContent>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc HTML::TableContentParser
+    perldoc HTML::TableContent
 
 You can also look for information at:
 
@@ -266,19 +267,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-TableContentParser>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-TableContent>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/HTML-TableContentParser>
+L<http://annocpan.org/dist/HTML-TableContent>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/HTML-TableContentParser>
+L<http://cpanratings.perl.org/d/HTML-TableContent>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/HTML-TableContentParser/>
+L<http://search.cpan.org/dist/HTML-TableContent/>
 
 =back
 

@@ -2,7 +2,7 @@ package HTML::TableContent::Table;
 
 use Moo;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 extends 'HTML::TableContent::Element';
 
@@ -172,7 +172,7 @@ HTML::TableContent::Table - Base class for table's
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
@@ -199,9 +199,15 @@ Version 0.05
 
 =head1 DESCRIPTION
 
-Base class for Table 
+Base class for Table's. 
 
 =head1 SUBROUTINES/METHODS
+
+=head2 raw
+
+Return underlying data structure
+
+    $row->raw
 
 =head2 attributes
 
@@ -223,7 +229,7 @@ Table id if found.
 
 =head2 caption
 
-Table caption if found, see HTML::TableContent::Caption.
+Table caption if found, see L<HTML::TableContent::Caption>.
 
     $table->caption;
 
@@ -314,12 +320,6 @@ Get row from table by index.
 Get first row in the table.
 
     $table->get_first_row;
-
-=head2 raw
-
-Return underlying data structure
-
-    $row->raw
 
 =head1 AUTHOR
 
