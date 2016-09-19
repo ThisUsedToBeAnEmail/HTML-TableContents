@@ -24,6 +24,7 @@ t/07-table.t
 t/08-row.t
 t/09-header.t
 t/10-table-content.t
+t/11-edge-cases.t
 t/pod.t
 t/html/facebook.html
 t/html/catch.html
@@ -38,5 +39,14 @@ t/html/simple-two-column-table.html
 t/html/three-three-column-tables.html
 t/html/three-three-html-columns.html
 t/html/two-two-column-tables.html
+t/html/edge/base.html
+t/html/edge/empty-cells.html
+t/html/edge/empty-row.html
+t/html/edge/last-column-only-header-text-no-classes.html
+t/html/edge/last-column-only-header-text.html
+t/html/edge/no-headers.html
+t/html/edge/numeric.html
+t/html/edge/only-one-header.html
+t/html/edge/special.html
 META.yml                                 Module YAML meta-data (added by MakeMaker)
 META.json                                Module JSON meta-data (added by MakeMaker)
