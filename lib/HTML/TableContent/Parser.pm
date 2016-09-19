@@ -92,6 +92,8 @@ sub current_cell_header {
     my $cell_index = $self->current_cell_index;
     my $header     = $self->current_table->headers->[$cell_index];
 
+    return unless $header;
+
     push @{ $header->cells }, $self->current_cell;
 
     return $header;
@@ -133,7 +135,7 @@ sub text {
     my ( $self, $text ) = @_;
 
     if ( my $elem = $self->current_element ) {
-        if ( $text =~ m{\w+}xms ) {
+        if ( $text =~ m{\S+}xms ) {
             push @{ $elem->data }, $text;
         }
     }
@@ -175,7 +177,7 @@ sub _push_header {
 
 sub _push_row {
     my $self = shift;
-    if ( defined $self->current_row ) {
+    if ( defined $self->current_row && scalar @{ $self->current_row->cells } > 0) {
         push @{ $self->current_table->rows }, $self->current_row;
     }
     return;
