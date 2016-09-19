@@ -209,7 +209,7 @@ Get first table.
 
 =head2 headers_spec
 
-Hash containing all table headers and their occurance count.
+Hash containing all table headers and their occurrence count.
 
     $t->headers_spec;
 
