@@ -19,19 +19,19 @@ has tables => (
 );
 
 sub all_tables {
-    return @{ shift->tables };
+    return @{ $_[0]->tables };
 }
 
 sub get_table {
-    return shift->tables->[shift];
+    return $_[0]->tables->[$_[1]];
 }
 
 sub get_first_table {
-    return shift->get_table(0);
+    return $_[0]->get_table(0);
 }
 
 sub table_count {
-    return scalar @{ shift->tables };
+    return scalar @{ $_[0]->tables };
 }
 
 sub filter_tables {

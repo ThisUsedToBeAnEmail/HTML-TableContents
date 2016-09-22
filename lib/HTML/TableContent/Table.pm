@@ -15,19 +15,19 @@ has [qw(headers rows)] => (
 );
 
 sub all_rows {
-    return @{ shift->rows };
+    return @{ $_[0]->rows };
 }
 
 sub row_count {
-    return scalar @{ shift->rows };
+    return scalar @{ $_[0]->rows };
 }
 
 sub get_row {
-    return shift->rows->[shift];
+    return $_[0]->rows->[$_[1]];
 }
 
 sub get_first_row {
-    return shift->get_row(0);
+    return $_[0]->get_row(0);
 }
 
 sub get_last_row {
@@ -39,20 +39,57 @@ sub clear_last_row {
 }
 
 sub all_headers {
-    return @{ shift->headers };
+    return @{ $_[0]->headers };
 }
 
 sub header_count {
-    return scalar @{ shift->headers };
+    return scalar @{ $_[0]->headers };
 }
 
 sub get_header {
-    return shift->headers->[shift];
+    return $_[0]->headers->[$_[1]];
 }
 
 sub get_first_header {
-    return shift->get_header(0);
+    return $_[0]->get_header(0);
 }
+
+around has_nested => sub{
+    my ($orig, $self) = ( shift, shift );
+
+    my $nested = $self->$orig(@_);
+    
+    my $row = $self->get_first_row;
+    
+    for ($row->all_cells) {
+        if ($_->has_nested) {
+            $nested = 1;
+        }
+    }
+
+    return $nested;
+};
+
+around raw => sub {
+    my ( $orig, $self ) = ( shift, shift );
+
+    my $table = $self->$orig(@_);
+
+    if ( defined $self->caption ) { $table->{caption} = $self->caption->text }
+
+    $table->{headers} = [];
+    foreach my $header ( $self->all_headers ) {
+        push @{ $table->{headers} }, $header->raw;
+    }
+
+    $table->{rows} = [];
+    foreach my $row ( $self->all_rows ) {
+        push @{ $table->{rows} }, $row->raw;
+    }
+
+    return $table;
+};
+
 
 sub headers_spec {
     my $self = shift;
@@ -150,41 +187,6 @@ sub _dedupe_object_array_not_losing_order {
     return @new_items;
 }
 
-around has_nested => sub{
-    my ($orig, $self) = ( shift, shift );
-
-    my $nested = $self->$orig(@_);
-    
-    my $row = $self->get_first_row;
-    
-    for ($row->all_cells) {
-        if ($_->has_nested) {
-            $nested = 1;
-        }
-    }
-
-    return $nested;
-};
-
-around raw => sub {
-    my ( $orig, $self ) = ( shift, shift );
-
-    my $table = $self->$orig(@_);
-
-    if ( defined $self->caption ) { $table->{caption} = $self->caption->text }
-
-    $table->{headers} = [];
-    foreach my $header ( $self->all_headers ) {
-        push @{ $table->{headers} }, $header->raw;
-    }
-
-    $table->{rows} = [];
-    foreach my $row ( $self->all_rows ) {
-        push @{ $table->{rows} }, $row->raw;
-    }
-
-    return $table;
-};
 
 sub _filter_headers {
     my ( $self, @headers ) = @_;

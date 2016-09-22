@@ -13,19 +13,19 @@ has cells => (
 );
 
 sub cell_count {
-    return scalar @{ shift->cells };
+    return scalar @{ $_[0]->cells };
 }
 
 sub all_cells {
-    return @{ shift->cells };
+    return @{ $_[0]->cells };
 }
 
 sub get_cell {
-    return shift->cells->[shift];
+    return $_[0]->cells->[$_[1]];
 }
 
 sub get_first_cell {
-    return shift->get_cell(0);
+    return $_[0]->get_cell(0);
 }
 
 sub get_last_cell {

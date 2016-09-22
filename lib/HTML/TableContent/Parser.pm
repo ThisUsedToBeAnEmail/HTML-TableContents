@@ -54,17 +54,15 @@ sub _build_options {
 }
 
 sub all_current_tables {
-    return @{ shift->current_tables };
+    return @{ $_[0]->current_tables };
 }
 
 sub count_current_tables {
-    return scalar @{ shift->current_tables };
+    return scalar @{ $_[0]->current_tables };
 }
 
 sub current_cell_index {
-    my $self = shift;
-
-    return scalar @{ $self->current_row->cells };
+    return scalar @{ $_[0]->current_row->cells };
 }
 
 sub current_cell_header {
@@ -179,7 +177,6 @@ sub end {
             $table->clear_last_row;
         }
     }
-
 }
 
 1;
