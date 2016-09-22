@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 12;
+    plan tests => 14;
     my $html = open_file('t/html/page-two-tables.html');
     run_tests({
         html => $html,
@@ -19,6 +19,8 @@ subtest "basic_two_column_table" => sub {
             'month' => 1,
             'savings' => 1,
         },
+        has_nested => 0,
+        has_nested_column => 0,
         header_exists => qw/Savings/,
         raw => {
             'class' => 'two-columns',
@@ -95,13 +97,15 @@ subtest "basic_two_column_table" => sub {
 };
 
 subtest "basic_two_column_table_file" => sub {
-    plan tests => 12;
+    plan tests => 14;
     my $file = 't/html/page-two-tables.html';
     run_tests({
         file => $file,
         get_first_table => 1,
         row_count => 2,
         header_count => 2,
+        has_nested => 0,
+        has_nested_column => 0,
         headers_spec => {
             'month' => 1,
             'savings' => 1,
@@ -216,7 +220,11 @@ sub run_tests {
     is($table->header_exists($args->{header_exists}), 1, "okay header exists: $args->{header_exists}" );
 
     is_deeply($table->raw, $args->{raw}, "expected raw structure");
-       
+    
+    is($table->has_nested, $args->{has_nested}, "no nested tables");
+
+    is($table->has_nested_table_column, $args->{has_nested_column}, "no nested column");
+
     ok( $table->get_first_row, "okay get first row" );
 
     ok( $table->get_first_header, "okay get first header" );

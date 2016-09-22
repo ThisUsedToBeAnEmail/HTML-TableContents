@@ -17,7 +17,7 @@ subtest "nested column table" => sub {
         has_nested => 1,
         nested_table_count => 2,
         nested_table_column => 1,
-        nested_column_header => 'Facts',
+        nested_column_header => { 'facts' =>  1 },
         nested_table_header_count => 0,
         first_cell_text => 'Hello',
         second_row_cell_count => 2,
@@ -114,7 +114,6 @@ sub run_tests {
         my $t = HTML::TableContent->new();
         if ( $loop eq 'parse' ) {
             my $html = open_file($file);
-            use Data::Dumper; 
             ok($t->parse($html));
         }
         else {
@@ -131,19 +130,19 @@ sub run_tests {
 
         is($table->has_nested, $args->{has_nested}, "table has nested tables: $args->{has_nested}");
 
-        is($table->nested_table_count, $args->{nested_table_count}, "correct nested table count: $args->{nested_table_count}");
+        is($table->count_nested, $args->{nested_table_count}, "correct nested table count: $args->{nested_table_count}");
 
-        is($table->nested_table_count, $args->{table_nested_count}, "correct nested table count");
+        is($table->has_nested_table_column, $args->{nested_table_column}, "has nested table column");
 
-        is($table->nested_table_column, $args->{nested_table_column}, "has nested table column");
+        is_deeply($table->nested_column_headers, $args->{nested_column_header}, "correct nested column headers");
 
-        is($table->nested_column_header, $args->{nested_column_header}, "correct nested column header: $args->{nested_column_header}");
+        ok(my $nest = $table->get_col((keys %{ $args->{nested_column_header}})[0]));
+        
+        ok( my $col_table = $nest->[0]->get_first_nested);
 
-        ok(my $nest = $table->get_col($args->{nested_column_header});
+        is($col_table->header_count, $args->{nested_table_header_count}, "correct header count: $args->{nested_table_header_count}");
 
-        is($nest->header_count, $args->{nested_table_header_count}, "correct header count: $args->{nested_table_header_count}");
-
-        is($nest->get_first_row->get_first_cell->text, $args->{first_cell_text}, "correct cell value: $args->{first_cell_text}");
+        is($col_table->get_first_row->get_first_cell->text, $args->{first_cell_text}, "correct cell value: $args->{first_cell_text}");
 
         ok(my $row = $table->get_row(1));
 
@@ -153,7 +152,7 @@ sub run_tests {
 
         ok(my $tcell = $row->get_cell(1));
 
-        is($tcell->get_first_row->get_first_cell->text, $args->{row_nested_cell_text}, "nested text: $args->{row_nested_cell_text}");
+        is($tcell->get_first_nested->get_first_row->get_first_cell->text, $args->{row_nested_cell_text}, "nested text: $args->{row_nested_cell_text}");
      }
 }
 

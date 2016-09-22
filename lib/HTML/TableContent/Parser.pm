@@ -20,7 +20,7 @@ has current_tables => (
 );
 
 has [
-    qw(current_table current_caption current_row current_header current_cell current_element)
+    qw(current_table current_row current_cell current_element nested)
   ] => (
     is      => 'rw',
     lazy    => 1,
@@ -36,38 +36,19 @@ has options => (
 sub _build_options {
     return {
         table => {
-            class       => 'Table',
-            store       => [qw/current_table/],
-            push_action => '_push_table',
-            clear       => [
-                qw/current_table current_row current_cell current_header current_element/
-            ],
+            class       => 'HTML::TableContent::Table',
         },
         th => {
-            class       => 'Table::Header',
-            store       => [qw/current_header current_element/],
-            push_action => '_push_header',
-            clear =>
-              [qw/current_row current_cell current_header current_element/],
+            class       => 'HTML::TableContent::Table::Header',
         },
         tr => {
-            class       => 'Table::Row',
-            store       => [qw/current_row current_element/],
-            push_action => '_push_row',
-            clear =>
-              [qw/current_row current_cell current_header current_element/],
+            class       => 'HTML::TableContent::Table::Row',
         },
         td => {
-            class       => 'Table::Row::Cell',
-            store       => [qw/current_cell current_element/],
-            push_action => '_push_cell',
-            clear       => [qw/current_cell current_header current_element/],
+            class       => 'HTML::TableContent::Table::Row::Cell',
         },
         caption => {
-            class       => 'Table::Caption',
-            store       => [qw/current_element/],
-            push_action => '_push_caption',
-            clear       => [qw/current_element/]
+            class       => 'HTML::TableContent::Table::Caption',
         }
     };
 }
@@ -121,10 +102,39 @@ sub start {
     $tag = lc $tag;
 
     if ( my $store_tag = $self->options->{$tag} ) {
-        my $class = 'HTML::TableContent::' . $store_tag->{class};
-        my $table = $class->new($attr);
-        for ( @{ $store_tag->{store} } ) {
-            $self->$_($table);
+        my $class = $store_tag->{class};
+        my $element = $class->new($attr);
+ 
+        $self->current_element($element);
+
+        my $table = defined $self->nested && $self->nested->isa('HTML::TableContent::Table') ? $self->nested : $self->current_table; 
+
+        if ( $tag eq 'th' ) {
+            push @{ $table->headers }, $element;
+        }
+        if ( $tag eq 'tr' ) {
+            $self->current_row($element);
+            push @{ $table->rows }, $element;
+        }
+        if ( $tag eq 'td' ) {
+            $self->current_cell($element);
+            $element->header( $self->current_cell_header );
+            push @{ $table->get_last_row->cells }, $element; 
+        }
+
+        if ( $tag eq 'caption' ) {
+            $table->caption($element);
+        }
+
+        if ( $tag eq 'table' ) {
+            if ( defined $self->current_table && $self->current_table->isa('HTML::TableContent::Table') ) {
+                $self->nested($element);
+                push @{ $table->nested }, $element;
+                push @{ $table->get_last_row->get_last_cell->nested }, $element;
+            }
+            else {
+                $self->current_table($element);
+            }
         }
     }
 
@@ -136,6 +146,7 @@ sub text {
 
     if ( my $elem = $self->current_element ) {
         if ( $text =~ m{\S+}xms ) {
+            $text =~ s{^\s+|\s+$}{}g;
             push @{ $elem->data }, $text;
         }
     }
@@ -145,56 +156,30 @@ sub text {
 
 sub end {
     my ( $self, $tag, $origtext ) = @_;
+    
     $tag = lc $tag;
 
-    if ( my $clear = $self->options->{$tag} ) {
-        my $push_action = $clear->{push_action};
-        $self->$push_action;
-        for ( @{ $clear->{clear} } ) {
-            my $clearer = 'clear_' . $_;
-            $self->$clearer;
+    if ( $tag eq 'table' ) {
+        if (my $nested = $self->nested) {
+            $self->clear_nested;
+        }
+        else {
+            push @{ $self->current_tables }, $self->current_table;
+            $self->clear_current_table;
         }
     }
 
-    return;
-}
+    if ($tag eq 'tr') {
+        my $row = $self->current_row;
 
-sub _push_table {
-    my $self = shift;
-    if ( defined $self->current_table ) {
-        push @{ $self->current_tables }, $self->current_table;
+        my $table = defined $self->nested && $self->nested->isa('HTML::TableContent::Table') 
+            ? $self->nested : $self->current_table;
+
+        if ($row->cell_count == 0) {
+            $table->clear_last_row;
+        }
     }
-    return;
-}
 
-sub _push_header {
-    my $self = shift;
-    if ( defined $self->current_header ) {
-        push @{ $self->current_table->headers }, $self->current_header;
-    }
-    return;
-}
-
-sub _push_row {
-    my $self = shift;
-    if ( defined $self->current_row && scalar @{ $self->current_row->cells } > 0) {
-        push @{ $self->current_table->rows }, $self->current_row;
-    }
-    return;
-}
-
-sub _push_cell {
-    my $self = shift;
-    if ( defined $self->current_cell ) {
-        $self->current_cell->header( $self->current_cell_header );
-        push @{ $self->current_row->cells }, $self->current_cell;
-    }
-    return;
-}
-
-sub _push_caption {
-    my $self = shift;
-    return $self->current_table->caption( $self->current_element );
 }
 
 1;

@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_single_column_table" => sub {
-    plan tests => 20;
+    plan tests => 21;
     my $file = 't/html/simple-one-column-table.html';
     run_tests({
         file => $file,
@@ -18,6 +18,7 @@ subtest "basic_single_column_table" => sub {
         table_class => 'something',
         table_id => 'test-id',
         table_row_count => 1,
+        has_nested => 0,
         row => 0,
         row_cell_count => 1,
         row_class => 'echo',
@@ -34,7 +35,7 @@ subtest "basic_single_column_table" => sub {
 };
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 38;
+    plan tests => 40;
     my $file =  't/html/simple-two-column-table.html';
     run_tests({
         file => $file,
@@ -44,6 +45,7 @@ subtest "basic_two_column_table" => sub {
         table_class => 'two-columns',
         table_id => 'two-id',
         table_row_count => 2,
+        has_nested => 0,
         row => 0,
         row_cell_count => 2,
         row_class => 'two-column-odd',
@@ -64,6 +66,7 @@ subtest "basic_two_column_table" => sub {
         table_class => 'two-columns',
         table_id => 'two-id',
         table_row_count => 2,
+        has_nested => 0,
         row => 1,
         row_cell_count => 2,
         row_class => 'two-column-even',
@@ -79,7 +82,7 @@ subtest "basic_two_column_table" => sub {
 };
 
 subtest "simple_three_column_table" => sub {
-    plan tests => 57;
+    plan tests => 60;
     my $file =  't/html/simple-three-column-table.html';
     run_tests({
         file => $file,
@@ -89,6 +92,7 @@ subtest "simple_three_column_table" => sub {
         table_id => 'three-id',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 0,
         row_cell_count => 3,
         row_class => 'three-column-odd',
@@ -109,6 +113,7 @@ subtest "simple_three_column_table" => sub {
         table_id => 'three-id',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 1,
         row_cell_count => 3,
         row_class => 'three-column-even',
@@ -129,6 +134,7 @@ subtest "simple_three_column_table" => sub {
         table_id => 'three-id',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 2,
         row_cell_count => 3,
         row_class => 'three-column-odd',
@@ -144,7 +150,7 @@ subtest "simple_three_column_table" => sub {
 };
 
 subtest "two_tables_two_columns" => sub {
-    plan tests => 38;
+    plan tests => 40;
     my $file =  't/html/two-two-column-tables.html';
     run_tests({
         file => $file,
@@ -154,6 +160,7 @@ subtest "two_tables_two_columns" => sub {
         table_class => 'two-columns',
         table_id => 'table-1',
         table_row_count => 2,
+        has_nested => 0,
         row => 0,
         row_cell_count => 2,
         row_class => 'two-column-odd',
@@ -174,6 +181,7 @@ subtest "two_tables_two_columns" => sub {
         table_class => 'two-columns',
         table_id => 'table-2',
         table_row_count => 2,
+        has_nested => 0,
         row => 1,
         row_cell_count => 2,
         row_class => 'two-column-even',
@@ -189,7 +197,7 @@ subtest "two_tables_two_columns" => sub {
 };
 
 subtest "three_tables_three_columns" => sub {
-    plan tests => 57;
+    plan tests => 60;
     my $file =  't/html/three-three-column-tables.html';
     run_tests({
         file => $file,
@@ -199,6 +207,7 @@ subtest "three_tables_three_columns" => sub {
         table_id => 'table-1',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 0,
         row_cell_count => 3,
         row_class => 'three-column-odd',
@@ -219,6 +228,7 @@ subtest "three_tables_three_columns" => sub {
         table_id => 'table-2',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 1,
         row_cell_count => 3,
         row_class => 'three-column-even',
@@ -239,6 +249,7 @@ subtest "three_tables_three_columns" => sub {
         table_id => 'table-3',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 2,
         row_cell_count => 3,
         row_class => 'three-column-odd',
@@ -254,7 +265,7 @@ subtest "three_tables_three_columns" => sub {
 };
 
 subtest "page_two_tables" => sub {
-    plan tests => 38;
+    plan tests => 40;
     my $file =  't/html/page-two-tables.html';
     run_tests({
         file => $file,
@@ -264,6 +275,7 @@ subtest "page_two_tables" => sub {
         table_class => 'two-columns',
         table_id => 'table-1',
         table_row_count => 2,
+        has_nested => 0,
         row => 0,
         row_cell_count => 2,
         row_class => 'two-column-odd',
@@ -284,6 +296,7 @@ subtest "page_two_tables" => sub {
         table_class => 'two-columns',
         table_id => 'table-2',
         table_row_count => 2,
+        has_nested => 0,
         row => 1,
         row_cell_count => 2,
         row_class => 'two-column-even',
@@ -299,7 +312,7 @@ subtest "page_two_tables" => sub {
 };
 
 subtest "page_three_tables" => sub {
-    plan tests => 57;
+    plan tests => 60;
     my $file =  't/html/page-three-tables.html';
     run_tests({
         file => $file,
@@ -309,6 +322,7 @@ subtest "page_three_tables" => sub {
         table_id => 'table-1',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 0,
         row_cell_count => 3,
         row_class => 'three-column-odd',
@@ -329,6 +343,7 @@ subtest "page_three_tables" => sub {
         table_id => 'table-2',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 1,
         row_cell_count => 3,
         row_class => 'three-column-even',
@@ -349,6 +364,7 @@ subtest "page_three_tables" => sub {
         table_id => 'table-3',
         table_row_count => 3,
         table_header_count => 3,
+        has_nested => 0,
         row => 2,
         row_cell_count => 3,
         row_class => 'three-column-odd',
@@ -364,7 +380,7 @@ subtest "page_three_tables" => sub {
 };
 
 subtest "simple-one-file-column" => sub {
-    plan tests => 21;
+    plan tests => 22;
     my $file =  't/html/simple-one-html-column.html';
     run_tests({
         file => $file,
@@ -374,6 +390,7 @@ subtest "simple-one-file-column" => sub {
         table_class => 'something',
         table_id => 'test-id',
         table_row_count => 1,
+        has_nested => 0,
         row => 0,
         row_cell_count => 1,
         row_class => 'echo',
@@ -391,6 +408,7 @@ subtest "simple-one-file-column" => sub {
 };
 
 subtest "broken-file-two-columns" => sub {
+    plan tests => 43;
     my $file = 't/html/page-two-tables-columns.html';
     run_tests({
         file => $file,
@@ -400,6 +418,7 @@ subtest "broken-file-two-columns" => sub {
         table_class => 'two-columns',
         table_id => 'table-1',
         table_row_count => 2,
+        has_nested => 0,
         row => 0,
         row_cell_count => 2,
         row_class => 'two-column-odd',
@@ -420,6 +439,7 @@ subtest "broken-file-two-columns" => sub {
         table_header_count => 2,
         table_class => 'two-columns',
         table_id => 'table-2',
+        has_nested => 0,
         table_row_count => 2,
         row => 1,
         row_cell_count => 2,
@@ -454,6 +474,8 @@ sub run_tests {
     is($table->header_count, $args->{table_header_count}, "expected header count: $args->{table_header_count}");
     
     is($table->class, $args->{table_class}, "table class: $args->{table_class}");
+
+    is($table->has_nested, $args->{has_nested}, "no nested tables");
 
     is($table->id, $args->{table_id}, "table class: $args->{table_id}");
 

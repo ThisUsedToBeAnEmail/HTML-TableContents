@@ -20,24 +20,41 @@ has data => (
     default => sub { [] }
 );
 
-sub text { return join q{ }, @{ shift->data }; }
+has nested => (
+    is => 'rw',
+    default => sub { [ ] },
+);
 
-sub lc_text { my $text = join q{ }, @{ shift->data }; return lc $text; }
+sub has_nested {
+    return scalar @{ $_[0]->nested } ? 1 : 0;
+}
 
-sub class { return shift->attributes->{class}; }
+sub count_nested {
+    return scalar @{ $_[0]->nested };
+}
 
-sub id { return shift->attributes->{id}; }
+sub get_first_nested {
+    return $_[0]->nested->[0];
+}
+
+sub all_nested {
+    return @{ $_[0]->nested };
+}
+
+sub text { return join q{ }, @{ $_[0]->data }; }
+
+sub lc_text { my $text = join q{ }, @{ $_[0]->data }; return lc $text; }
+
+sub class { return $_[0]->attributes->{class}; }
+
+sub id { return $_[0]->attributes->{id}; }
 
 sub raw {
-    my $self = shift;
-
-    my $args = $self->attributes;
-
-    if ( scalar @{ $self->data } ) {
-        $args->{text} = $self->text;
-        $args->{data} = $self->data;
+    my $args = $_[0]->attributes;
+    if ( scalar @{ $_[0]->data } ) {
+        $args->{text} = $_[0]->text;
+        $args->{data} = $_[0]->data;
     }
-
     return $args;
 }
 

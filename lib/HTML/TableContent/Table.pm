@@ -30,6 +30,14 @@ sub get_first_row {
     return shift->get_row(0);
 }
 
+sub get_last_row {
+    return $_[0]->get_row($_[0]->row_count - 1);
+}
+
+sub clear_last_row {
+    return delete $_[0]->rows->[$_[0]->row_count - 1];
+}
+
 sub all_headers {
     return @{ shift->headers };
 }
@@ -103,6 +111,29 @@ sub get_header_column_text {
     return \@cell_text;
 }
 
+sub has_nested_table_column {
+    my $self = shift;
+    for my $header ($self->all_headers) {
+        for ($header->all_cells) {
+            return 1 if $_->has_nested;
+        }
+    }
+    return 0;
+}
+
+sub nested_column_headers {
+    my $self = shift;
+
+    my $columns = {};
+    for my $header ($self->all_headers) {
+        my $cell = $header->get_first_cell;
+        if ($cell->has_nested) {
+            $columns->{$header->lc_text}++; 
+        }
+    }
+    return $columns;
+}
+
 sub _dedupe_object_array_not_losing_order {
     my ( $self, @items ) = @_;
 
@@ -118,6 +149,22 @@ sub _dedupe_object_array_not_losing_order {
 
     return @new_items;
 }
+
+around has_nested => sub{
+    my ($orig, $self) = ( shift, shift );
+
+    my $nested = $self->$orig(@_);
+    
+    my $row = $self->get_first_row;
+    
+    for ($row->all_cells) {
+        if ($_->has_nested) {
+            $nested = 1;
+        }
+    }
+
+    return $nested;
+};
 
 around raw => sub {
     my ( $orig, $self ) = ( shift, shift );

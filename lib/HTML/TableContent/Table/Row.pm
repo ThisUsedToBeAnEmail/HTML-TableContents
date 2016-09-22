@@ -28,6 +28,10 @@ sub get_first_cell {
     return shift->get_cell(0);
 }
 
+sub get_last_cell {
+    return $_[0]->get_cell($_[0]->cell_count - 1);
+}
+
 sub _filter_headers {
     my ( $self, $headers ) = @_;
 
@@ -52,6 +56,21 @@ around raw => sub {
     }
     return $row;
 };
+
+around has_nested => sub {
+    my ($orig, $self) = ( shift, shift );
+
+    my $nested = $self->$orig(@_);
+    
+    foreach my $cell ( $self->all_cells ) {
+        if ( $cell->has_nested ) {
+            $nested = 1;
+        }
+    }
+
+    return $nested;
+};
+
 
 __PACKAGE__->meta->make_immutable;
 
