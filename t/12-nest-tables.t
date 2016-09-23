@@ -236,6 +236,24 @@ subtest "nested nested tables with headers" => sub {
     }); 
 };
 
+subtest "vertical nested table" => sub {
+    run_tests({
+        file => 't/html/nest/vertical-one-level.html',
+        table_count => 1,
+        header_count => 3,
+        row_count => 1,
+        has_nested => 1,
+        nested_table_count => 1,
+        nested_table_column => 1,
+        nested_column_header => { 'name:' =>  1 },
+        nested_table_header_count => 0,
+        first_cell_text => 'Bill Thing',
+        second_row_cell_count => 3,
+        row_nested_cell => 1,
+        first_row => 1
+    });
+};
+
 done_testing();
 
 sub open_file {
@@ -288,12 +306,20 @@ sub run_tests {
         is($col_table->header_count, $args->{nested_table_header_count}, "correct header count: $args->{nested_table_header_count}");
 
         is($col_table->get_first_row->get_first_cell->text, $args->{first_cell_text}, "correct cell value: $args->{first_cell_text}");
+       
+        my $row;
+        if (defined $args->{first_row}) {
+            ok($row = $table->get_first_row);
+        }
+        else {
+            ok($row = $table->get_row(1));
+        }
 
-        ok(my $row = $table->get_row(1));
-
-        is($row->cell_count, $args->{second_row_cell_count}, "expected row count: $args->{second_row_cell_count}");
+        is($row->cell_count, $args->{second_row_cell_count}, "expected row cell count: $args->{second_row_cell_count}");
 
         is($row->has_nested, $args->{row_nested_cell}, "nested cell: $args->{row_nested_cell}");
+
+        return unless defined $args->{row_nested_cell_text};
 
         ok(my $tcell = $row->get_cell(1));
 

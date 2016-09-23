@@ -59,15 +59,19 @@ sub current_or_nested {
     return $_[0]->has_nested ? $_[0]->get_last_nested : $_[0]->current_table; 
 }
 
-sub current_cell_index {
-    return scalar @{ $_[0]->current_or_nested->get_last_row->cells };
-}
-
 sub current_cell_header {
     my ($self, $current_cell) = @_;
 
-    my $cell_index = $self->current_cell_index;
-    my $header     = $self->current_or_nested->headers->[$cell_index];
+    my $table = $self->current_or_nested;
+    my $row = $table->get_last_row;
+    
+    my $header;
+    if ($row->header) {
+        $header = $row->header;
+    } else {
+        my $cell_index = $table->get_last_row->cell_count;
+        $header = $table->headers->[$cell_index];
+    }
 
     return unless $header;
 
@@ -106,6 +110,7 @@ sub start {
         my $table = $self->current_or_nested; 
 
         if ( $tag eq 'th' ) {
+            $table->get_last_row->header($element);
             push @{ $table->headers }, $element;
         }
         if ( $tag eq 'tr' ) {
@@ -171,9 +176,27 @@ sub end {
         my $table = $self->has_nested ? $self->get_last_nested : $self->current_table;
 
         my $row = $table->get_last_row;
-
+        
         if ($row->cell_count == 0) {
             $table->clear_last_row;
+        }
+
+        if ($row->header) {
+           $table->clear_last_row;
+
+           my $index = 0;
+           foreach my $cell ( $row->all_cells ) {
+              my $row = $table->rows->[$index];
+              if (defined $row) {
+                push @{ $row->cells }, $cell;
+              } 
+              else {
+                my $new_row = HTML::TableContent::Table::Row->new();
+                push @{ $new_row->cells }, $cell;
+                push @{ $table->rows }, $new_row;
+              }
+              $index++;
+           }
         }
     }
 }

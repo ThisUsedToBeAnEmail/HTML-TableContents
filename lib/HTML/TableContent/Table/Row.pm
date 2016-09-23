@@ -12,6 +12,11 @@ has cells => (
     default => sub { [] },
 );
 
+has header => (
+    is => 'rw',
+    lazy => 1,
+);
+
 sub cell_count {
     return scalar @{ $_[0]->cells };
 }
