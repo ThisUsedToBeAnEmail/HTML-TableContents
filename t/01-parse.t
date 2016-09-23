@@ -9,7 +9,7 @@ BEGIN {
 
 subtest "basic_single_column_table" => sub {
     plan tests => 21;
-    my $html = open_file('t/html/simple-one-column-table.html');
+    my $html = open_file('t/html/horizontal/simple-one-column-table.html');
     run_tests({
         html => $html,
         count => 1,
@@ -36,7 +36,7 @@ subtest "basic_single_column_table" => sub {
 
 subtest "basic_two_column_table" => sub {
     plan tests => 40;
-    my $html = open_file('t/html/simple-two-column-table.html');
+    my $html = open_file('t/html/horizontal/simple-two-column-table.html');
     run_tests({
         html => $html,
         count => 1,
@@ -83,7 +83,7 @@ subtest "basic_two_column_table" => sub {
 
 subtest "simple_three_column_table" => sub {
     plan tests => 60;
-    my $html = open_file('t/html/simple-three-column-table.html');
+    my $html = open_file('t/html/horizontal/simple-three-column-table.html');
     run_tests({
         html => $html,
         count => 1,
@@ -151,7 +151,7 @@ subtest "simple_three_column_table" => sub {
 
 subtest "two_tables_two_columns" => sub {
     plan tests => 40;
-    my $html = open_file('t/html/two-two-column-tables.html');
+    my $html = open_file('t/html/horizontal/two-two-column-tables.html');
     run_tests({
         html => $html,
         count => 2,
@@ -198,7 +198,7 @@ subtest "two_tables_two_columns" => sub {
 
 subtest "three_tables_three_columns" => sub {
     plan tests => 60;
-    my $html = open_file('t/html/three-three-column-tables.html');
+    my $html = open_file('t/html/horizontal/three-three-column-tables.html');
     run_tests({
         html => $html,
         count => 3,
@@ -266,7 +266,7 @@ subtest "three_tables_three_columns" => sub {
 
 subtest "page_two_tables" => sub {
     plan tests => 40;
-    my $html = open_file('t/html/page-two-tables.html');
+    my $html = open_file('t/html/horizontal/page-two-tables.html');
     run_tests({
         html => $html,
         count => 2,
@@ -313,7 +313,7 @@ subtest "page_two_tables" => sub {
 
 subtest "page_three_tables" => sub {
     plan tests => 60;
-    my $html = open_file('t/html/page-three-tables.html');
+    my $html = open_file('t/html/horizontal/page-three-tables.html');
     run_tests({
         html => $html,
         count => 3,
@@ -381,7 +381,7 @@ subtest "page_three_tables" => sub {
 
 subtest "simple-one-html-column" => sub {
     plan tests => 22;
-    my $html = open_file('t/html/simple-one-html-column.html');
+    my $html = open_file('t/html/horizontal/simple-one-html-column.html');
     run_tests({
         html => $html,
         count => 1,
@@ -409,7 +409,7 @@ subtest "simple-one-html-column" => sub {
 
 subtest "broken-html-two-columns" => sub {
     plan tests => 43;
-    my $html = open_file('t/html/page-two-tables-columns.html');
+    my $html = open_file('t/html/horizontal/page-two-tables-columns.html');
     run_tests({
         html => $html,
         count => 2,

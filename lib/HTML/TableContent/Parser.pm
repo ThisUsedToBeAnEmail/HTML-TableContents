@@ -12,20 +12,18 @@ use HTML::TableContent::Table::Row;
 use HTML::TableContent::Table::Row::Cell;
 use HTML::TableContent::Table::Caption;
 
-has current_tables => (
+has [qw(current_tables nested)] => (
     is      => 'rw',
     lazy    => 1,
     clearer => 1,
     default => sub { [] },
 );
 
-has [
-    qw(current_table current_row current_cell current_element nested)
-  ] => (
+has [ qw(current_table current_element) ] => (
     is      => 'rw',
     lazy    => 1,
     clearer => 1,
-  );
+);
 
 has options => (
     is      => 'ro',
@@ -33,24 +31,20 @@ has options => (
     builder => 1,
 );
 
-sub _build_options {
-    return {
-        table => {
-            class       => 'HTML::TableContent::Table',
-        },
-        th => {
-            class       => 'HTML::TableContent::Table::Header',
-        },
-        tr => {
-            class       => 'HTML::TableContent::Table::Row',
-        },
-        td => {
-            class       => 'HTML::TableContent::Table::Row::Cell',
-        },
-        caption => {
-            class       => 'HTML::TableContent::Table::Caption',
-        }
-    };
+sub count_nested {
+    return scalar @{ $_[0]->nested };
+}
+
+sub has_nested {
+    return $_[0]->count_nested ? 1 : 0;
+}
+
+sub get_last_nested {
+    return $_[0]->nested->[$_[0]->count_nested - 1];    
+}
+
+sub clear_last_nested {
+    return delete $_[0]->nested->[$_[0]->count_nested - 1];
 }
 
 sub all_current_tables {
@@ -61,19 +55,23 @@ sub count_current_tables {
     return scalar @{ $_[0]->current_tables };
 }
 
+sub current_or_nested {
+    return $_[0]->has_nested ? $_[0]->get_last_nested : $_[0]->current_table; 
+}
+
 sub current_cell_index {
-    return scalar @{ $_[0]->current_row->cells };
+    return scalar @{ $_[0]->current_or_nested->get_last_row->cells };
 }
 
 sub current_cell_header {
-    my $self = shift;
+    my ($self, $current_cell) = @_;
 
     my $cell_index = $self->current_cell_index;
-    my $header     = $self->current_table->headers->[$cell_index];
+    my $header     = $self->current_or_nested->headers->[$cell_index];
 
     return unless $header;
 
-    push @{ $header->cells }, $self->current_cell;
+    push @{ $header->cells }, $current_cell;
 
     return $header;
 }
@@ -105,18 +103,16 @@ sub start {
  
         $self->current_element($element);
 
-        my $table = defined $self->nested && $self->nested->isa('HTML::TableContent::Table') ? $self->nested : $self->current_table; 
+        my $table = $self->current_or_nested; 
 
         if ( $tag eq 'th' ) {
             push @{ $table->headers }, $element;
         }
         if ( $tag eq 'tr' ) {
-            $self->current_row($element);
             push @{ $table->rows }, $element;
         }
         if ( $tag eq 'td' ) {
-            $self->current_cell($element);
-            $element->header( $self->current_cell_header );
+            $element->header( $self->current_cell_header($element) );
             push @{ $table->get_last_row->cells }, $element; 
         }
 
@@ -126,7 +122,11 @@ sub start {
 
         if ( $tag eq 'table' ) {
             if ( defined $self->current_table && $self->current_table->isa('HTML::TableContent::Table') ) {
-                $self->nested($element);
+                if ( $self->has_nested ) {
+                    # first table has all nested tables - $tp->get_first_table->nested
+                    push @{ $self->current_table->nested }, $element;
+                }
+                push @{ $self->nested }, $element;
                 push @{ $table->nested }, $element;
                 push @{ $table->get_last_row->get_last_cell->nested }, $element;
             }
@@ -158,8 +158,8 @@ sub end {
     $tag = lc $tag;
 
     if ( $tag eq 'table' ) {
-        if (my $nested = $self->nested) {
-            $self->clear_nested;
+        if ($self->has_nested) {
+            $self->clear_last_nested;
         }
         else {
             push @{ $self->current_tables }, $self->current_table;
@@ -168,15 +168,34 @@ sub end {
     }
 
     if ($tag eq 'tr') {
-        my $row = $self->current_row;
+        my $table = $self->has_nested ? $self->get_last_nested : $self->current_table;
 
-        my $table = defined $self->nested && $self->nested->isa('HTML::TableContent::Table') 
-            ? $self->nested : $self->current_table;
+        my $row = $table->get_last_row;
 
         if ($row->cell_count == 0) {
             $table->clear_last_row;
         }
     }
+}
+
+sub _build_options {
+    return {
+        table => {
+            class       => 'HTML::TableContent::Table',
+        },
+        th => {
+            class       => 'HTML::TableContent::Table::Header',
+        },
+        tr => {
+            class       => 'HTML::TableContent::Table::Row',
+        },
+        td => {
+            class       => 'HTML::TableContent::Table::Row::Cell',
+        },
+        caption => {
+            class       => 'HTML::TableContent::Table::Caption',
+        }
+    };
 }
 
 1;

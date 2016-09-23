@@ -9,7 +9,7 @@ BEGIN {
 
 subtest "basic_two_column_table" => sub {
     plan tests => 8;
-    my $html = open_file('t/html/page-two-tables.html');
+    my $html = open_file('t/html/horizontal/page-two-tables.html');
     run_tests({
         html => $html,
         table_count => 2,
@@ -196,7 +196,7 @@ subtest "basic_two_column_table" => sub {
 
 subtest "basic_two_column_table_file" => sub {
     plan tests => 8;
-    my $file = 't/html/page-two-tables.html';
+    my $file = 't/html/horizontal/page-two-tables.html';
     run_tests({
         file => $file,
         table_count => 2,

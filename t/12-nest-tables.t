@@ -7,10 +7,10 @@ BEGIN {
     use_ok("HTML::TableContent");
 }
 
-subtest "nested column table" => sub {
+subtest "nested one level" => sub {
     plan tests => 36;
     run_tests({
-        file => 't/html/nest/one-table-cell-table.html',
+        file => 't/html/nest/one-level.html',
         table_count => 1,
         header_count => 2,
         row_count => 2,
@@ -26,70 +26,215 @@ subtest "nested column table" => sub {
     });
 };
 
-=head1 comment out tests
-
-subtest "two tables nested" => sub {
-    plan tests => 18;
+subtest "nested row two tables" => sub {
+    plan tests => 52;
     run_tests({
-        file => 't/html/nest/two-tables.html',
-        expected_table_count => 1
+        file => 't/html/nest/one-level-two-tables.html',
+        table_count => 1,
+        header_count => 2,
+        row_count => 2,
         has_nested => 1,
-        expected_nested_table_count => 2,
+        nested_table_count => 4,
+        nested_table_column => 1,
+        nested_column_header => { 'facts' => 1 },
+        nested_table_header_count => 0,
+        first_cell_text => 'Hello',
+        second_row_cell_count => 2,
+        row_nested_cell => 1,
+        row_nested_cell_text => '你好',
+        run_second_tests => 1,
+        first_second_table_header_count => 0,
+        first_second_table_row_count => 2,
+        first_second_table_first_cell => 'Goodbye',
+        second_second_table_row_count => 2,
+        second_second_table_header_count => 0,
+        second_row_second_table_first_cell => '再見',
+    });    
+};
+
+subtest "nested column three tables" => sub {
+    plan tests => 52;
+    run_tests({
+        file => 't/html/nest/one-level-three-tables.html',
+        table_count => 1,
+        header_count => 2,
+        row_count => 2,
+        has_nested => 1,
+        nested_table_count => 6,
+        nested_table_column => 1,
+        nested_column_header => { 'translations' => 1 },
+        nested_table_header_count => 0,
+        first_cell_text => 'Hello',
+        second_row_cell_count => 2,
+        row_nested_cell => 1,
+        row_nested_cell_text => '你好',
+        run_second_tests => 1,
+        first_second_table_header_count => 0,
+        first_second_table_row_count => 2,
+        first_second_table_first_cell => 'Goodbye',
+        second_second_table_row_count => 2,
+        second_second_table_header_count => 0,
+        second_row_second_table_first_cell => '再見',
+    }); 
+};
+
+subtest "nested tables inside nested tables" => sub {
+    plan tests => 62;
+    run_tests({
+        file => 't/html/nest/double-nest-table.html',
+        table_count => 1,
+        header_count => 2,
+        row_count => 2,
+        has_nested => 1,
+        nested_table_count => 4,
+        nested_table_column => 1,
+        nested_column_header => { 'facts' => 1 },
+        nested_table_header_count => 0,
+        first_cell_text => 'subtitle',
+        second_row_cell_count => 2,
+        row_nested_cell => 1,
+        row_nested_cell_text => '字幕',
+        nested_nested_tests => 1,
+        nested_has_nested => 1,
+        nested_count_nested => 1,
+        nested_row_count => 2,
+        nested_nested_row_count => '2',
+        nested_nested_text => 'Goodbye',
+        nested_nested_second_table_first_cell => '再見',
+    }); 
+};
+
+subtest "nested tables inside nested tables inside nested tables" => sub {
+    plan tests => 66;
+    run_tests({
+        file => 't/html/nest/double-nest-nest-table.html',
+        table_count => 1,
+        header_count => 2,
+        row_count => 2,
+        has_nested => 1,
+        nested_table_count => 6,
+        nested_table_column => 1,
+        nested_column_header => { 'facts' => 1 },
+        nested_table_header_count => 0,
+        first_cell_text => 'subtitle',
+        second_row_cell_count => 2,
+        row_nested_cell => 1,
+        row_nested_cell_text => '字幕',
+        nested_nested_tests => 1,
+        nested_has_nested => 1,
+        nested_count_nested => 1,
+        nested_row_count => 2,
+        nested_nested_row_count => '2',
+        nested_nested_text => 'Goodbye',
+        nested_nested_second_table_first_cell => '再見',
+        double_nest_nest => 1,
+        double_nest_second_table_first_cell => '你好',
+    }); 
+};
+
+subtest "nested tables inside nested tables - empty rows" => sub {
+    plan tests => 62;
+    run_tests({
+        file => 't/html/nest/double-nest-table-empty-rows.html',
+        table_count => 1,
+        header_count => 2,
+        row_count => 2,
+        has_nested => 1,
+        nested_table_count => 4,
+        nested_table_column => 1,
+        nested_column_header => { 'facts' => 1 },
+        nested_table_header_count => 0,
+        first_cell_text => '',
+        second_row_cell_count => 2,
+        row_nested_cell => 1,
+        row_nested_cell_text => '',
+        nested_nested_tests => 1,
+        nested_has_nested => 1,
+        nested_count_nested => 1,
+        nested_row_count => 1,
+        nested_nested_row_count => 1,
+        nested_nested_text => 'Goodbye',
+        nested_nested_second_table_first_cell => '再見',
+        first => 1,
+    }); 
+};
+
+subtest "nested tables inside nested tables - empty cells" => sub {
+    plan tests => 62;
+    run_tests({
+        file => 't/html/nest/double-nest-table-empty-cells.html',
+        table_count => 1,
+        header_count => 2,
+        row_count => 2,
+        has_nested => 1,
+        nested_table_count => 4,
+        nested_table_column => 1,
+        nested_column_header => { 'facts' => 1 },
+        nested_table_header_count => 0,
+        first_cell_text => '',
+        second_row_cell_count => 2,
+        row_nested_cell => 1,
+        row_nested_cell_text => '',
+        nested_nested_tests => 1,
+        nested_has_nested => 1,
+        nested_count_nested => 1,
+        nested_row_count => 2,
+        nested_nested_row_count => 2,
+        nested_nested_text => 'Goodbye',
+        nested_nested_second_table_first_cell => '再見',
+    }); 
+};
+
+subtest "nested tables with headers" => sub {
+    plan tests => 36;
+    run_tests({
+        file => 't/html/nest/one-level-header-table.html',
+        table_count => 1,
+        header_count => 2,
+        row_count => 2,
+        has_nested => 1,
+        nested_table_count => 2,
+        nested_table_column => 1,
+        nested_column_header => { 'facts' =>  1 },
+        nested_table_header_count => 2,
+        first_cell_text => 'Hello',
+        second_row_cell_count => 2,
+        row_nested_cell => 1,
+        row_nested_cell_text => '你好',
     });
 };
 
-subtest "three tables nested" => sub {
-    plan tests => 18;
+subtest "nested nested tables with headers" => sub {
+    plan tests => 72;
     run_tests({
-        file => 't/html/nest/three-tables.html',
-        expected_table_count => 1,
+        file => 't/html/nest/double-nest-nest-header-table.html',
+        table_count => 1,
+        header_count => 2,
+        row_count => 2,
         has_nested => 1,
-        expected_nested_table_count => 3,
-    });
+        nested_table_count => 6,
+        nested_table_column => 1,
+        nested_column_header => { 'facts' => 1 },
+        nested_table_header_count => 2,
+        first_cell_text => '',
+        second_row_cell_count => 2,
+        row_nested_cell => 1,
+        row_nested_cell_text => '字幕',
+        nested_nested_tests => 1,
+        nested_has_nested => 1,
+        nested_count_nested => 1,
+        nested_row_count => 1,
+        nested_nested_row_count => 1,
+        nested_nested_text => '',
+        nested_nested_second_table_first_cell => '再見',
+        double_nest_nest => 1,
+        double_nest_header => 1,
+        double_nest_header_count => 1,
+        double_nest_header_text => 'something',
+        double_nest_header_cell_count => 2,
+        double_nest_second_table_first_cell => '你好',
+    }); 
 };
-
-subtest "three tables nested no headers" => sub {
-    plan tests => 18;
-    run_tests({
-        file => 't/html/nest/three-tables-no-headers.html',
-        expected_table_count => 1,
-
-        has_nested => 1,
-        expected_nested_table_count => 3,
-    });
-};
-
-subtest "three tables nested one header" => sub {
-    plan tests => 18;
-    run_tests({
-        file => 't/html/nest/three-tables-one-header.html',
-        expected_table_count => 1,
-        has_nested => 1,
-        expected_nested_table_count => 3,
-    });
-};
-
-subtest "three tables nested empty row" => sub {
-    plan tests => 18;
-    run_tests({
-        file => 't/html/nest/three-tables-empty-rows.html',
-        expected_table_count => 1, 
-        has_nested => 1,
-        expected_nested_table_count => 3,
-    });
-};
-
-subtest "three tables nested with some empty cells" => sub {
-    plan tests => 18;
-    run_tests({
-        file => 't/html/nest/three-tables-empty-cells.html',
-        expected_table_count => 1, 
-        has_nested => 1,
-        expected_nested_table_count => 3,
-    });
-};
-
-=cut
 
 done_testing();
 
@@ -136,9 +281,9 @@ sub run_tests {
 
         is_deeply($table->nested_column_headers, $args->{nested_column_header}, "correct nested column headers");
 
-        ok(my $nest = $table->get_col((keys %{ $args->{nested_column_header}})[0]));
+        ok(my $col = $table->get_col((keys %{ $args->{nested_column_header}})[0]));
         
-        ok( my $col_table = $nest->[0]->get_first_nested);
+        ok( my $col_table = $col->[0]->get_first_nested);
 
         is($col_table->header_count, $args->{nested_table_header_count}, "correct header count: $args->{nested_table_header_count}");
 
@@ -153,7 +298,75 @@ sub run_tests {
         ok(my $tcell = $row->get_cell(1));
 
         is($tcell->get_first_nested->get_first_row->get_first_cell->text, $args->{row_nested_cell_text}, "nested text: $args->{row_nested_cell_text}");
-     }
+     
+        if ( $args->{run_second_tests} ) { 
+        
+            ok( $col_table = $col->[0]->get_nested(1) );
+
+            is( $col_table->header_count, $args->{first_second_table_header_count}, "first second table header count $args->{first_second_table_header_count}" );
+
+            is( $col_table->row_count, $args->{first_second_table_row_count}, "first second table row count: $args->{first_second_table_row_count}" );
+
+            is( $col_table->get_first_row->get_first_cell->text, $args->{first_second_table_first_cell}, "first second table first cell: $args->{first_second_table_first_cell}" );
+
+            ok( my $tab = $tcell->nested->[1] );
+
+            is( $tab->row_count, $args->{second_second_table_row_count}, "second second table row count: $args->{second_second_table_row_count}");
+
+            is( $tab->header_count, $args->{second_second_table_header_count}, "second second table header count:  $args->{second_second_table_header_count}");
+
+            is( $tab->get_first_row->get_first_cell->text, $args->{second_row_second_table_first_cell}, "second second table first cell: $args->{second_row_second_table_first_cell}");
+        }
+
+        if ( $args->{nested_nested_tests} ) {
+            
+            ok( $col_table = $col->[0]->get_nested(0) );
+            
+            is( $col_table->has_nested, $args->{nested_has_nested}, "nested has nested: $args->{nested_has_nested}");
+
+            is( $col_table->count_nested, $args->{nested_count_nested}, "nested nest count: $args->{nested_count_nested}");
+
+            is( $col_table->row_count, $args->{nested_row_count}, "nested row count: $args->{nested_row_count}" );
+
+            ok( my $nest_col_table = $col_table->get_first_nested);
+           
+            is( $nest_col_table->row_count, $args->{nested_nested_row_count}, "nested nested count: $args->{nested_nested_row_count}");
+
+            is( $nest_col_table->get_first_row->get_first_cell->text, $args->{nested_nested_text}, "nested nested text: $args->{nested_nested_text}");
+        
+            ok( my $t = $table->get_row(1), "get first row" );
+            ok( my $c = $t->get_cell(1), "get second cell by index" );
+            ok( my $i = $c->get_first_nested, "get first nested table" );
+           
+            my $r;
+            if ( $args->{first} ){
+                ok( $r = $i->get_row(0)->get_first_cell, "get first cell");
+            } else {
+                ok( $r = $i->get_row(1)->get_first_cell, "get first cell of second row" );
+            }
+
+            ok( my $n = $r->get_first_nested, "get first nested" ); 
+            is( $n->get_first_row->get_first_cell->text, $args->{nested_nested_second_table_first_cell}, "nested second row text $args->{nested_nested_second_table_first_cell}"); 
+
+            if ( $args->{double_nest_nest} ) {
+                ok( my $u = $n->get_row(1)->get_first_cell->get_first_nested, "okay get the nested nested table" );
+                
+                if ( $args->{double_nest_header} ) {
+                    
+                    is($u->header_count, $args->{double_nest_header_count}, "header count: $args->{double_nest_header_count}");
+                   
+                    ok(my $header = $u->get_first_header);
+
+                    is($header->text, $args->{double_nest_header_text}, "header text: $args->{double_nest_header_text}");
+
+                    is($header->cell_count, $args->{double_nest_header_cell_count}, "header cell count: $args->{double_nest_header_cell_count}");
+                }
+                else { 
+                    is ($u->get_first_row->get_first_cell->text, $args->{double_nest_second_table_first_cell}, "okay nested nested text: $args->{double_nest_second_table_first_cell}");
+                }
+            }
+        }
+    }
 }
 
 1;

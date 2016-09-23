@@ -25,21 +25,15 @@ has nested => (
     default => sub { [ ] },
 );
 
-sub has_nested {
-    return scalar @{ $_[0]->nested } ? 1 : 0;
-}
+sub has_nested { return scalar @{ $_[0]->nested } ? 1 : 0; }
 
-sub count_nested {
-    return scalar @{ $_[0]->nested };
-}
+sub count_nested { return scalar @{ $_[0]->nested }; }
 
-sub get_first_nested {
-    return $_[0]->nested->[0];
-}
+sub get_first_nested { return $_[0]->nested->[0]; }
 
-sub all_nested {
-    return @{ $_[0]->nested };
-}
+sub get_nested { return $_[0]->nested->[$_[1]]; }
+
+sub all_nested { return @{ $_[0]->nested };}
 
 sub text { return join q{ }, @{ $_[0]->data }; }
 

@@ -9,7 +9,7 @@ BEGIN {
 
 subtest "basic_two_column_table" => sub {
     plan tests => 4;
-    my $html = 't/html/simple-two-column-table.html';
+    my $html = 't/html/horizontal/simple-two-column-table.html';
     run_tests({
         file => $html,
         raw_me => [ {

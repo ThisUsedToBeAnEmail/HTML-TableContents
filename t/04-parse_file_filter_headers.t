@@ -9,7 +9,7 @@ BEGIN {
 
 subtest "basic_two_column_table" => sub {
     plan tests => 20;
-    my $file =  't/html/simple-two-column-table.html';
+    my $file =  't/html/horizontal/simple-two-column-table.html';
     run_tests({
         file => $file,
         table_count => 1,
@@ -45,7 +45,7 @@ subtest "basic_two_column_table" => sub {
 
 subtest "simple_three_column_table" => sub {
     plan tests => 30;
-    my $file =  't/html/simple-three-column-table.html';
+    my $file =  't/html/horizontal/simple-three-column-table.html';
     run_tests({
         file => $file,
         table_count => 1,
@@ -102,7 +102,7 @@ subtest "simple_three_column_table" => sub {
 
 subtest "page_two_tables" => sub {
     plan tests => 20;
-    my $file =  't/html/page-two-tables.html';
+    my $file =  't/html/horizontal/page-two-tables.html';
     run_tests({
         file => $file,
         table_count => 2,
@@ -142,7 +142,7 @@ subtest "page_two_tables" => sub {
 
 subtest "page_three_tables" => sub {
     plan tests => 30;
-    my $file =  't/html/page-three-tables.html';
+    my $file =  't/html/horizontal/page-three-tables.html';
     run_tests({
         file => $file,
         table_count => 3,
@@ -198,7 +198,7 @@ subtest "page_three_tables" => sub {
 
 subtest "page_three_tables" => sub {
     plan tests => 30;
-    my $file =  't/html/page-random-tables.html';
+    my $file =  't/html/horizontal/page-random-tables.html';
     run_tests({
         file => $file,
         table_count => 3,
