@@ -2,7 +2,7 @@ package HTML::TableContent::Table;
 
 use Moo;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 extends 'HTML::TableContent::Element';
 
@@ -14,55 +14,35 @@ has [qw(headers rows)] => (
     default => sub { [] },
 );
 
-sub all_rows {
-    return @{ $_[0]->rows };
-}
+sub all_rows { return @{ $_[0]->rows }; }
 
-sub row_count {
-    return scalar @{ $_[0]->rows };
-}
+sub row_count { return scalar @{ $_[0]->rows }; }
 
-sub get_row {
-    return $_[0]->rows->[$_[1]];
-}
+sub get_row { return $_[0]->rows->[ $_[1] ]; }
 
-sub get_first_row {
-    return $_[0]->get_row(0);
-}
+sub get_first_row { return $_[0]->get_row(0); }
 
-sub get_last_row {
-    return $_[0]->get_row($_[0]->row_count - 1);
-}
+sub get_last_row { return $_[0]->get_row( $_[0]->row_count - 1 ); }
 
-sub clear_last_row {
-    return delete $_[0]->rows->[$_[0]->row_count - 1];
-}
+sub clear_last_row { return delete $_[0]->rows->[ $_[0]->row_count - 1 ]; }
 
-sub all_headers {
-    return @{ $_[0]->headers };
-}
+sub all_headers { return @{ $_[0]->headers }; }
 
-sub header_count {
-    return scalar @{ $_[0]->headers };
-}
+sub header_count { return scalar @{ $_[0]->headers }; }
 
-sub get_header {
-    return $_[0]->headers->[$_[1]];
-}
+sub get_header { return $_[0]->headers->[ $_[1] ]; }
 
-sub get_first_header {
-    return $_[0]->get_header(0);
-}
+sub get_first_header { return $_[0]->get_header(0); }
 
-around has_nested => sub{
-    my ($orig, $self) = ( shift, shift );
+around has_nested => sub {
+    my ( $orig, $self ) = ( shift, shift );
 
     my $nested = $self->$orig(@_);
-    
+
     my $row = $self->get_first_row;
-    
-    for ($row->all_cells) {
-        if ($_->has_nested) {
+
+    for ( $row->all_cells ) {
+        if ( $_->has_nested ) {
             $nested = 1;
         }
     }
@@ -90,7 +70,6 @@ around raw => sub {
     return $table;
 };
 
-
 sub headers_spec {
     my $self = shift;
 
@@ -108,18 +87,18 @@ sub header_exists {
 }
 
 sub get_col {
-    my ($self, $col) = @_;
+    my ( $self, $col ) = @_;
 
     my %args = ( header => $col );
     return $self->get_header_column(%args);
 }
 
 sub get_col_text {
-    my ($self, $col) = @_;
+    my ( $self, $col ) = @_;
 
     my %args = ( header => $col );
     return $self->get_header_column_text(%args);
-}   
+}
 
 sub get_header_column {
     my ( $self, %args ) = @_;
@@ -150,8 +129,8 @@ sub get_header_column_text {
 
 sub has_nested_table_column {
     my $self = shift;
-    for my $header ($self->all_headers) {
-        for ($header->all_cells) {
+    for my $header ( $self->all_headers ) {
+        for ( $header->all_cells ) {
             return 1 if $_->has_nested;
         }
     }
@@ -162,10 +141,10 @@ sub nested_column_headers {
     my $self = shift;
 
     my $columns = {};
-    for my $header ($self->all_headers) {
+    for my $header ( $self->all_headers ) {
         my $cell = $header->get_first_cell;
-        if ($cell->has_nested) {
-            $columns->{$header->lc_text}++; 
+        if ( $cell->has_nested ) {
+            $columns->{ $header->lc_text }++;
         }
     }
     return $columns;
@@ -186,7 +165,6 @@ sub _dedupe_object_array_not_losing_order {
 
     return @new_items;
 }
-
 
 sub _filter_headers {
     my ( $self, @headers ) = @_;
@@ -221,7 +199,7 @@ HTML::TableContent::Table - Base class for table's
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 

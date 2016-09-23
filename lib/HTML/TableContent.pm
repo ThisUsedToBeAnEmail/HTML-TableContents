@@ -5,7 +5,7 @@ use Moo;
 
 use HTML::TableContent::Parser;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 has parser => (
     is      => 'rw',
@@ -18,21 +18,13 @@ has tables => (
     default => sub { [] },
 );
 
-sub all_tables {
-    return @{ $_[0]->tables };
-}
+sub all_tables { return @{ $_[0]->tables }; }
 
-sub get_table {
-    return $_[0]->tables->[$_[1]];
-}
+sub get_table { return $_[0]->tables->[ $_[1] ]; }
 
-sub get_first_table {
-    return $_[0]->get_table(0);
-}
+sub get_first_table { return $_[0]->get_table(0); }
 
-sub table_count {
-    return scalar @{ $_[0]->tables };
-}
+sub table_count { return scalar @{ $_[0]->tables }; }
 
 sub filter_tables {
     my ( $self, %args ) = @_;
@@ -55,7 +47,8 @@ sub filter_tables {
     }
 
     if ( $args{flex} && !scalar @{$tables} ) {
-        carp 'none of the passed headers exist in any of the tables aborting filter - %s',
+        carp
+'none of the passed headers exist in any of the tables aborting filter - %s',
           join q{ }, @headers;
         return;
     }
@@ -79,7 +72,7 @@ sub headers_exist {
 
     my $header_spec = $self->headers_spec;
 
-    for (@headers) { return 1 if $header_spec->{lc $_} }
+    for (@headers) { return 1 if $header_spec->{ lc $_ } }
 
     return 0;
 }
@@ -125,7 +118,7 @@ HTML::TableContent - Extract content from HTML tables.
 
 =head1 VERSION
 
-Version 0.06 
+Version 0.07 
 
 =cut
 

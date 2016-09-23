@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row;
 
 use Moo;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 extends 'HTML::TableContent::Element';
 
@@ -13,29 +13,19 @@ has cells => (
 );
 
 has header => (
-    is => 'rw',
+    is   => 'rw',
     lazy => 1,
 );
 
-sub cell_count {
-    return scalar @{ $_[0]->cells };
-}
+sub cell_count { return scalar @{ $_[0]->cells }; }
 
-sub all_cells {
-    return @{ $_[0]->cells };
-}
+sub all_cells { return @{ $_[0]->cells }; }
 
-sub get_cell {
-    return $_[0]->cells->[$_[1]];
-}
+sub get_cell { return $_[0]->cells->[ $_[1] ]; }
 
-sub get_first_cell {
-    return $_[0]->get_cell(0);
-}
+sub get_first_cell { return $_[0]->get_cell(0); }
 
-sub get_last_cell {
-    return $_[0]->get_cell($_[0]->cell_count - 1);
-}
+sub get_last_cell { return $_[0]->get_cell( $_[0]->cell_count - 1 ); }
 
 sub _filter_headers {
     my ( $self, $headers ) = @_;
@@ -63,10 +53,10 @@ around raw => sub {
 };
 
 around has_nested => sub {
-    my ($orig, $self) = ( shift, shift );
+    my ( $orig, $self ) = ( shift, shift );
 
     my $nested = $self->$orig(@_);
-    
+
     foreach my $cell ( $self->all_cells ) {
         if ( $cell->has_nested ) {
             $nested = 1;
@@ -75,7 +65,6 @@ around has_nested => sub {
 
     return $nested;
 };
-
 
 __PACKAGE__->meta->make_immutable;
 
@@ -89,7 +78,7 @@ HTML::TableContent::Table::Row - base class for table rows.
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =head1 SYNOPSIS
 

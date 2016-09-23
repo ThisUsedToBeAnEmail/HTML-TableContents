@@ -2,7 +2,7 @@ package HTML::TableContent::Element;
 
 use Moo;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -21,8 +21,8 @@ has data => (
 );
 
 has nested => (
-    is => 'rw',
-    default => sub { [ ] },
+    is      => 'rw',
+    default => sub { [] },
 );
 
 sub has_nested { return scalar @{ $_[0]->nested } ? 1 : 0; }
@@ -31,9 +31,9 @@ sub count_nested { return scalar @{ $_[0]->nested }; }
 
 sub get_first_nested { return $_[0]->nested->[0]; }
 
-sub get_nested { return $_[0]->nested->[$_[1]]; }
+sub get_nested { return $_[0]->nested->[ $_[1] ]; }
 
-sub all_nested { return @{ $_[0]->nested };}
+sub all_nested { return @{ $_[0]->nested }; }
 
 sub text { return join q{ }, @{ $_[0]->data }; }
 
@@ -64,7 +64,7 @@ HTML::TableContent::Element - attributes, text, data, class, id
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 

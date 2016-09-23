@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Header;
 
 use Moo;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 extends 'HTML::TableContent::Element';
 
@@ -14,21 +14,13 @@ has 'cells' => (
     default => sub { [] },
 );
 
-sub cell_count {
-    return scalar @{ $_[0]->cells };
-}
+sub cell_count { return scalar @{ $_[0]->cells }; }
 
-sub all_cells {
-    return @{ $_[0]->cells };
-}
+sub all_cells { return @{ $_[0]->cells }; }
 
-sub get_cell {
-    return $_[0]->cells->[$_[1]];
-}
+sub get_cell { return $_[0]->cells->[ $_[1] ]; }
 
-sub get_first_cell {
-    return $_[0]->get_cell(0);
-}
+sub get_first_cell { return $_[0]->get_cell(0); }
 
 1;
 
@@ -40,7 +32,7 @@ HTML::TableContent::Table::Header - base class for table headers.
 
 =head1 VERSION
 
-Version 0.06 
+Version 0.07 
 
 =head1 SYNOPSIS
 

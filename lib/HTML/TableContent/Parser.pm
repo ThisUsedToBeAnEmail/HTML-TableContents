@@ -2,7 +2,7 @@ package HTML::TableContent::Parser;
 
 use Moo;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 extends 'HTML::Parser';
 
@@ -19,7 +19,7 @@ has [qw(current_tables nested)] => (
     default => sub { [] },
 );
 
-has [ qw(current_table current_element) ] => (
+has [qw(current_table current_element)] => (
     is      => 'rw',
     lazy    => 1,
     clearer => 1,
@@ -31,44 +31,35 @@ has options => (
     builder => 1,
 );
 
-sub count_nested {
-    return scalar @{ $_[0]->nested };
-}
+sub count_nested { return scalar @{ $_[0]->nested }; }
 
-sub has_nested {
-    return $_[0]->count_nested ? 1 : 0;
-}
+sub has_nested { return $_[0]->count_nested ? 1 : 0; }
 
-sub get_last_nested {
-    return $_[0]->nested->[$_[0]->count_nested - 1];    
-}
+sub get_last_nested { return $_[0]->nested->[ $_[0]->count_nested - 1 ]; }
 
 sub clear_last_nested {
-    return delete $_[0]->nested->[$_[0]->count_nested - 1];
+    return delete $_[0]->nested->[ $_[0]->count_nested - 1 ];
 }
 
-sub all_current_tables {
-    return @{ $_[0]->current_tables };
-}
+sub all_current_tables { return @{ $_[0]->current_tables }; }
 
-sub count_current_tables {
-    return scalar @{ $_[0]->current_tables };
-}
+sub count_current_tables { return scalar @{ $_[0]->current_tables }; }
 
 sub current_or_nested {
-    return $_[0]->has_nested ? $_[0]->get_last_nested : $_[0]->current_table; 
+    return $_[0]->has_nested ? $_[0]->get_last_nested : $_[0]->current_table;
 }
 
 sub current_cell_header {
-    my ($self, $current_cell) = @_;
+    my ( $self, $current_cell ) = @_;
 
     my $table = $self->current_or_nested;
-    my $row = $table->get_last_row;
-    
+    my $row   = $table->get_last_row;
+
     my $header;
-    if ($row->header) {
+    if ( $row->header ) {
         $header = $row->header;
-    } else {
+    }
+    else {
         my $cell_index = $table->get_last_row->cell_count;
         $header = $table->headers->[$cell_index];
     }
@@ -102,12 +93,12 @@ sub start {
     $tag = lc $tag;
 
     if ( my $store_tag = $self->options->{$tag} ) {
-        my $class = $store_tag->{class};
+        my $class   = $store_tag->{class};
         my $element = $class->new($attr);
- 
+
         $self->current_element($element);
 
-        my $table = $self->current_or_nested; 
+        my $table = $self->current_or_nested;
 
         if ( $tag eq 'th' ) {
             $table->get_last_row->header($element);
@@ -118,7 +109,7 @@ sub start {
         }
         if ( $tag eq 'td' ) {
             $element->header( $self->current_cell_header($element) );
-            push @{ $table->get_last_row->cells }, $element; 
+            push @{ $table->get_last_row->cells }, $element;
         }
 
         if ( $tag eq 'caption' ) {
@@ -126,12 +117,15 @@ sub start {
         }
 
         if ( $tag eq 'table' ) {
-            if ( defined $self->current_table && $self->current_table->isa('HTML::TableContent::Table') ) {
+            if ( defined $self->current_table
+                && $self->current_table->isa('HTML::TableContent::Table') )
+            {
                 if ( $self->has_nested ) {
-                    # first table has all nested tables - $tp->get_first_table->nested
+
+              # first table has all nested tables - $tp->get_first_table->nested
                     push @{ $self->current_table->nested }, $element;
                 }
-                push @{ $self->nested }, $element;
+                push @{ $self->nested },  $element;
                 push @{ $table->nested }, $element;
                 push @{ $table->get_last_row->get_last_cell->nested }, $element;
             }
@@ -159,11 +153,11 @@ sub text {
 
 sub end {
     my ( $self, $tag, $origtext ) = @_;
-    
+
     $tag = lc $tag;
 
     if ( $tag eq 'table' ) {
-        if ($self->has_nested) {
+        if ( $self->has_nested ) {
             $self->clear_last_nested;
         }
         else {
@@ -172,31 +166,32 @@ sub end {
         }
     }
 
-    if ($tag eq 'tr') {
-        my $table = $self->has_nested ? $self->get_last_nested : $self->current_table;
+    if ( $tag eq 'tr' ) {
+        my $table =
+          $self->has_nested ? $self->get_last_nested : $self->current_table;
 
         my $row = $table->get_last_row;
-        
-        if ($row->cell_count == 0) {
+
+        if ( $row->cell_count == 0 ) {
             $table->clear_last_row;
         }
 
-        if ($row->header) {
-           $table->clear_last_row;
+        if ( $row->header ) {
+            $table->clear_last_row;
 
-           my $index = 0;
-           foreach my $cell ( $row->all_cells ) {
-              my $row = $table->rows->[$index];
-              if (defined $row) {
-                push @{ $row->cells }, $cell;
-              } 
-              else {
-                my $new_row = HTML::TableContent::Table::Row->new();
-                push @{ $new_row->cells }, $cell;
-                push @{ $table->rows }, $new_row;
-              }
-              $index++;
-           }
+            my $index = 0;
+            foreach my $cell ( $row->all_cells ) {
+                my $row = $table->rows->[$index];
+                if ( defined $row ) {
+                    push @{ $row->cells }, $cell;
+                }
+                else {
+                    my $new_row = HTML::TableContent::Table::Row->new();
+                    push @{ $new_row->cells }, $cell;
+                    push @{ $table->rows },    $new_row;
+                }
+                $index++;
+            }
         }
     }
 }
@@ -204,19 +199,19 @@ sub end {
 sub _build_options {
     return {
         table => {
-            class       => 'HTML::TableContent::Table',
+            class => 'HTML::TableContent::Table',
         },
         th => {
-            class       => 'HTML::TableContent::Table::Header',
+            class => 'HTML::TableContent::Table::Header',
         },
         tr => {
-            class       => 'HTML::TableContent::Table::Row',
+            class => 'HTML::TableContent::Table::Row',
         },
         td => {
-            class       => 'HTML::TableContent::Table::Row::Cell',
+            class => 'HTML::TableContent::Table::Row::Cell',
         },
         caption => {
-            class       => 'HTML::TableContent::Table::Caption',
+            class => 'HTML::TableContent::Table::Caption',
         }
     };
 }
@@ -231,7 +226,7 @@ HTML::TableContent::Parser - HTML::Parser subclass.
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
