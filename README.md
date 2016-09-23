@@ -31,8 +31,7 @@ Version 0.06
 
 # DESCRIPTION
 
-This module extracts all tables from a html document/string. It parses the data found into a set of objects
-that gives you a simple interface to query and access the exact data you desire.
+Extract content from HTML tables.
 
 # SUBROUTINES/METHODS
 

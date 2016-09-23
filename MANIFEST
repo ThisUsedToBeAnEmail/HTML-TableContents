@@ -26,6 +26,7 @@ t/09-header.t
 t/10-table-content.t
 t/11-edge-cases.t
 t/12-nest-tables.t
+t/13-vertical-tables.t
 t/pod.t
 t/html/horizontal/facebook.html
 t/html/horizontal/catch.html
@@ -58,5 +59,9 @@ t/html/nest/one-level-header-table.html
 t/html/nest/one-level-three-tables.html
 t/html/nest/one-level-two-tables.html
 t/html/nest/one-level.html
+t/html/nest/vertical-one-level.html
+t/html/vertical/basic.html
+t/html/vertical/three-basic.html
+t/html/vertical/two-basic.html
 META.yml                                 Module YAML meta-data (added by MakeMaker)
 META.json                                Module JSON meta-data (added by MakeMaker)
