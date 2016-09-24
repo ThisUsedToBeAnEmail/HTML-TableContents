@@ -76,7 +76,11 @@ sub start {
 
     if ( $self->has_caption_selector ) {
         foreach my $selector ( @{ $self->caption_selectors }) {
-           for my $field (qw/id class/) {
+            if ( $tag eq $selector ) {
+                $self->selected({});
+            }
+            
+            for my $field (qw/id class/) {
                my $val = $attr->{$field};
                
                next unless $val;

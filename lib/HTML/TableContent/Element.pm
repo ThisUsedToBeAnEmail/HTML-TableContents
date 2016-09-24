@@ -13,8 +13,6 @@ around BUILDARGS => sub {
 
     $build->{attributes} = $args;
     $build->{attribute_list} = \@ATTRIBUTE;
-    
-    use Data::Dumper;
 
     for my $field ( @ATTRIBUTE ) {
         if (defined $args->{$field}) {
