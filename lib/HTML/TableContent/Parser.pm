@@ -220,9 +220,8 @@ sub _close_row {
                 push @{ $row->cells }, $cell;
             }
             else {
-                my $new_row = HTML::TableContent::Table::Row->new();
+                my $new_row = $table->add_row();
                 push @{ $new_row->cells }, $cell;
-                push @{ $table->rows },    $new_row;
             }
             $index++;
         }
