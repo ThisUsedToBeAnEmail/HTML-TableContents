@@ -2,6 +2,10 @@ package HTML::TableContent::Table;
 
 use Moo;
 
+use HTML::TableContent::Table::Caption;
+use HTML::TableContent::Table::Header;
+use HTML::TableContent::Table::Row;
+
 our $VERSION = '0.07';
 
 extends 'HTML::TableContent::Element';
@@ -15,6 +19,24 @@ has [qw(headers rows)] => (
 );
 
 sub all_rows { return @{ $_[0]->rows }; }
+
+sub add_caption { 
+    my $caption = HTML::TableContent::Table::Caption->new($_[1]);   
+    $_[0]->caption($caption);
+    return $caption;
+}
+
+sub add_header { 
+    my $header = HTML::TableContent::Table::Header->new($_[1]);
+    push @{ $_[0]->headers }, $header;
+    return $header;
+}
+
+sub add_row { 
+    my $row = HTML::TableContent::Table::Row->new($_[1]);
+    push @{ $_[0]->rows }, $row;
+    return $row;
+}
 
 sub row_count { return scalar @{ $_[0]->rows }; }
 

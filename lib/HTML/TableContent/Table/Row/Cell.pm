@@ -6,7 +6,7 @@ our $VERSION = '0.07';
 
 extends 'HTML::TableContent::Element';
 
-has header => ( is => 'rw', );
+has header => ( is => 'rw' );
 
 __PACKAGE__->meta->make_immutable;
 

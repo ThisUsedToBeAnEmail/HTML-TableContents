@@ -1,6 +1,7 @@
 package HTML::TableContent::Table::Header;
 
 use Moo;
+use HTML::TableContent::Table::Row::Cell;
 
 our $VERSION = '0.07';
 
@@ -13,6 +14,12 @@ has 'cells' => (
     lazy    => 1,
     default => sub { [] },
 );
+
+sub add_cell { 
+    my $cell = HTML::TableContent::Table::Row::Cell->new($_[1]);
+    push @{ $_[0]->cells }, $cell;
+    return $cell;
+}
 
 sub cell_count { return scalar @{ $_[0]->cells }; }
 

@@ -4,6 +4,9 @@ use Moo;
 
 our $VERSION = '0.07';
 
+use HTML::TableContent::Table::Header;
+use HTML::TableContent::Table::Row::Cell;
+
 extends 'HTML::TableContent::Element';
 
 has cells => (
@@ -16,6 +19,18 @@ has header => (
     is   => 'rw',
     lazy => 1,
 );
+
+sub add_header { 
+    my $header = HTML::TableContent::Table::Header->new($_[1]);
+    $_[0]->header($header); 
+    return $header;
+}
+
+sub add_cell { 
+    my $cell = HTML::TableContent::Table::Row::Cell->new($_[1]);
+    push @{ $_[0]->cells }, $cell;
+    return $cell;
+}
 
 sub cell_count { return scalar @{ $_[0]->cells }; }
 
@@ -35,7 +50,6 @@ sub clear_last_cell { return $_[0]->clear_cell( $_[0]->cell_count - 1 ); }
 
 sub _filter_headers {
     my ( $self, $headers ) = @_;
-
     my $cells = [];
     foreach my $cell ( $self->all_cells ) {
         for ( @{$headers} ) {

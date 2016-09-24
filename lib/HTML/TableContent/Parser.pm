@@ -7,10 +7,6 @@ our $VERSION = '0.07';
 extends 'HTML::Parser';
 
 use HTML::TableContent::Table;
-use HTML::TableContent::Table::Header;
-use HTML::TableContent::Table::Row;
-use HTML::TableContent::Table::Row::Cell;
-use HTML::TableContent::Table::Caption;
 
 has [qw(current_tables nested)] => (
     is      => 'rw',
@@ -53,7 +49,7 @@ sub current_cell_header {
     my ( $self, $current_cell ) = @_;
 
     my $table = $self->current_or_nested;
-    my $row   = $table->get_last_row;
+    my $row   = $table->get_last_row;   
 
     my $header;
     if ( $row->header ) {
@@ -61,7 +57,7 @@ sub current_cell_header {
     }
     else {
         my $cell_index = $table->get_last_row->cell_count;
-        $header = $table->headers->[$cell_index];
+        $header = $table->headers->[$cell_index - 1];
     }
 
     return unless $header;
@@ -91,48 +87,11 @@ sub start {
     my ( $self, $tag, $attr, $attrseq, $origtext ) = @_;
 
     $tag = lc $tag;
-
-    if ( my $store_tag = $self->options->{$tag} ) {
-        my $class   = $store_tag->{class};
-        my $element = $class->new($attr);
-
-        $self->current_element($element);
-
+    if ( my $option = $self->options->{$tag} ) {
         my $table = $self->current_or_nested;
-
-        if ( $tag eq 'th' ) {
-            $table->get_last_row->header($element);
-            push @{ $table->headers }, $element;
-        }
-        if ( $tag eq 'tr' ) {
-            push @{ $table->rows }, $element;
-        }
-        if ( $tag eq 'td' ) {
-            $element->header( $self->current_cell_header($element) );
-            push @{ $table->get_last_row->cells }, $element;
-        }
-
-        if ( $tag eq 'caption' ) {
-            $table->caption($element);
-        }
-
-        if ( $tag eq 'table' ) {
-            if ( defined $self->current_table
-                && $self->current_table->isa('HTML::TableContent::Table') )
-            {
-                if ( $self->has_nested ) {
-
-              # first table has all nested tables - $tp->get_first_table->nested
-                    push @{ $self->current_table->nested }, $element;
-                }
-                push @{ $self->nested },  $element;
-                push @{ $table->nested }, $element;
-                push @{ $table->get_last_row->get_last_cell->nested }, $element;
-            }
-            else {
-                $self->current_table($element);
-            }
-        }
+        my $action = $option->{add};
+        my $element = $self->$action($attr, $table);
+        $self->current_element($element);
     }
 
     return;
@@ -156,42 +115,10 @@ sub end {
 
     $tag = lc $tag;
 
-    if ( $tag eq 'table' ) {
-        if ( $self->has_nested ) {
-            $self->clear_last_nested;
-        }
-        else {
-            push @{ $self->current_tables }, $self->current_table;
-            $self->clear_current_table;
-        }
-    }
-
-    if ( $tag eq 'tr' ) {
-        my $table =
-          $self->has_nested ? $self->get_last_nested : $self->current_table;
-
-        my $row = $table->get_last_row;
-
-        if ( $row->cell_count == 0 ) {
-            $table->clear_last_row;
-        }
-
-        if ( $row->header ) {
-            $table->clear_last_row;
-
-            my $index = 0;
-            foreach my $cell ( $row->all_cells ) {
-                my $row = $table->rows->[$index];
-                if ( defined $row ) {
-                    push @{ $row->cells }, $cell;
-                }
-                else {
-                    my $new_row = HTML::TableContent::Table::Row->new();
-                    push @{ $new_row->cells }, $cell;
-                    push @{ $table->rows },    $new_row;
-                }
-                $index++;
-            }
+    if ( my $option = $self->options->{$tag} ) {
+        my $table = $self->current_or_nested;
+        if ( my $action = $option->{close} ) {
+            my $element = $self->$action($table);
         }
     }
 }
@@ -199,21 +126,112 @@ sub end {
 sub _build_options {
     return {
         table => {
-            class => 'HTML::TableContent::Table',
+            add => '_add_table',
+            close => '_close_table',
         },
         th => {
-            class => 'HTML::TableContent::Table::Header',
+            add => '_add_header',
         },
         tr => {
-            class => 'HTML::TableContent::Table::Row',
+            add => '_add_row',
+            close => '_close_row',
         },
         td => {
-            class => 'HTML::TableContent::Table::Row::Cell',
+            add => '_add_cell',
         },
         caption => {
-            class => 'HTML::TableContent::Table::Caption',
+            add => '_add_caption'
         }
     };
+}
+
+sub _add_header {
+    my ($self, $attr, $table) = @_;
+
+    my $header = $table->add_header($attr);
+    $table->get_last_row->header($header);
+    return $header;
+}
+
+sub _add_row {
+    my ($self, $attr, $table) = @_;
+
+    my $row = $table->add_row($attr);
+    return $row;
+}
+
+sub _add_cell {
+    my ($self, $attr, $table) = @_;
+
+    my $cell = $table->get_last_row->add_cell($attr);
+    $cell->header($self->current_cell_header($cell));
+    return $cell;
+}
+
+sub _add_caption {
+    my ($self, $attr, $table) = @_;
+
+    my $caption = $table->add_caption($attr);
+    return $caption;
+}
+
+sub _add_table {
+    my ($self, $attr, $table) = @_;
+
+    my $element = HTML::TableContent::Table->new($attr);
+
+    if ( defined $table && $table->isa('HTML::TableContent::Table') ) {
+        if ( $self->has_nested ) {
+            push @{ $self->current_table->nested }, $element; 
+        }
+        push @{ $self->nested }, $element;
+        push @{ $table->nested }, $element;
+        push @{ $table->get_last_row->get_last_cell->nested }, $element;
+    }
+    else {
+        $self->current_table($element);
+    }
+}
+
+sub _close_table {
+    my ($self, $table) = @_;
+
+    if ( $self->has_nested ) {
+        return $self->clear_last_nested;
+    }
+    else {
+        push @{ $self->current_tables }, $self->current_table;
+        return $self->clear_current_table;
+    }
+}
+
+sub _close_row {
+    my ($self, $table) = @_;
+
+    my $row = $table->get_last_row;
+
+    if ( $row->header ) {
+        $table->clear_last_row;
+
+        my $index = 0;
+        foreach my $cell ( $row->all_cells ) {
+            my $row = $table->rows->[$index];
+            if ( defined $row ) {
+                push @{ $row->cells }, $cell;
+            }
+            else {
+                my $new_row = HTML::TableContent::Table::Row->new();
+                push @{ $new_row->cells }, $cell;
+                push @{ $table->rows },    $new_row;
+            }
+            $index++;
+        }
+    }
+    elsif ( $row->cell_count == 0 ) {
+        $table->clear_last_row;
+    }
+
+    return;
 }
 
 1;
