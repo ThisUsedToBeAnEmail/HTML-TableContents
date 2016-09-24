@@ -3,7 +3,7 @@ package HTML::TableContent::Table::Header;
 use Moo;
 use HTML::TableContent::Table::Row::Cell;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 extends 'HTML::TableContent::Element';
 
@@ -42,7 +42,7 @@ HTML::TableContent::Table::Header - base class for table headers.
 
 =head1 VERSION
 
-Version 0.07 
+Version 0.08 
 
 =head1 SYNOPSIS
 
@@ -95,9 +95,15 @@ Get cell by Array index.
 
 =head2 get_first_cell
 
-Get first cell from cells
+Get first cell from cells.
 
     $header->get_first_cell;
+
+=head2 get_last_cell
+
+Get last cell from cells.
+
+    $header->get_last_cell;
 
 =head2 data
 

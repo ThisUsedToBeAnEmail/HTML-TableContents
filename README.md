@@ -4,7 +4,7 @@ HTML::TableContent - Extract content from HTML tables.
 
 # VERSION
 
-Version 0.06 
+Version 0.08 
 
 # SYNOPSIS
 
@@ -65,6 +65,12 @@ Array containing [HTML::TableContent::Table](https://metacpan.org/pod/HTML::Tabl
 
     $t->all_tables;
 
+## add\_table
+
+Add a new [HTML::TableContent::Table](https://metacpan.org/pod/HTML::TableContent::Table).
+
+    $t->add_table({ id => 'my-first-table', class => 'something' });
+
 ## table\_count
 
 Count number of tables found/stored.
@@ -82,6 +88,30 @@ Get table by index.
 Get first table.
 
     $t->get_first_table;
+
+## get\_last\_table
+
+Get last table.
+
+    $t->get_last_table;
+
+## clear\_table
+
+Clear table by array index.
+
+    $t->clear_table($index);
+
+## clear\_first\_table
+
+Clear first table
+
+    $t->clear_first_table;
+
+## clear\_last\_table
+
+Clear last table.
+
+    $t->clear_last_table;
 
 ## headers\_spec
 
@@ -108,6 +138,84 @@ Sometimes you want a little more flexibility.. i.e you want to keep your tables 
 Pass an Array of headers, if one of the headers match the truth is returned.
 
     $t->headers_exist(qw/Name Email/);
+
+## add\_caption\_selectors
+
+The majority of people don't use captions, but a title above the table.
+
+This method accepts an array of 'tags', 'ids' or 'classes' and will try to do something
+sensible which generally means mapping the text to the selector it finds closest to the table. 
+
+    my $t = HTML::TableContent->new();
+
+    $t->add_caption_selectors(qw/h2/);
+
+    $t->parse($html);
+
+    my $caption = $t->get_first_table->caption;
+
+## EXAMPLES
+
+LWP::UserAgent
+
+    use HTML::TableContent;
+    use LWP::UserAgent;
+
+    my $url = 'https://developers.facebook.com/docs/graph-api/reference/user/';
+
+    my $html = make_request($url);
+
+    my $tc = HTML::TableContent->new();
+
+    $tc->add_caption_selectors(qw/h3/);
+
+    $tc->parse($html);
+
+    $tc->get_first_table->caption->text;  
+
+    sub make_request {
+        my $url = shift;
+
+        my ua = LWP::UserAgent->new(
+            ssl_opts => { verify_hostname => 1 },
+            agent => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.5) Gecko/20060719 Firefox/1.5.0.5'
+        );
+        my $req = HTTP::Request->new(GET => $url);
+        my $reponse = $ua->request($req);
+
+        if ( $response->is_success ) {
+            return $response->decoded_content;
+        } else {
+            .....
+        }
+    }
+
+Text::CSV\_XS
+
+    use HTML::TableContent;
+    use Text::CSV_XS qw( csv );
+
+    my $aoa = csv ( in => 'test.csv' );
+
+    my $tc = HTML::TableContent->new();
+    
+    my $table = $tc->add_table({ id => '1-row' });
+
+    my $headers = shift $aoa->[0];
+
+    foreach my $header ( @{ $headers } ) {
+        $table->add_header({ text => $header });
+    }
+
+    foreach my $csv_row ( @{ $aoa } ) {
+        my $row = $table->add_row({});
+        for (@{$csv_row}){
+            my $cell = $row->add_cell({ text => $_ });
+            $table->parse_to_column($cell);
+        }
+    }
+
+    $table->render;
 
 # AUTHOR
 

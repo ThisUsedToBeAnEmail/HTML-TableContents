@@ -6,7 +6,7 @@ use HTML::TableContent::Table::Caption;
 use HTML::TableContent::Table::Header;
 use HTML::TableContent::Table::Row;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 extends 'HTML::TableContent::Element';
 
@@ -273,7 +273,7 @@ HTML::TableContent::Table - Base class for table's
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =cut
 
@@ -308,7 +308,13 @@ Base class for Table's.
 
 Return underlying data structure
 
-    $row->raw
+    $table->raw
+
+=head2 render
+
+Render the table as HTML.
+
+    $table->render;
 
 =head2 attributes
 
@@ -340,6 +346,12 @@ Add a caption to the table.
 
     $table->add_caption({})
 
+=head2 has_caption
+
+Boolean check, returns true if table has a caption.
+
+    $table->has_caption;
+
 =head2 headers
 
 Array Ref of L<HTML::TableContent::Header>'s
@@ -354,7 +366,7 @@ Array of L<HTML::TableContent::Header>'s
 
 =head2 add_header
 
-Add a header to the table.
+Add a L<HTML::TableContent::Header> to the table.
 
     $table->add_header({});
 
@@ -414,7 +426,7 @@ Boolean check to see if passed in headers exist.
 
 =head2 get_header_column
 
-Returns an array that contains HTML::TableContent::Table::Row::Cell's which belong to that column.
+Returns an array that contains L<HTML::TableContent::Table::Row::Cell>'s which belong to that column.
 
     $table->get_header_column(header => $string);
 
@@ -448,7 +460,7 @@ Array Ref of L<HTML::TableContent::Row>'s
 
 =head2 add_row
 
-Add a row to the table.
+Add a L<HTML::TableContent::Row> to the table.
 
     $table->add_row({});
 
@@ -544,10 +556,17 @@ Boolean Check, returns 1 if a headers cells consists of nested tables.
 
 =head2 nested_column_headers
 
-Returns a hash key being the header that contains nested tables the second a count of occurence.
+Returns a hash,the header that contains nested tables and the a count of occurence.
 
     $table->nested_column_headers;
 
+=head2 parse_to_column
+
+Magical. just call it if you want the header columns to work. 
+    
+    my $cell = $row->add_cell({ text => 'hacked' });
+    $table->parse_to_column($cell);
+    
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>

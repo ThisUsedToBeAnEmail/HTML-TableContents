@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row;
 
 use Moo;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use HTML::TableContent::Table::Header;
 use HTML::TableContent::Table::Row::Cell;
@@ -122,7 +122,7 @@ HTML::TableContent::Table::Row - base class for table rows.
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =head1 SYNOPSIS
 
@@ -152,7 +152,13 @@ base class for rows
 
 Return underlying data structure
 
-    $row->raw
+    $row->raw;
+
+=head2 render
+
+Render the row as html.
+
+    $row->render;
 
 =head2 attributes
 
@@ -183,6 +189,12 @@ ArrayRef of L<HTML::TableContent::Row::Cell>'s
 Array of L<HTML::TableContent::Row::Cell>'s
 
     $row->all_cells;
+
+=head2 add_cell
+
+Add a L<HTML::TableContent::Row::Cell> to the row.
+
+    $row->add_cell({ id => 'cell-1', text => 'some text' });
 
 =head2 cell_count
 

@@ -2,7 +2,7 @@ package HTML::TableContent::Element;
 
 use Moo;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 my @ATTRIBUTE = qw/class id style colspan rowspan/;
 
@@ -139,7 +139,7 @@ HTML::TableContent::Element - attributes, text, data, class, id
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =cut
 
