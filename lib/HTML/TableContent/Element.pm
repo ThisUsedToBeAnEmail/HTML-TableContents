@@ -117,6 +117,42 @@ Element tag's id if found.
 
     $element->id;
 
+=head2 nested
+
+ArrayRef of nested Tables.
+
+    $element->nested
+
+=head2 all_nested
+
+Array of nested Tables.
+
+    $element->all_nested
+
+=head2 has_nested
+
+Boolean check, returns true if the element has nested tables.
+
+    $element->has_nested
+
+=head2 count_nested
+
+Count number of nested tables.
+
+    $element->count_nested
+
+=head2 get_first_nested
+
+Get the first nested table.
+
+    $element->get_first_nested
+
+=head2 get_nested
+
+Get Nested table by index.
+
+    $element->get_nested(1);
+
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>

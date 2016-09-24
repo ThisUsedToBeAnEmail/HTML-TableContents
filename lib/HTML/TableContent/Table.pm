@@ -24,7 +24,11 @@ sub get_first_row { return $_[0]->get_row(0); }
 
 sub get_last_row { return $_[0]->get_row( $_[0]->row_count - 1 ); }
 
-sub clear_last_row { return delete $_[0]->rows->[ $_[0]->row_count - 1 ]; }
+sub clear_row { return delete $_[0]->rows->[ $_[1] ] }
+
+sub clear_first_row { return $_[0]->clear_row(0); }
+
+sub clear_last_row { return $_[0]->clear_row($_[0]->row_count - 1); }
 
 sub all_headers { return @{ $_[0]->headers }; }
 
@@ -34,21 +38,7 @@ sub get_header { return $_[0]->headers->[ $_[1] ]; }
 
 sub get_first_header { return $_[0]->get_header(0); }
 
-around has_nested => sub {
-    my ( $orig, $self ) = ( shift, shift );
-
-    my $nested = $self->$orig(@_);
-
-    my $row = $self->get_first_row;
-
-    for ( $row->all_cells ) {
-        if ( $_->has_nested ) {
-            $nested = 1;
-        }
-    }
-
-    return $nested;
-};
+sub get_last_header { return $_[0]->get_header($_[0]->header_count - 1); }
 
 around raw => sub {
     my ( $orig, $self ) = ( shift, shift );
@@ -278,11 +268,59 @@ Number of headers found in table
 
     $table->header_count;
 
+=head2 get_header
+
+Get header from table by index.
+
+    $table->get_header($index);
+
+=head2 get_first_header
+
+Get first header in the table.
+
+    $table->get_first_header;
+
+=head2 get_last_header
+
+Get last header in the table.
+
+    $table->get_last_header;
+
+=head2 clear_header
+
+Clear header by array index.
+
+    $table->clear_header($index);
+
+=head2 clear_first_header
+
+Clear first header in table.
+
+    $table->clear_first_header;
+
+=head2 clear_last_header
+
+Clear last header in table.
+
+    $table->clear_last_header;
+
+=head2 headers_spec 
+
+Hash containing headers and their occurence count..
+
+    $table->headers_spec;
+
+=head2 header_exists 
+
+Boolean check to see if passed in headers exist.
+
+    $table->header_exists(qw/Header/);
+
 =head2 get_header_column
 
 Returns an array that contains HTML::TableContent::Table::Row::Cell's which belong to that column.
 
-    $table->get_header_column(header => 'Savings');
+    $table->get_header_column(header => $string);
 
 Sometimes you may want to dedupe the column that is returned. This is done based on the cell's text value.
 
@@ -305,18 +343,6 @@ Shorthand for get_header_column(header => '');
 Shorthand for get_header_column_text(header => '')
 
     $table->get_col_text('Email');
-
-=head2 get_header
-
-Get header from table by index.
-
-    $table->get_header($index);
-
-=head2 get_first_header
-
-Get first header in the table.
-
-    $table->get_first_header;
 
 =head2 rows
 
@@ -347,6 +373,78 @@ Get row from table by index.
 Get first row in the table.
 
     $table->get_first_row;
+
+=head2 get_last_row
+
+Get last row in the table.
+
+    $table->get_last_row;
+
+=head2 clear_row
+
+Clear row by index.
+
+    $table->clear_row($index);
+
+=head2 clear_first_row
+
+Clear first row in the table.
+
+    $table->clear_first_row;
+
+=head2 clear_last_row
+
+Clear last row in the table.
+
+    $table->clear_last_row;
+
+=head2 nested
+
+ArrayRef of all nested Tables found within the current table.
+
+    $table->nested
+
+=head2 all_nested
+
+Array of all nested Tables found within the current table.
+
+    $table->all_nested
+
+=head2 has_nested
+
+Boolean check, returns true if the table has nested tables.
+
+    $table->has_nested
+
+=head2 count_nested
+
+Count number of nested tables within current table.
+
+    $table->count_nested
+
+=head2 get_first_nested
+
+Get the first nested table.
+
+    $table->get_first_nested
+
+=head2 get_nested
+
+Get Nested table by index.
+
+    $table->get_nested(1);
+
+=head2 has_nested_table_column 
+
+Boolean Check, returns 1 if a headers cells consists of nested tables.
+
+    $table->has_nested_table_column;
+
+=head2 nested_column_headers
+
+Returns a hash key being the header that contains nested tables the second a count of occurence.
+
+    $table->nested_column_headers;
 
 =head1 AUTHOR
 

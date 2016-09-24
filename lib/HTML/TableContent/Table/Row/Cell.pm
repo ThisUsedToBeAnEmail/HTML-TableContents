@@ -90,6 +90,42 @@ Cell tag id if found.
 
     $cell->id;
 
+=head2 nested
+
+ArrayRef of nested Tables.
+
+    $cell->nested
+
+=head2 all_nested
+
+Array of nested Tables.
+
+    $cell->all_nested
+
+=head2 has_nested
+
+Boolean check, returns true if the cell has nested tables.
+
+    $cell->has_nested
+
+=head2 count_nested
+
+Count number of nested tables.
+
+    $cell->count_nested
+
+=head2 get_first_nested
+
+Get the first nested table.
+
+    $cell->get_first_nested
+
+=head2 get_nested
+
+Get Nested table by index.
+
+    $cell->get_nested(1);
+
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>

@@ -27,6 +27,12 @@ sub get_first_cell { return $_[0]->get_cell(0); }
 
 sub get_last_cell { return $_[0]->get_cell( $_[0]->cell_count - 1 ); }
 
+sub clear_cell { return delete $_[0]->cells->[$_[1]]; }
+
+sub clear_first_cell { return $_[0]->clear_cell(0); }
+
+sub clear_last_cell { return $_[0]->clear_cell( $_[0]->cell_count - 1 ); }
+
 sub _filter_headers {
     my ( $self, $headers ) = @_;
 
@@ -104,36 +110,6 @@ base class for rows
 
 =head1 SUBROUTINES/METHODS
 
-=head2 cells
-
-ArrayRef of L<HTML::TableContent::Row::Cell>'s
-
-    $row->cells;
-
-=head2 all_cells
-
-Array of L<HTML::TableContent::Row::Cell>'s
-
-    $row->all_cells;
-
-=head2 get_cell
-
-Get Cell from Row by index.
-
-    $row->get_cell($index);
-
-=head2 get_first_cell
-
-Get the first Cell from the Row.
-
-    $row->get_first_cell;
-
-=head2 cell_count
-
-Count number of Cell's inside the Row.
-
-    $row->cell_count
-
 =head2 raw
 
 Return underlying data structure
@@ -157,6 +133,66 @@ Row tag class if found.
 Row tag id if found.
 
     $row->id;
+
+=head2 cells
+
+ArrayRef of L<HTML::TableContent::Row::Cell>'s
+
+    $row->cells;
+
+=head2 all_cells
+
+Array of L<HTML::TableContent::Row::Cell>'s
+
+    $row->all_cells;
+
+=head2 cell_count
+
+Count number of Cell's inside the Row.
+
+    $row->cell_count
+
+=head2 get_cell
+
+Get Cell from Row by index.
+
+    $row->get_cell($index);
+
+=head2 get_first_cell
+
+Get the first Cell from the Row.
+
+    $row->get_first_cell;
+
+=head2 get_last_cell
+
+Get the last Cell from the Row.
+
+    $row->get_last_cell;
+
+=head2 clear_cell
+
+Clear cell from row by index.
+
+    $row->clear_cell($index);
+
+=head2 clear_first_cell
+
+Clear the first cell from the Row.
+
+    $row->clear_first_cell;
+
+=head2 clear_last_cell
+
+Clear the last cell from the Row.
+
+    $row->clear_last_cell;
+
+=head2 has_nested
+
+Boolean returns true if the row cell's has nested tables.
+
+    $row->has_nested;
 
 =head1 AUTHOR
 
