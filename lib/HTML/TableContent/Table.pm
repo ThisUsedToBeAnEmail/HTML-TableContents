@@ -46,9 +46,9 @@ sub get_first_row { return $_[0]->get_row(0); }
 
 sub get_last_row { return $_[0]->get_row( $_[0]->row_count - 1 ); }
 
-sub clear_row { return delete $_[0]->rows->[ $_[1] ] }
+sub clear_row { return splice @{ $_[0]->rows }, $_[1], 1;  }
 
-sub clear_first_row { return $_[0]->clear_row(0); }
+sub clear_first_row { return shift @{ $_[0]->rows }; }
 
 sub clear_last_row { return $_[0]->clear_row($_[0]->row_count - 1); }
 
@@ -67,6 +67,12 @@ sub get_header { return $_[0]->headers->[ $_[1] ]; }
 sub get_first_header { return $_[0]->get_header(0); }
 
 sub get_last_header { return $_[0]->get_header($_[0]->header_count - 1); }
+
+sub clear_header { return splice @{ $_[0]->headers }, $_[1], 1; }
+
+sub clear_first_header { return shift @{ $_[0]->headers } }
+
+sub clear_last_header { return $_[0]->clear_header( $_[0]->header_count - 1 ); }
 
 around raw => sub {
     my ( $orig, $self ) = ( shift, shift );
@@ -258,7 +264,30 @@ sub _filter_headers {
         $row->_filter_headers($headers);
     }
 
-    return;
+    return 1;
+}
+
+
+sub clear_column {
+    my ($self, @headers) = @_;
+
+    my @remove_cell;
+    for my $index (0 .. $self->header_count - 1) {
+        for (@headers) {
+            if ( $self->headers->[$index]->lc_text =~ m/$_/ims ){
+                $self->clear_header($index);
+                push @remove_cell, $index;
+            }
+        }
+    }
+
+    foreach my $row ($self->all_rows ) {
+        for (@remove_cell) {
+            $row->clear_cell($_);
+         }
+    }
+
+    return 1;
 }
 
 __PACKAGE__->meta->make_immutable;

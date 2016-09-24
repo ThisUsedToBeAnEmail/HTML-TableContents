@@ -6,7 +6,7 @@ use Module::Metadata;
 
 WriteMakefile(
     NAME             => 'HTML::TableContent',
-    AUTHOR           => q{LNATION <thisusedtobeanemail@gmail.com>},
+    AUTHOR           => q{Robert Acock <thisusedtobeanemail@gmail.com>},
     VERSION_FROM     => 'lib/HTML/TableContent.pm',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
@@ -22,6 +22,13 @@ WriteMakefile(
         'Carp'             => "1.22",
         'Moo'              => "1.001001",
         'HTML::Parser'     => "3.71",
+        'HTML::TableContent::Parser' => 0,
+        'HTML::TableContent::Element' => 0,
+        'HTML::TableContent::Table' => 0,
+        'HTML::TableContent::Table::Content' => 0,
+        'HTML::TableContent::Table::Header' => 0,
+        'HTML::TableContent::Table::Row' => 0,
+        'HTML::TableContent::Table::Row::Cell' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'HTML-TableContent-*' },

@@ -36,9 +36,9 @@ sub get_first_table { return $_[0]->get_table(0); }
 
 sub get_last_table { return $_[0]->get_table($_[0]->table_count - 1); }
 
-sub clear_table { return delete $_[0]->tables->[ $_[1] ]; }
+sub clear_table { return splice @{ $_[0]->tables }, $_[1], 1; }
 
-sub clear_first_table { return $_[0]->clear_table(0); }
+sub clear_first_table { return shift @{ $_[0]->tables }; }
 
 sub clear_last_table { return $_[0]->clear_table( $_[0]->table_count - 1 ); } 
 
@@ -65,8 +65,7 @@ sub filter_tables {
     }
 
     if ( $args{flex} && !scalar @{$tables} ) {
-        carp
-'none of the passed headers exist in any of the tables aborting filter - %s',
+        carp 'none of the passed headers exist in any of the tables aborting filter - %s',
           join q{ }, @headers;
         return;
     }
@@ -283,11 +282,9 @@ sensible which generally means mapping the text to the selector it finds closest
 
     my $t = HTML::TableContent->new();
 
-    $t->add_caption_selectors(qw/h2/);
+    $t->add_caption_selectors(qw/id-1 id-2 id-3/);
 
     $t->parse($html);
-
-    my $caption = $t->get_first_table->caption;
 
 =head2 EXAMPLES
 

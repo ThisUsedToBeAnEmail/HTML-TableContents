@@ -46,9 +46,9 @@ sub get_first_cell { return $_[0]->get_cell(0); }
 
 sub get_last_cell { return $_[0]->get_cell( $_[0]->cell_count - 1 ); }
 
-sub clear_cell { return delete $_[0]->cells->[$_[1]]; }
+sub clear_cell { return splice @{ $_[0]->cells }, $_[1], 1; }
 
-sub clear_first_cell { return $_[0]->clear_cell(0); }
+sub clear_first_cell { return shift @{ $_[0]->cells }; }
 
 sub clear_last_cell { return $_[0]->clear_cell( $_[0]->cell_count - 1 ); }
 

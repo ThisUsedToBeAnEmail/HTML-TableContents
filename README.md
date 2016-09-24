@@ -148,11 +148,9 @@ sensible which generally means mapping the text to the selector it finds closest
 
     my $t = HTML::TableContent->new();
 
-    $t->add_caption_selectors(qw/h2/);
+    $t->add_caption_selectors(qw/id-1 id-2 id-3/);
 
     $t->parse($html);
-
-    my $caption = $t->get_first_table->caption;
 
 ## EXAMPLES
 
