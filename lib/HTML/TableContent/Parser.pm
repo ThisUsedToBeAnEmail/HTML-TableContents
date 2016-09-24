@@ -121,6 +121,8 @@ sub end {
             my $element = $self->$action($table);
         }
     }
+
+    return;
 }
 
 sub _build_options {
@@ -220,7 +222,7 @@ sub _close_row {
                 push @{ $row->cells }, $cell;
             }
             else {
-                my $new_row = $table->add_row();
+                my $new_row = $table->add_row({});
                 push @{ $new_row->cells }, $cell;
             }
             $index++;

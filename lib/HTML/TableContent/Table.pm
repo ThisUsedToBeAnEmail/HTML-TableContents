@@ -18,19 +18,13 @@ has [qw(headers rows)] => (
     default => sub { [] },
 );
 
-sub all_rows { return @{ $_[0]->rows }; }
-
 sub add_caption { 
     my $caption = HTML::TableContent::Table::Caption->new($_[1]);   
     $_[0]->caption($caption);
     return $caption;
 }
 
-sub add_header { 
-    my $header = HTML::TableContent::Table::Header->new($_[1]);
-    push @{ $_[0]->headers }, $header;
-    return $header;
-}
+sub all_rows { return @{ $_[0]->rows }; }
 
 sub add_row { 
     my $row = HTML::TableContent::Table::Row->new($_[1]);
@@ -53,6 +47,12 @@ sub clear_first_row { return $_[0]->clear_row(0); }
 sub clear_last_row { return $_[0]->clear_row($_[0]->row_count - 1); }
 
 sub all_headers { return @{ $_[0]->headers }; }
+
+sub add_header { 
+    my $header = HTML::TableContent::Table::Header->new($_[1]);
+    push @{ $_[0]->headers }, $header;
+    return $header;
+}
 
 sub header_count { return scalar @{ $_[0]->headers }; }
 
@@ -272,6 +272,12 @@ Table caption if found, see L<HTML::TableContent::Caption>.
 
     $table->caption;
 
+=head2 add_caption
+
+Add a caption to the table.
+
+    $table->add_caption({})
+
 =head2 headers
 
 Array Ref of L<HTML::TableContent::Header>'s
@@ -283,6 +289,12 @@ Array Ref of L<HTML::TableContent::Header>'s
 Array of L<HTML::TableContent::Header>'s
 
     $table->all_headers;
+
+=head2 add_header
+
+Add a header to the table.
+
+    $table->add_header({});
 
 =head2 header_count
 
@@ -371,6 +383,12 @@ Shorthand for get_header_column_text(header => '')
 Array Ref of L<HTML::TableContent::Row>'s
 
     $table->rows;
+
+=head2 add_row
+
+Add a row to the table.
+
+    $table->add_row({});
 
 =head2 all_rows
 

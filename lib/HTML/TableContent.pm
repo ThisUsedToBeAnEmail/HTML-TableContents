@@ -4,6 +4,7 @@ use Carp;
 use Moo;
 
 use HTML::TableContent::Parser;
+use HTML::TableContent::Table;
 
 our $VERSION = '0.07';
 
@@ -19,6 +20,12 @@ has tables => (
 );
 
 sub all_tables { return @{ $_[0]->tables }; }
+
+sub add_table {
+    my $table = HTML::TableContent::Table->new($_[1]);
+    push @{ $_[0]->tables }, $table;
+    return $table;
+}
 
 sub get_table { return $_[0]->tables->[ $_[1] ]; }
 

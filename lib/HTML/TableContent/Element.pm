@@ -4,11 +4,32 @@ use Moo;
 
 our $VERSION = '0.07';
 
+my @FIELDS = qw/class id style colspan rowspan/;
+
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
+    
+    my $build = ( );
 
-    return $class->$orig( attributes => $args );
+    $build->{attributes} = $args;
+
+    for my $field ( @FIELDS ) {
+        if (defined $args->{$field}) {
+            $build->{$field} = $args->{$field};
+        }
+    }
+    
+    return $class->$orig( $build );
 };
+
+for my $field (@FIELDS) {
+    has $field => (
+        is => 'rw',
+        lazy => 1,
+        trigger => 1,
+        default => q{}
+    );
+}
 
 has attributes => (
     is      => 'rw',
@@ -17,7 +38,8 @@ has attributes => (
 
 has data => (
     is      => 'rw',
-    default => sub { [] }
+    lazy => 1,
+    builder => 1,
 );
 
 has nested => (
@@ -37,11 +59,13 @@ sub all_nested { return @{ $_[0]->nested }; }
 
 sub text { return join q{ }, @{ $_[0]->data }; }
 
-sub lc_text { my $text = join q{ }, @{ $_[0]->data }; return lc $text; }
+sub add_text { return push @{ $_[0]->data }, $_[1]; }
 
-sub class { return $_[0]->attributes->{class}; }
+sub lc_text { return lc $_[0]->text; }
 
-sub id { return $_[0]->attributes->{id}; }
+sub add_class { my $class = $_[0]->class; return $_[0]->class(sprintf('%s %s', $class, $_[1])); }
+
+sub add_style { my $style = $_[0]->style; return $_[0]->style(sprintf('%s %s', $style, $_[1])); }
 
 sub raw {
     my $args = $_[0]->attributes;
@@ -50,6 +74,28 @@ sub raw {
         $args->{data} = $_[0]->data;
     }
     return $args;
+}
+
+sub _trigger_class { return $_[0]->attributes->{class} = $_[1]; }
+
+sub _trigger_id { return $_[0]->attributes->{id} = $_[1]; }
+
+sub _trigger_style { return $_[0]->attributes->{style} = $_[1]; }
+
+sub _trigger_colspan { return $_[0]->attributes->{colspan} = $_[1]; }
+
+sub _trigger_rowspan { return $_[0]->attributes->{rowspan} = $_[1]; }
+
+sub _build_data {
+    my $data = delete $_[0]->attributes->{data};
+    my $text = delete $_[0]->attributes->{text};
+
+    if ( defined $text ) {
+        push @{ $data }, $text;
+    }
+
+    return $data if defined $data && scalar @{ $data };
+    return [ ];
 }
 
 __PACKAGE__->meta->make_immutable;
