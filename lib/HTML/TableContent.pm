@@ -10,6 +10,7 @@ our $VERSION = '0.07';
 
 has parser => (
     is      => 'rw',
+    lazy => 1,
     default => sub { return HTML::TableContent::Parser->new() },
 );
 
@@ -26,6 +27,8 @@ sub add_table {
     push @{ $_[0]->tables }, $table;
     return $table;
 }
+
+sub add_caption_selectors { return push @{ $_[0]->parser->caption_selectors }, $_[1]; }
 
 sub get_table { return $_[0]->tables->[ $_[1] ]; }
 

@@ -13,6 +13,8 @@ around BUILDARGS => sub {
 
     $build->{attributes} = $args;
     $build->{attribute_list} = \@ATTRIBUTE;
+    
+    use Data::Dumper;
 
     for my $field ( @ATTRIBUTE ) {
         if (defined $args->{$field}) {
@@ -43,6 +45,7 @@ has attribute_list => (
 
 has data => (
     is      => 'rw',
+    clearer => 1,
     builder => 1,
 );
 

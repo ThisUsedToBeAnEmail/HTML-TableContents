@@ -8,14 +8,14 @@ extends 'HTML::Parser';
 
 use HTML::TableContent::Table;
 
-has [qw(current_tables nested)] => (
+has [qw(current_tables nested caption_selectors)] => (
     is      => 'rw',
     lazy    => 1,
     clearer => 1,
     default => sub { [] },
 );
 
-has [qw(current_table current_element)] => (
+has [qw(current_table current_element selected)] => (
     is      => 'rw',
     lazy    => 1,
     clearer => 1,
@@ -26,6 +26,8 @@ has options => (
     lazy    => 1,
     builder => 1,
 );
+
+sub has_caption_selector { return scalar @{ $_[0]->caption_selectors } ? 1 : 0 }
 
 sub count_nested { return scalar @{ $_[0]->nested }; }
 
@@ -72,6 +74,20 @@ sub start {
         $self->current_element($element);
     }
 
+    if ( $self->has_caption_selector ) {
+        foreach my $selector ( @{ $self->caption_selectors }) {
+           for my $field (qw/id class/) {
+               my $val = $attr->{$field};
+               
+               next unless $val;
+               
+               if ( $val =~ /$selector/) {
+                    $self->selected($attr);
+               }
+           }
+        }
+    }
+
     return;
 }
 
@@ -82,6 +98,15 @@ sub text {
         if ( $text =~ m{\S+}xms ) {
             $text =~ s{^\s+|\s+$}{}g;
             push @{ $elem->data }, $text;
+        }
+    }
+    if ( my $selected = $self->selected) {
+        
+        return if $selected->{text};
+
+        if ( $text =~ m{\S+}xms ) {
+            $selected->{text} = $text;
+            $self->selected($selected);
         }
     }
 
@@ -169,6 +194,10 @@ sub _add_table {
         push @{ $table->get_last_row->get_last_cell->nested }, $element;
     }
     else {
+        if ( my $caption = $self->selected ){
+            $element->add_caption($caption);
+            $self->clear_selected;
+        }
         $self->current_table($element);
     }
 }

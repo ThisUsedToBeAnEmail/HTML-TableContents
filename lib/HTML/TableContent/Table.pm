@@ -10,7 +10,7 @@ our $VERSION = '0.07';
 
 extends 'HTML::TableContent::Element';
 
-has caption => ( is => 'rw', );
+has caption => ( is => 'rw', lazy => 1 );
 
 has [qw(headers rows)] => (
     is      => 'rw',

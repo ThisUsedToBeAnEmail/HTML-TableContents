@@ -7,7 +7,7 @@ our $VERSION = '0.07';
 extends 'HTML::TableContent::Element';
 
 has '+html_tag' => (
-    default => 'th',
+    default => 'caption',
 );
 
 __PACKAGE__->meta->make_immutable;
