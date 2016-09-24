@@ -4,7 +4,7 @@ use Moo;
 
 our $VERSION = '0.07';
 
-my @FIELDS = qw/class id style colspan rowspan/;
+my @ATTRIBUTE = qw/class id style colspan rowspan/;
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -12,8 +12,9 @@ around BUILDARGS => sub {
     my $build = ( );
 
     $build->{attributes} = $args;
+    $build->{attribute_list} = \@ATTRIBUTE;
 
-    for my $field ( @FIELDS ) {
+    for my $field ( @ATTRIBUTE ) {
         if (defined $args->{$field}) {
             $build->{$field} = $args->{$field};
         }
@@ -22,7 +23,7 @@ around BUILDARGS => sub {
     return $class->$orig( $build );
 };
 
-for my $field (@FIELDS) {
+for my $field (@ATTRIBUTE) {
     has $field => (
         is => 'rw',
         lazy => 1,
@@ -36,15 +37,23 @@ has attributes => (
     default => sub { {} }
 );
 
+has attribute_list => (
+    is      => 'rw',
+);
+
 has data => (
     is      => 'rw',
-    lazy => 1,
     builder => 1,
 );
 
 has nested => (
     is      => 'rw',
     default => sub { [] },
+);
+
+has html_tag => (
+    is => 'rw',
+    default => sub { return 'table'; },
 );
 
 sub has_nested { return scalar @{ $_[0]->nested } ? 1 : 0; }
@@ -76,6 +85,20 @@ sub raw {
     return $args;
 }
 
+sub render {
+    my $args = $_[0]->attributes;
+    
+    my $attr = '';
+    foreach my $attribute (@{ $_[0]->attribute_list }) {
+        if (my $val = $args->{$attribute}) {
+            $attr .= sprintf '%s="%s" ', $attribute, $val;
+        }
+    }
+
+    my $tag = $_[0]->html_tag;
+    return $_[0]->tidy_html(sprintf("<%s %s>%s</%s>", $tag, $attr, &text, $tag));
+}
+
 sub _trigger_class { return $_[0]->attributes->{class} = $_[1]; }
 
 sub _trigger_id { return $_[0]->attributes->{id} = $_[1]; }
@@ -96,6 +119,11 @@ sub _build_data {
 
     return $data if defined $data && scalar @{ $data };
     return [ ];
+}
+
+sub tidy_html {
+    $_[1] =~ s/\s+>/>/g;
+    return $_[1];
 }
 
 __PACKAGE__->meta->make_immutable;

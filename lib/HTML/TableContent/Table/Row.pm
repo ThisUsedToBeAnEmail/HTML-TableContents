@@ -20,6 +20,10 @@ has header => (
     lazy => 1,
 );
 
+has '+html_tag' => (
+    default => 'tr',
+);
+
 sub add_header { 
     my $header = HTML::TableContent::Table::Header->new($_[1]);
     $_[0]->header($header); 
@@ -85,6 +89,26 @@ around has_nested => sub {
 
     return $nested;
 };
+
+sub render {
+    my $args = $_[0]->attributes;
+    
+    my @cells = map { $_->render } $_[0]->all_cells;
+    my $cell = sprintf '%s' x @cells, @cells;
+
+    my $attr = '';
+    foreach my $attribute (@{ $_[0]->attribute_list }) {
+        if (my $val = $args->{$attribute}) {
+            $attr .= sprintf '%s="%s" ', $attribute, $val;
+        }
+    }
+
+    my $tag = $_[0]->html_tag;
+
+    my $html = sprintf('<%s %s>%s</%s>', $tag, $attr, $cell, $tag);
+
+    return $_[0]->tidy_html($html);
+}
 
 __PACKAGE__->meta->make_immutable;
 

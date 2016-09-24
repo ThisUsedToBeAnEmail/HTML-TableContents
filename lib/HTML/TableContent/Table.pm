@@ -18,11 +18,17 @@ has [qw(headers rows)] => (
     default => sub { [] },
 );
 
+has '+html_tag' => (
+    default => 'table',
+);
+
 sub add_caption { 
     my $caption = HTML::TableContent::Table::Caption->new($_[1]);   
     $_[0]->caption($caption);
     return $caption;
 }
+
+sub has_caption { return $_[0]->caption ? 1 : 0 };
 
 sub all_rows { return @{ $_[0]->rows }; }
 
@@ -82,6 +88,39 @@ around raw => sub {
     return $table;
 };
 
+sub render {
+    my $args = $_[0]->attributes;
+    
+    my @rows = ( );
+    
+    if ( $_[0]->has_caption ) {
+        push @rows, $_[0]->caption->render;    
+    }
+
+    if ( $_[0]->header_count ) {
+        my @headers = map { $_->render } $_[0]->all_headers;
+        my $headers = sprintf '%s' x @headers, @headers;
+        my $header_row = sprintf '<tr>%s</tr>', $headers; 
+        push @rows, $header_row;
+    }
+    
+    if ($_[0]->row_count) {
+        push @rows, map { $_->render } $_[0]->all_rows;
+    }
+        
+    my $row = sprintf '%s' x @rows, @rows;
+
+    my $attr = '';
+    foreach my $attribute (@{ $_[0]->attribute_list }) {
+        if (my $val = $args->{$attribute}) {
+            $attr .= sprintf '%s="%s" ', $attribute, $val;
+        }
+    }
+
+    my $tag = $_[0]->html_tag;
+    return $_[0]->tidy_html(sprintf('<%s %s>%s</%s>', $tag, $attr, $row, $tag));
+}
+
 sub headers_spec {
     my $self = shift;
 
@@ -132,6 +171,28 @@ sub get_header_column {
     return \@cells;
 }
 
+sub parse_to_column {
+    my ($self, $cell) = @_;
+    
+    my $row = $self->get_last_row;
+
+    my $header;
+    if ( $row->header ) {
+        $header = $row->header;
+    }
+    else {
+        my $cell_index = $row->cell_count;
+        $header = $self->headers->[$cell_index - 1];
+    }
+
+    return unless $header;
+
+    $cell->header($header);
+    push @{ $header->cells }, $cell;
+
+    return 1;
+}
+
 sub get_header_column_text {
     my ( $self, %args ) = @_;
     my $cells = $self->get_header_column(%args);
@@ -177,6 +238,7 @@ sub _dedupe_object_array_not_losing_order {
 
     return @new_items;
 }
+
 
 sub _filter_headers {
     my ( $self, @headers ) = @_;

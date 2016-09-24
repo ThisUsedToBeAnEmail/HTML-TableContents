@@ -8,6 +8,10 @@ extends 'HTML::TableContent::Element';
 
 has header => ( is => 'rw' );
 
+has '+html_tag' => (
+    default => 'td',
+);
+
 __PACKAGE__->meta->make_immutable;
 
 1;

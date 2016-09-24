@@ -45,28 +45,6 @@ sub current_or_nested {
     return $_[0]->has_nested ? $_[0]->get_last_nested : $_[0]->current_table;
 }
 
-sub current_cell_header {
-    my ( $self, $current_cell ) = @_;
-
-    my $table = $self->current_or_nested;
-    my $row   = $table->get_last_row;   
-
-    my $header;
-    if ( $row->header ) {
-        $header = $row->header;
-    }
-    else {
-        my $cell_index = $table->get_last_row->cell_count;
-        $header = $table->headers->[$cell_index - 1];
-    }
-
-    return unless $header;
-
-    push @{ $header->cells }, $current_cell;
-
-    return $header;
-}
-
 sub parse {
     my ( $self, $data ) = @_;
 
@@ -166,7 +144,7 @@ sub _add_cell {
     my ($self, $attr, $table) = @_;
 
     my $cell = $table->get_last_row->add_cell($attr);
-    $cell->header($self->current_cell_header($cell));
+    $table->parse_to_column($cell);
     return $cell;
 }
 

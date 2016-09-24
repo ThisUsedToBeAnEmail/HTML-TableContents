@@ -7,12 +7,14 @@ our $VERSION = '0.07';
 
 extends 'HTML::TableContent::Element';
 
-__PACKAGE__->meta->make_immutable;
-
 has 'cells' => (
     is      => 'rw',
     lazy    => 1,
     default => sub { [] },
+);
+
+has '+html_tag' => (
+    default => 'th',
 );
 
 sub add_cell { 
@@ -31,6 +33,7 @@ sub get_first_cell { return $_[0]->get_cell(0); }
 
 1;
 
+__PACKAGE__->meta->make_immutable;
 __END__
 
 =head1 NAME
