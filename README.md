@@ -31,7 +31,7 @@ Version 0.08
 
 # DESCRIPTION
 
-Extract content from HTML tables.
+Extract content from HTML tables. Create HTML tables from content.
 
 # SUBROUTINES/METHODS
 
@@ -52,6 +52,12 @@ Parse a file that contains html.
 Return underlying data structure
 
     $t->raw;   
+
+## render
+
+Render all tables as HTML.
+
+    $t->render;
 
 ## tables
 
@@ -154,20 +160,20 @@ sensible which generally means mapping the text to the selector it finds closest
 
 ## create\_table
 
-Accepts a HashRef of options, it requires data that is passed as an Array of Arrays.
+Accepts a HashRef of options, it currently requires an Array of Arrays.
 
     $t->create_table({ aoa => $aoa });
 
-It will Assume the first array is the tables headers. If you want to turn this functionality off include
-no\_headers.
+It will Assume the first array in the array of arrays is the array containing table headers. 
+You can turn off headers by including the no\_headers flag.
 
     $t->create_table({ aoa => $aoa, no_headers => 1 });
 
-You can also set class, id, colspans, rowspans, styles.
+You can also set class, id, colspan, rowspan, style.
 
     my $options = {
         aoa => $aoa,
-        table => { id => 'first-table' },
+        table => { id => 'first-table' }, # set the table id
         header => { class => 'headers-class' }, # class 'headers-class' will be set on all headers'
         row => { class => 'rows-class' } # class 'row-class' will be set on all rows'
         cell => { class => 'cells-class' } # class 'cells-class' will be set on all cells'
@@ -191,7 +197,7 @@ You can also set class, id, colspans, rowspans, styles.
         ]
     };
 
-    my $table = $t->create_table({ aoa => $aoa });
+    my $table = $t->create_table($options);
 
 ## EXAMPLES
 
