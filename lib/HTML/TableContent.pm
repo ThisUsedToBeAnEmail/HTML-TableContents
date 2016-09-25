@@ -383,7 +383,7 @@ sensible which generally means mapping the text to the selector it finds closest
 
 =head2 create_table
 
-Accepts a HashRef of options, it currently requires an Array of Arrays.
+Accepts a HashRef of options, it currently requires an Array of Arrays as its data.
 
     $t->create_table({ aoa => $aoa });
 
