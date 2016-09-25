@@ -152,41 +152,48 @@ sensible which generally means mapping the text to the selector it finds closest
 
     $t->parse($html);
 
+## create\_table
+
+Accepts a HashRef of options, it requires data that is passed as an Array of Arrays.
+
+    $t->create_table({ aoa => $aoa });
+
+It will Assume the first array is the tables headers. If you want to turn this functionality off include
+no\_headers.
+
+    $t->create_table({ aoa => $aoa, no_headers => 1 });
+
+You can also set class, id, colspans, rowspans, styles.
+
+    my $options = {
+        aoa => $aoa,
+        table => { id => 'first-table' },
+        header => { class => 'headers-class' }, # class 'headers-class' will be set on all headers'
+        row => { class => 'rows-class' } # class 'row-class' will be set on all rows'
+        cell => { class => 'cells-class' } # class 'cells-class' will be set on all cells'
+        rows => [ 
+            {
+                id => 'first' # id for the first row
+                cells => [ # cells belong to rows
+                    {
+                        id => 'one' # set id on the first cell inside the first row
+                    }
+                    ...
+                ]
+            }
+            ...
+        ],
+        headers => [
+            {
+                id => 'first-header' # set id on the first header
+            }
+            ...
+        ]
+    };
+
+    my $table = $t->create_table({ aoa => $aoa });
+
 ## EXAMPLES
-
-LWP::UserAgent
-
-    use HTML::TableContent;
-    use LWP::UserAgent;
-
-    my $url = 'https://developers.facebook.com/docs/graph-api/reference/user/';
-
-    my $html = make_request($url);
-
-    my $tc = HTML::TableContent->new();
-
-    $tc->add_caption_selectors(qw/h3/);
-
-    $tc->parse($html);
-
-    $tc->get_first_table->caption->text;  
-
-    sub make_request {
-        my $url = shift;
-
-        my ua = LWP::UserAgent->new(
-            ssl_opts => { verify_hostname => 1 },
-            agent => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.5) Gecko/20060719 Firefox/1.5.0.5'
-        );
-        my $req = HTTP::Request->new(GET => $url);
-        my $reponse = $ua->request($req);
-
-        if ( $response->is_success ) {
-            return $response->decoded_content;
-        } else {
-            .....
-        }
-    }
 
 Text::CSV\_XS
 
@@ -196,22 +203,8 @@ Text::CSV\_XS
     my $aoa = csv ( in => 'test.csv' );
 
     my $tc = HTML::TableContent->new();
-    
-    my $table = $tc->add_table({ id => '1-row' });
 
-    my $headers = shift $aoa->[0];
-
-    foreach my $header ( @{ $headers } ) {
-        $table->add_header({ text => $header });
-    }
-
-    foreach my $csv_row ( @{ $aoa } ) {
-        my $row = $table->add_row({});
-        for (@{$csv_row}){
-            my $cell = $row->add_cell({ text => $_ });
-            $table->parse_to_column($cell);
-        }
-    }
+    my $table = $tc->create_table({ aoa => $aoa });
 
     $table->render;
 
