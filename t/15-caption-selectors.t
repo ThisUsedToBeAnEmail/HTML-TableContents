@@ -15,7 +15,7 @@ $tc->add_caption_selectors(qw/h3/);
 
 $tc->parse_file('t/html/horizontal/facebook.html');
 
-is($tc->table_count, 17, "correct table count");
+is($tc->table_count, 13, "correct table count");
 
 is($tc->get_first_table->caption->text, 'Fields', "expected caption text: Fields");
 
@@ -79,15 +79,15 @@ is($table->header_count, 0, "header count: 0");
 
 ok($tc->clear_first_table, "okay drop first table");
 
-is($tc->table_count, 16, "one less table: 16");
+is($tc->table_count, 12, "one less table: 16");
 
 ok($tc->clear_last_table, "drop last table");
 
-is($tc->table_count, 15, "one less table: 15");
+is($tc->table_count, 11, "one less table: 15");
 
 ok($tc->clear_table(5), "drop table by index 5");
 
-is($tc->table_count, 14, "one less table: 14");
+is($tc->table_count, 10, "one less table: 14");
 
 ok($table = $tc->get_first_table);
 
@@ -105,7 +105,7 @@ is($table->get_first_row->cell_count, 1, "okay row cell count - 1");
 
 ok( $tc->clear_table(0) );
 
-is( $tc->table_count, 13, "one less table: 13");
+is( $tc->table_count, 9, "one less table: 13");
 
 ok($table = $tc->get_first_table);
 

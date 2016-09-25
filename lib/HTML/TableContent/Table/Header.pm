@@ -34,6 +34,7 @@ sub get_first_cell { return $_[0]->get_cell(0); }
 1;
 
 __PACKAGE__->meta->make_immutable;
+
 __END__
 
 =head1 NAME

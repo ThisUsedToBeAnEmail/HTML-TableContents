@@ -30,6 +30,7 @@ t/12-nest-tables.t
 t/13-vertical-tables.t
 t/14-build-one-table.t
 t/15-caption-selectors.t
+t/16-aoa-test.t
 t/pod.t
 t/html/horizontal/facebook.html
 t/html/horizontal/catch.html

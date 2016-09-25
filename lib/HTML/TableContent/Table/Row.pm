@@ -69,10 +69,10 @@ around raw => sub {
     my ( $orig, $self ) = ( shift, shift );
 
     my $row = $self->$orig(@_);
-    $row->{cells} = [];
-    foreach my $cell ( $self->all_cells ) {
-        push @{ $row->{cells} }, $cell->raw;
-    }
+
+    my @cells = map { $_->raw } $self->all_cells;
+    $row->{cells} = \@cells;
+    
     return $row;
 };
 
@@ -93,7 +93,6 @@ around has_nested => sub {
 sub _render_element {
     my @cells = map { $_->render } $_[0]->all_cells;
     my $cell = sprintf '%s' x @cells, @cells;
-
     return $cell;
 };
 

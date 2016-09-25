@@ -81,15 +81,11 @@ around raw => sub {
 
     if ( defined $self->caption ) { $table->{caption} = $self->caption->text }
 
-    $table->{headers} = [];
-    foreach my $header ( $self->all_headers ) {
-        push @{ $table->{headers} }, $header->raw;
-    }
+    my @headers =  map { $_->raw } $self->all_headers;
+    $table->{headers} = \@headers;
 
-    $table->{rows} = [];
-    foreach my $row ( $self->all_rows ) {
-        push @{ $table->{rows} }, $row->raw;
-    }
+    my @rows =  map { $_->raw} $self->all_rows;
+    $table->{rows} = \@rows;
 
     return $table;
 };
