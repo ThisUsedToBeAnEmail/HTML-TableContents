@@ -94,7 +94,7 @@ around raw => sub {
     return $table;
 };
 
-sub render {
+sub _render_element {
     my $args = $_[0]->attributes;
     
     my @rows = ( );
@@ -116,15 +116,7 @@ sub render {
         
     my $row = sprintf '%s' x @rows, @rows;
 
-    my $attr = '';
-    foreach my $attribute (@{ $_[0]->attribute_list }) {
-        if (my $val = $args->{$attribute}) {
-            $attr .= sprintf '%s="%s" ', $attribute, $val;
-        }
-    }
-
-    my $tag = $_[0]->html_tag;
-    return $_[0]->tidy_html(sprintf('<%s %s>%s</%s>', $tag, $attr, $row, $tag));
+    return $row;
 }
 
 sub headers_spec {

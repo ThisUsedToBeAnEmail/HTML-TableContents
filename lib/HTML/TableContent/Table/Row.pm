@@ -90,25 +90,12 @@ around has_nested => sub {
     return $nested;
 };
 
-sub render {
-    my $args = $_[0]->attributes;
-    
+sub _render_element {
     my @cells = map { $_->render } $_[0]->all_cells;
     my $cell = sprintf '%s' x @cells, @cells;
 
-    my $attr = '';
-    foreach my $attribute (@{ $_[0]->attribute_list }) {
-        if (my $val = $args->{$attribute}) {
-            $attr .= sprintf '%s="%s" ', $attribute, $val;
-        }
-    }
-
-    my $tag = $_[0]->html_tag;
-
-    my $html = sprintf('<%s %s>%s</%s>', $tag, $attr, $cell, $tag);
-
-    return $_[0]->tidy_html($html);
-}
+    return $cell;
+};
 
 __PACKAGE__->meta->make_immutable;
 

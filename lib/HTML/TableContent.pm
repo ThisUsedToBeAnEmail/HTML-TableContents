@@ -1,6 +1,6 @@
 package HTML::TableContent;
 
-use Carp;
+use Carp qw/croak carp/;
 use Moo;
 
 use HTML::TableContent::Parser;
@@ -122,6 +122,90 @@ sub parse_file {
     my $current_tables = $self->parser->parse_file($file);
     push @{ $self->tables }, @{$current_tables};
     return $current_tables;
+}
+
+sub create_table {
+    my ($self, $options) = @_; 
+
+    my $table_options = delete $options->{table} || { };
+    my $aoa = delete $options->{aoa};
+
+    croak 'create_tables currently requires an array of arrays representing the data.'
+        unless scalar @{ $aoa };
+
+    my $table = $self->add_table($table_options);
+    
+    unless ( defined $options->{no_headers} ) {
+        my $headers = shift @{ $aoa };
+
+        foreach my $header ( @{ $headers } ) {
+            my $header_options = { };
+            
+            if ( my $head_base = $options->{header} ) {
+                for ( keys %{ $head_base } ){
+                    $header_options->{$_} = $head_base->{$_};
+                 }
+            }
+
+            if ( defined $options->{headers} && scalar @{ $options->{headers} } ) {
+                my $first = shift @{ $options->{headers} };
+                for (keys %{ $first }) {
+                    $header_options->{$_} = $first->{$_}; 
+                }
+            }
+
+            $header_options->{text} = $header;
+
+            my $header = $table->add_header($header_options);
+        }
+    }
+
+    foreach my $array ( @{ $aoa } ) {
+        my $row_options = { };
+
+        if ( my $row_base = $options->{row} ) {
+            for ( keys %{ $row_base } ) {
+                $row_options->{$_} = $row_base->{$_};
+            }
+        }
+
+        if ( defined $options->{rows} && scalar @{ $options->{rows} } ) {
+            my $first = shift @{ $options->{rows} };
+            for ( keys %{ $first } ) {
+                $row_options->{$_} = $first->{$_};
+            }
+        }
+
+        my $cells = [ ];
+        if ( defined $row_options->{cells} ) {
+            $cells = delete $row_options->{cells};
+        }
+
+        my $row = $table->add_row($row_options);
+        
+        foreach my $text ( @{ $array } ) {
+            my $cell_options = { };
+
+            if ( my $cell_base = $options->{cell} ) {
+                for ( keys %{ $cell_base } ) {
+                    $cell_options->{$_} = $cell_base->{$_};
+                }
+            }
+
+            if ( defined $cells && scalar @{ $cells } ) {
+                my $first = shift @{ $cells };
+                for ( keys %{ $first } ) {
+                    $cell_options->{$_} = $first->{$_};
+                }
+            }
+
+            $cell_options->{text} = $text;
+            my $cell = $row->add_cell($cell_options);
+            $table->parse_to_column($cell);
+        }
+    }
+
+    return $table;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -286,41 +370,49 @@ sensible which generally means mapping the text to the selector it finds closest
 
     $t->parse($html);
 
+
+=head2 create_table
+
+Accepts a HashRef of options, it requires data that is passed as an Array of Arrays.
+
+    $t->create_table({ aoa => $aoa });
+
+It will Assume the first array is the tables headers. If you want to turn this functionality off include
+no_headers.
+
+    $t->create_table({ aoa => $aoa, no_headers => 1 });
+
+You can also set class, id, colspans, rowspans, styles.
+
+    my $options = {
+        aoa => $aoa,
+        table => { id => 'first-table' },
+        header => { class => 'headers-class' }, # class 'headers-class' will be set on all headers'
+        row => { class => 'rows-class' } # class 'row-class' will be set on all rows'
+        cell => { class => 'cells-class' } # class 'cells-class' will be set on all cells'
+        rows => [ 
+            {
+                id => 'first' # id for the first row
+                cells => [ # cells belong to rows
+                    {
+                        id => 'one' # set id on the first cell inside the first row
+                    }
+                    ...
+                ]
+            }
+            ...
+        ],
+        headers => [
+            {
+                id => 'first-header' # set id on the first header
+            }
+            ...
+        ]
+    };
+
+    my $table = $t->create_table({ aoa => $aoa });
+
 =head2 EXAMPLES
-
-LWP::UserAgent
-
-    use HTML::TableContent;
-    use LWP::UserAgent;
-
-    my $url = 'https://developers.facebook.com/docs/graph-api/reference/user/';
-
-    my $html = make_request($url);
-
-    my $tc = HTML::TableContent->new();
-
-    $tc->add_caption_selectors(qw/h3/);
-
-    $tc->parse($html);
-
-    $tc->get_first_table->caption->text;  
-
-    sub make_request {
-        my $url = shift;
-
-        my ua = LWP::UserAgent->new(
-            ssl_opts => { verify_hostname => 1 },
-            agent => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.5) Gecko/20060719 Firefox/1.5.0.5'
-        );
-        my $req = HTTP::Request->new(GET => $url);
-        my $reponse = $ua->request($req);
-
-        if ( $response->is_success ) {
-            return $response->decoded_content;
-        } else {
-            .....
-        }
-    }
 
 Text::CSV_XS
 
@@ -330,22 +422,8 @@ Text::CSV_XS
     my $aoa = csv ( in => 'test.csv' );
 
     my $tc = HTML::TableContent->new();
-    
-    my $table = $tc->add_table({ id => '1-row' });
 
-    my $headers = shift $aoa->[0];
-
-    foreach my $header ( @{ $headers } ) {
-        $table->add_header({ text => $header });
-    }
-
-    foreach my $csv_row ( @{ $aoa } ) {
-        my $row = $table->add_row({});
-        for (@{$csv_row}){
-            my $cell = $row->add_cell({ text => $_ });
-            $table->parse_to_column($cell);
-        }
-    }
+    my $table = $tc->create_table({ aoa => $aoa });
 
     $table->render;
 

@@ -1,6 +1,7 @@
 package HTML::TableContent::Element;
 
 use Moo;
+use HTML::TableContent::Table;
 
 our $VERSION = '0.08';
 
@@ -67,6 +68,16 @@ sub get_nested { return $_[0]->nested->[ $_[1] ]; }
 
 sub all_nested { return @{ $_[0]->nested }; }
 
+sub add_nested { 
+    my $table = HTML::TableContent::Table->new($_[1]);
+    push @{ $_[0]->nested }, $table;
+    return $table;
+}
+
+sub add_to_nested {
+    return push @{ $_[0]->nested}, $_[1];
+}
+
 sub text { return join q{ }, @{ $_[0]->data }; }
 
 sub add_text { return push @{ $_[0]->data }, $_[1]; }
@@ -79,10 +90,19 @@ sub add_style { my $style = $_[0]->style; return $_[0]->style(sprintf('%s %s', $
 
 sub raw {
     my $args = $_[0]->attributes;
+    
+    if ($_[0]->has_nested) {
+        $args->{nested} = ( );
+        for ( $_[0]->all_nested ) {
+            push @{ $args->{nested} }, $_->raw;
+        }
+    }
+    
     if ( scalar @{ $_[0]->data } ) {
         $args->{text} = $_[0]->text;
         $args->{data} = $_[0]->data;
     }
+    
     return $args;
 }
 
@@ -97,7 +117,11 @@ sub render {
     }
 
     my $tag = $_[0]->html_tag;
-    return $_[0]->tidy_html(sprintf("<%s %s>%s</%s>", $tag, $attr, &text, $tag));
+    return $_[0]->tidy_html(sprintf("<%s %s>%s</%s>", $tag, $attr, $_[0]->_render_element, $tag));
+}
+
+sub _render_element {
+    return $_[0]->text;
 }
 
 sub _trigger_class { return $_[0]->attributes->{class} = $_[1]; }
@@ -203,6 +227,12 @@ ArrayRef of nested Tables.
 Array of nested Tables.
 
     $element->all_nested
+
+=head2 add_nested
+
+Add a nested L<HTML::TableContent::Table> to the element.
+
+    $element->add_nested({});
 
 =head2 has_nested
 

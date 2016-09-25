@@ -10,6 +10,14 @@ has '+html_tag' => (
     default => 'caption',
 );
 
+around render => sub {
+    my ($orig, $self) = ( shift, shift );
+
+    my $tag = $self->$orig(@_); 
+
+    return $self->tidy_html(sprintf("%s", $tag), [ text => $self->text ]);
+};
+
 __PACKAGE__->meta->make_immutable;
 
 1;
