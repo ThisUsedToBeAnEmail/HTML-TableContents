@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 6;
+    plan tests => 7;
     my $html = open_file('t/html/horizontal/page-two-tables.html');
     run_tests({
         html => $html,
@@ -40,7 +40,7 @@ subtest "basic_two_column_table" => sub {
 };
 
 subtest "basic_two_column_table_file" => sub {
-    plan tests => 6;
+    plan tests => 7;
     my $file = 't/html/horizontal/page-two-tables.html';
     run_tests({
         file => $file,
@@ -97,6 +97,9 @@ sub run_tests {
     ok(my $table = $t->get_first_table, "get first table");
       
     ok(my $row = $table->get_first_row, "get first row");
+
+    use Data::Dumper;
+    is($table->get_first_row->get_first_cell->links->[0], qw/work.html/);
 
     is($row->cell_count, $args->{cell_count}, "expected row count");
 

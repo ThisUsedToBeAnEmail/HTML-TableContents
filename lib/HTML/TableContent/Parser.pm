@@ -71,7 +71,7 @@ sub start {
         my $table = $self->current_or_nested;
         my $action = $option->{add};
         my $element = $self->$action($attr, $table);
-        $self->current_element($element);
+        return $self->current_element($element);
     }
 
     if ( $self->has_caption_selector ) {
@@ -90,6 +90,10 @@ sub start {
                }
            }
         }
+    }
+
+    if ($self->current_element && $attr->{href}) {
+        push @{ $self->current_element->links }, $attr->{href};
     }
 
     return;

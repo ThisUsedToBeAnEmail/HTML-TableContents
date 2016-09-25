@@ -48,7 +48,7 @@ has data => (
     builder => 1,
 );
 
-has nested => (
+has [qw/nested links/] => (
     is      => 'rw',
     default => sub { [] },
 );
