@@ -65,6 +65,15 @@ my $options = {
 
 ok(my $table = $tc->create_table($options));
 
+$aoa = [
+    [ 'Name', 'Telephone', 'Postcode'],
+    [ 'Rich',  '123456',  'OX16 422' ],
+    [ 'Sam',   '1243543', 'OX76 55R' ],
+    [ 'Frank', '9553234', 'OX14 R4E' ]
+];
+
+is_deeply($table->aoa, $aoa, "aoa is the same as passed in");
+
 is($table->row_count, 3, "expected row count 3");
 
 is($table->header_count, 3, "expected header count 3");
@@ -127,7 +136,7 @@ is($row->get_last_cell->header->text, 'Postcode', "expected header: Postcode");
 
 is($row->get_last_cell->class, 'cells', "expected header class: cells");
 
-my $aoa = [
+$aoa = [
     [ 'Name', 'Telephone', 'Postcode'],
     [ 'Rich',  '123456',  'OX16 422' ],
     [ 'Sam',   '1243543', 'OX76 55R' ],
@@ -135,6 +144,15 @@ my $aoa = [
 ];
 
 ok(my $basic = $tc->create_table({ aoa => $aoa }));
+
+$aoa = [
+    [ 'Name', 'Telephone', 'Postcode'],
+    [ 'Rich',  '123456',  'OX16 422' ],
+    [ 'Sam',   '1243543', 'OX76 55R' ],
+    [ 'Frank', '9553234', 'OX14 R4E' ]
+];
+
+is_deeply($basic->aoa, $aoa, "aoa is the same as passed in");
 
 is($basic->row_count, 3, "expected row count 3");
 

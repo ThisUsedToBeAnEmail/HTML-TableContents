@@ -22,6 +22,46 @@ has '+html_tag' => (
     default => 'table',
 );
 
+around raw => sub {
+    my ( $orig, $self ) = ( shift, shift );
+
+    my $table = $self->$orig(@_);
+
+    if ( defined $self->caption ) { $table->{caption} = $self->caption->text }
+
+    my @headers =  map { $_->raw } $self->all_headers;
+    $table->{headers} = \@headers;
+
+    my @rows =  map { $_->raw} $self->all_rows;
+    $table->{rows} = \@rows;
+
+    return $table;
+};
+
+sub aoa {
+    my $aoa = [ ];
+    
+    my @headers = map { $_->data->[0] } $_[0]->all_headers;
+    push @{ $aoa }, \@headers;
+    
+    for ( $_[0]->all_rows ) {
+       my @row = map { $_->data->[0] } $_->all_cells;
+       push @{ $aoa }, \@row; 
+    }
+    
+    return $aoa;
+};
+
+sub aoh {
+    my $aoh = [ ];
+    for ($_[0]->all_rows) {
+        my $hash = { };
+        map { $hash->{$_->header->data->[0]} = $_->data->[0] } $_->all_cells;
+        push @{ $aoh }, $hash;
+    }
+    return $aoh;
+};
+
 sub add_caption { 
     my $caption = HTML::TableContent::Table::Caption->new($_[1]);   
     $_[0]->caption($caption);
@@ -73,22 +113,6 @@ sub clear_header { return splice @{ $_[0]->headers }, $_[1], 1; }
 sub clear_first_header { return shift @{ $_[0]->headers } }
 
 sub clear_last_header { return $_[0]->clear_header( $_[0]->header_count - 1 ); }
-
-around raw => sub {
-    my ( $orig, $self ) = ( shift, shift );
-
-    my $table = $self->$orig(@_);
-
-    if ( defined $self->caption ) { $table->{caption} = $self->caption->text }
-
-    my @headers =  map { $_->raw } $self->all_headers;
-    $table->{headers} = \@headers;
-
-    my @rows =  map { $_->raw} $self->all_rows;
-    $table->{rows} = \@rows;
-
-    return $table;
-};
 
 sub _render_element {
     my $args = $_[0]->attributes;
