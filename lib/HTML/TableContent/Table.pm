@@ -300,6 +300,29 @@ sub clear_column {
     return 1;
 }
 
+sub sort { 
+    my ($self, $options) = @_;
+
+    if ( my $order = $options->{order}) {
+        my $headers = [ ];
+        foreach my $header (@{ $order }) {
+            push @{ $headers }, grep { $_->text =~ m/$header/ixms } $self->all_headers;
+        }
+        
+        $self->headers($headers);
+        
+        foreach my $row ( $self->all_rows ) {
+            my $cells = [ ];
+            foreach my $header (@{ $order }) {
+                push @{ $cells }, grep { $_->header->text =~ m/$header/ixms } $row->all_cells;
+            }
+            $row->cells($cells); 
+        }
+    }
+
+    return $self;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

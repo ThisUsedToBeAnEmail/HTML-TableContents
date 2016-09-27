@@ -175,6 +175,7 @@ sub _create_from_aoh {
         }
     }
 
+    $table->sort($options);
     return $table;
 }
 
