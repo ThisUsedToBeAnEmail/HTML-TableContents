@@ -132,13 +132,28 @@ sub create_table {
     my ($self, $options) = @_; 
 
     my $table_options = delete $options->{table} || { };
-    my $aoa = delete $options->{aoa};
-
-    croak 'create_tables currently requires an array of arrays representing the data.'
-        unless scalar @{ $aoa };
 
     my $table = $self->add_table($table_options);
     
+    if ( exists $options->{aoa} ) {
+        $table = $self->_create_from_aoa($table, $options);
+    }
+    elsif ( exists $options->{aoh} ) {
+       $table = $self->_create_from_aoh($table, $options);
+    }
+    else {
+        croak 'create_tables currently requires an array of arrays or an array of hashes representing the data.';
+     }
+
+    return $table;
+}
+    
+
+sub _create_from_aoa {
+    my ($self, $table, $options) = @_;
+
+    my $aoa = $options->{aoa};
+
     unless ( defined $options->{no_headers} ) {
         my $headers = shift @{ $aoa };
 
