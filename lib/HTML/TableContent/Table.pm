@@ -195,8 +195,8 @@ sub parse_to_column {
     my $row = $self->get_last_row;
 
     my $header;
-    if ( $row->header ) {
-        $header = $row->header;
+    if ( my $row_header = $row->header ) {
+        $header = $row_header;
     }
     else {
         my $cell_index = $row->cell_count;
@@ -257,7 +257,6 @@ sub _dedupe_object_array_not_losing_order {
     return @new_items;
 }
 
-
 sub _filter_headers {
     my ( $self, @headers ) = @_;
 
@@ -278,7 +277,6 @@ sub _filter_headers {
 
     return 1;
 }
-
 
 sub clear_column {
     my ($self, @headers) = @_;

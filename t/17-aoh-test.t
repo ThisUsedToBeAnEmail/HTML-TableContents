@@ -140,7 +140,7 @@ is($row->get_last_cell->header->text, 'Postcode', "expected header: Postcode");
 
 is($row->get_last_cell->class, 'cells', "expected header class: cells");
 
-ok(my $basic = $tc->create_table({ aoa => $aoh }));
+ok(my $basic = $tc->create_table({ aoh => $aoh }));
 
 is_deeply($basic->aoh, $aoh, "aoa is the same as passed in");
 

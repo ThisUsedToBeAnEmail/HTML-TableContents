@@ -147,7 +147,37 @@ sub create_table {
 
     return $table;
 }
-    
+
+sub _create_from_aoh {
+    my ($self, $table, $options) = @_;
+
+    my $aoh = $options->{aoh};
+
+    unless ( defined $options->{no_headers} ) {
+        my @headers = keys %{ $aoh->[0] };
+        for (@headers) {
+            my $header_options = $self->_create_options('header', $options);
+            $header_options->{text} = $_;
+            $table->add_header($header_options);
+         }
+
+        foreach my $hash ( @{ $aoh } ) {
+            $options->{cells} =  $options->{rows}->[0]->{cells}; 
+            my $row_options = $self->_create_options('row', $options);
+            my $row = $table->add_row($row_options);
+            for ( $table->all_headers ) {
+                my $cell_options = $self->_create_options('cell', $options);
+                $cell_options->{text} = $hash->{$_->text};
+                my $cell = $row->add_cell($cell_options);
+                $cell->header($_);
+                push @{ $_->cells }, $cell;
+            }
+        }
+    }
+
+    return $table;
+}
+
 
 sub _create_from_aoa {
     my ($self, $table, $options) = @_;
@@ -157,74 +187,55 @@ sub _create_from_aoa {
     unless ( defined $options->{no_headers} ) {
         my $headers = shift @{ $aoa };
 
-        foreach my $header ( @{ $headers } ) {
-            my $header_options = { };
-            
-            if ( my $head_base = $options->{header} ) {
-                for ( keys %{ $head_base } ){
-                    $header_options->{$_} = $head_base->{$_};
-                 }
-            }
-
-            if ( defined $options->{headers} && scalar @{ $options->{headers} } ) {
-                my $first = shift @{ $options->{headers} };
-                for (keys %{ $first }) {
-                    $header_options->{$_} = $first->{$_}; 
-                }
-            }
+        foreach my $header ( @{ $headers }) {
+            my $header_options = $self->_create_options('header', $options);
 
             $header_options->{text} = $header;
-
-            my $header = $table->add_header($header_options);
+            $table->add_header($header_options);
         }
     }
 
-    foreach my $array ( @{ $aoa } ) {
-        my $row_options = { };
-
-        if ( my $row_base = $options->{row} ) {
-            for ( keys %{ $row_base } ) {
-                $row_options->{$_} = $row_base->{$_};
-            }
-        }
-
-        if ( defined $options->{rows} && scalar @{ $options->{rows} } ) {
-            my $first = shift @{ $options->{rows} };
-            for ( keys %{ $first } ) {
-                $row_options->{$_} = $first->{$_};
-            }
-        }
-
-        my $cells = [ ];
-        if ( defined $row_options->{cells} ) {
-            $cells = delete $row_options->{cells};
-        }
-
+    for my $array ( @{ $aoa } ) {
+        $options->{cells} = $options->{rows}->[0]->{cells};
+        my $row_options = $self->_create_options('row', $options);
         my $row = $table->add_row($row_options);
         
-        foreach my $text ( @{ $array } ) {
-            my $cell_options = { };
-
-            if ( my $cell_base = $options->{cell} ) {
-                for ( keys %{ $cell_base } ) {
-                    $cell_options->{$_} = $cell_base->{$_};
-                }
-            }
-
-            if ( defined $cells && scalar @{ $cells } ) {
-                my $first = shift @{ $cells };
-                for ( keys %{ $first } ) {
-                    $cell_options->{$_} = $first->{$_};
-                }
-            }
-
+        for my $text ( @{ $array } ) {
+            my $cell_options = $self->_create_options('cell', $options);
+            
             $cell_options->{text} = $text;
+            
             my $cell = $row->add_cell($cell_options);
             $table->parse_to_column($cell);
         }
     }
 
     return $table;
+}
+
+sub _create_options {
+    my ($self, $element, $options) = @_;
+
+    my $element_options = { };
+    
+    if ( my $base = $options->{$element} ) {
+        for ( keys %{ $base } ) {
+            $element_options->{$_} = $base->{$_};
+        }
+    }
+
+    my $elements = $element . 's';
+
+    if ( my $custom = $options->{$elements} ) {
+
+
+        my $first = shift @{ $options->{$elements} };
+        for ( keys %{ $first } ) {
+            $element_options->{$_} = $first->{$_};
+        }
+    }
+
+    return $element_options;
 }
 
 __PACKAGE__->meta->make_immutable;
