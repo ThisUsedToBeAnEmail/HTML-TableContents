@@ -155,30 +155,35 @@ sub _create_from_aoh {
 
     unless ( defined $options->{no_headers} ) {
         my @headers = keys %{ $aoh->[0] };
+        if (my $order = $options->{order}){
+            my @heads = ( );
+            foreach my $header (@{ $order }) {
+                push @heads, grep { $_ =~ m/$header/ixms } @headers;
+            }
+            @headers = @heads;
+        }
         for (@headers) {
             my $header_options = $self->_create_options('header', $options);
             $header_options->{text} = $_;
             $table->add_header($header_options);
-         }
-
-        foreach my $hash ( @{ $aoh } ) {
-            $options->{cells} =  $options->{rows}->[0]->{cells}; 
-            my $row_options = $self->_create_options('row', $options);
-            my $row = $table->add_row($row_options);
-            for ( $table->all_headers ) {
-                my $cell_options = $self->_create_options('cell', $options);
-                $cell_options->{text} = $hash->{$_->text};
-                my $cell = $row->add_cell($cell_options);
-                $cell->header($_);
-                push @{ $_->cells }, $cell;
-            }
         }
     }
 
-    $table->sort($options);
+    foreach my $hash ( @{ $aoh } ) {
+        $options->{cells} =  $options->{rows}->[0]->{cells}; 
+        my $row_options = $self->_create_options('row', $options);
+        my $row = $table->add_row($row_options);
+        for ( $table->all_headers ) {
+            my $cell_options = $self->_create_options('cell', $options);
+            $cell_options->{text} = $hash->{$_->text};
+            my $cell = $row->add_cell($cell_options);
+            $cell->header($_);
+            push @{ $_->cells }, $cell;
+        }
+    }
+
     return $table;
 }
-
 
 sub _create_from_aoa {
     my ($self, $table, $options) = @_;
@@ -228,8 +233,6 @@ sub _create_options {
     my $elements = $element . 's';
 
     if ( my $custom = $options->{$elements} ) {
-
-
         my $first = shift @{ $options->{$elements} };
         for ( keys %{ $first } ) {
             $element_options->{$_} = $first->{$_};
@@ -410,11 +413,19 @@ sensible which generally means mapping the text to the selector it finds closest
 
 =head2 create_table
 
-Accepts a HashRef of options, it currently requires an Array of Arrays as its data.
+Accepts a HashRef of options, it currently requires an Array of Arrays or an Array or Hashes as its data.
 
     $t->create_table({ aoa => $aoa });
 
-It will Assume the first array in the array of arrays is the array containing table headers. 
+    ...
+
+    $t->create_table({ aoh => $aoh });
+
+Hashes have no order so pass in an array.
+
+    $t->create_table({ aoh => $aoh, order => qw/id name address/ });
+
+It will Assume the first array in the array of arrays is the array containing table headers, or for a hash the keys.
 You can turn off headers by including the no_headers flag.
 
     $t->create_table({ aoa => $aoa, no_headers => 1 });
