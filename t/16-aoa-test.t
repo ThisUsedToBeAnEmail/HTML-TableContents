@@ -203,7 +203,7 @@ my $no_header_options = {
     ],
 };
 
-ok(my $table = $tc->create_table($no_header_options));
+ok($table = $tc->create_table($no_header_options));
 
 is_deeply($table->aoa, $aoa, "aoa is the same as passed in");
 

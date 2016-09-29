@@ -214,7 +214,7 @@ my $no_header_options = {
     ],
 };
 
-ok(my $table = $tc->create_table($no_header_options));
+ok($table = $tc->create_table($no_header_options));
 
 is($table->row_count, 3, "expected row count 3");
 
