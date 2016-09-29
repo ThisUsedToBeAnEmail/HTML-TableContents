@@ -24,6 +24,42 @@ has '+html_tag' => (
     default => 'tr',
 );
 
+around raw => sub {
+    my ( $orig, $self ) = ( shift, shift );
+
+    my $row = $self->$orig(@_);
+
+    my @cells = map { $_->raw } $self->all_cells;
+    $row->{cells} = \@cells;
+    
+    return $row;
+};
+
+around has_nested => sub {
+    my ( $orig, $self ) = ( shift, shift );
+
+    my $nested = $self->$orig(@_);
+
+    foreach my $cell ( $self->all_cells ) {
+        if ( $cell->has_nested ) {
+            $nested = 1;
+        }
+    }
+
+    return $nested;
+};
+
+sub hash {
+    my $hash = { };
+    map { $hash->{$_->header->data->[0]} = $_->data->[0] } $_[0]->all_cells;
+    return $hash;
+}
+
+sub array {
+    my @row = map { $_->data->[0] } $_[0]->all_cells;
+    return @row;
+}
+
 sub add_header { 
     my $header = HTML::TableContent::Table::Header->new($_[1]);
     $_[0]->header($header); 
@@ -64,31 +100,6 @@ sub _filter_headers {
     }
     return $self->cells($cells);
 }
-
-around raw => sub {
-    my ( $orig, $self ) = ( shift, shift );
-
-    my $row = $self->$orig(@_);
-
-    my @cells = map { $_->raw } $self->all_cells;
-    $row->{cells} = \@cells;
-    
-    return $row;
-};
-
-around has_nested => sub {
-    my ( $orig, $self ) = ( shift, shift );
-
-    my $nested = $self->$orig(@_);
-
-    foreach my $cell ( $self->all_cells ) {
-        if ( $cell->has_nested ) {
-            $nested = 1;
-        }
-    }
-
-    return $nested;
-};
 
 sub _render_element {
     my @cells = map { $_->render } $_[0]->all_cells;

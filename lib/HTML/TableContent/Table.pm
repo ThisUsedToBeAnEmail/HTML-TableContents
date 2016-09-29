@@ -47,7 +47,7 @@ sub aoa {
     }
 
     for ( $_[0]->all_rows ) {
-       my @row = map { $_->data->[0] } $_->all_cells;
+       my @row = $_->array;
        push @{ $aoa }, \@row; 
     }
     
@@ -57,8 +57,7 @@ sub aoa {
 sub aoh {
     my $aoh = [ ];
     for ($_[0]->all_rows) {
-        my $hash = { };
-        map { $hash->{$_->header->data->[0]} = $_->data->[0] } $_->all_cells;
+        my $hash = $_->hash;
         push @{ $aoh }, $hash;
     }
     return $aoh;
