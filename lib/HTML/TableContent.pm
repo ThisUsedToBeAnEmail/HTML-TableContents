@@ -6,7 +6,7 @@ use Moo;
 use HTML::TableContent::Parser;
 use HTML::TableContent::Table;
 
-our $VERSION = '0.08';
+our $VERSION = '0.10';
 
 has parser => (
     is      => 'rw',
@@ -152,33 +152,38 @@ sub _create_from_aoh {
     my ($self, $table, $options) = @_;
 
     my $aoh = $options->{aoh};
+    my @headers = keys %{ $aoh->[0] };
+    
+    if (my $order = $options->{order}){
+        my @heads = ( );
+        foreach my $header (@{ $order }) {
+            push @heads, grep { $_ =~ m/$header/ixms } @headers;
+        }
+        @headers = @heads;
+    }
 
     unless ( defined $options->{no_headers} ) {
-        my @headers = keys %{ $aoh->[0] };
-        if (my $order = $options->{order}){
-            my @heads = ( );
-            foreach my $header (@{ $order }) {
-                push @heads, grep { $_ =~ m/$header/ixms } @headers;
-            }
-            @headers = @heads;
-        }
         for (@headers) {
             my $header_options = $self->_create_options('header', $options);
             $header_options->{text} = $_;
             $table->add_header($header_options);
         }
+        @headers = $table->all_headers;
     }
 
     foreach my $hash ( @{ $aoh } ) {
         $options->{cells} =  $options->{rows}->[0]->{cells}; 
         my $row_options = $self->_create_options('row', $options);
         my $row = $table->add_row($row_options);
-        for ( $table->all_headers ) {
+        for (@headers) {
+            my $text = defined $options->{no_headers} ? $_ : $_->text;
             my $cell_options = $self->_create_options('cell', $options);
-            $cell_options->{text} = $hash->{$_->text};
+            $cell_options->{text} = $hash->{$text};
             my $cell = $row->add_cell($cell_options);
-            $cell->header($_);
-            push @{ $_->cells }, $cell;
+            unless ( defined $options->{no_headers} ) {
+                $cell->header($_);
+                push @{ $_->cells }, $cell;
+            }
         }
     }
 
@@ -188,10 +193,10 @@ sub _create_from_aoh {
 sub _create_from_aoa {
     my ($self, $table, $options) = @_;
 
-    my $aoa = $options->{aoa};
+    my @aoa = @{ $options->{aoa}};
 
     unless ( defined $options->{no_headers} ) {
-        my $headers = shift @{ $aoa };
+        my $headers = shift @aoa;
 
         foreach my $header ( @{ $headers }) {
             my $header_options = $self->_create_options('header', $options);
@@ -201,7 +206,7 @@ sub _create_from_aoa {
         }
     }
 
-    for my $array ( @{ $aoa } ) {
+    for my $array ( @aoa ) {
         $options->{cells} = $options->{rows}->[0]->{cells};
         my $row_options = $self->_create_options('row', $options);
         my $row = $table->add_row($row_options);
@@ -254,7 +259,7 @@ HTML::TableContent - Extract content from HTML tables.
 
 =head1 VERSION
 
-Version 0.08 
+Version 0.10 
 
 =cut
 
@@ -421,14 +426,14 @@ Accepts a HashRef of options, it currently requires an Array of Arrays or an Arr
 
     $t->create_table({ aoh => $aoh });
 
-Hashes have no order so pass in an array.
-
-    $t->create_table({ aoh => $aoh, order => qw/id name address/ });
-
 It will Assume the first array in the array of arrays is the array containing table headers, or for a hash the keys.
 You can turn off headers by including the no_headers flag.
 
     $t->create_table({ aoa => $aoa, no_headers => 1 });
+
+Hashes have no order so pass in an array of headers.
+
+    $t->create_table({ aoh => $aoh, order => qw/id name address/ });
 
 You can also set class, id, colspan, rowspan, style.
 

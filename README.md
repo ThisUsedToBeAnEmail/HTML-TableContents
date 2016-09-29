@@ -4,7 +4,7 @@ HTML::TableContent - Extract content from HTML tables.
 
 # VERSION
 
-Version 0.08 
+Version 0.10 
 
 # SYNOPSIS
 
@@ -160,14 +160,22 @@ sensible which generally means mapping the text to the selector it finds closest
 
 ## create\_table
 
-Accepts a HashRef of options, it currently requires an Array of Arrays.
+Accepts a HashRef of options, it currently requires an Array of Arrays or an Array or Hashes as its data.
 
     $t->create_table({ aoa => $aoa });
 
-It will Assume the first array in the array of arrays is the array containing table headers. 
+    ...
+
+    $t->create_table({ aoh => $aoh });
+
+It will Assume the first array in the array of arrays is the array containing table headers, or for a hash the keys.
 You can turn off headers by including the no\_headers flag.
 
     $t->create_table({ aoa => $aoa, no_headers => 1 });
+
+Hashes have no order so pass in an array of headers.
+
+    $t->create_table({ aoh => $aoh, order => qw/id name address/ });
 
 You can also set class, id, colspan, rowspan, style.
 

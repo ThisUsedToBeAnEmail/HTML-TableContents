@@ -6,7 +6,7 @@ use HTML::TableContent::Table::Caption;
 use HTML::TableContent::Table::Header;
 use HTML::TableContent::Table::Row;
 
-our $VERSION = '0.08';
+our $VERSION = '0.10';
 
 extends 'HTML::TableContent::Element';
 
@@ -42,8 +42,10 @@ sub aoa {
     my $aoa = [ ];
     
     my @headers = map { $_->data->[0] } $_[0]->all_headers;
-    push @{ $aoa }, \@headers;
-    
+    if ( scalar @headers > 0 ) {
+        push @{ $aoa }, \@headers;
+    }
+
     for ( $_[0]->all_rows ) {
        my @row = map { $_->data->[0] } $_->all_cells;
        push @{ $aoa }, \@row; 
@@ -335,7 +337,7 @@ HTML::TableContent::Table - Base class for table's
 
 =head1 VERSION
 
-Version 0.08
+Version 0.10
 
 =cut
 
@@ -377,6 +379,18 @@ Return underlying data structure
 Render the table as HTML.
 
     $table->render;
+
+=head2 aoa
+
+Return table as Array of Arrays.
+
+    $table->aoa;
+
+=head2 aoh
+
+Return table as Array of Hashes.
+
+    $table->aoh;
 
 =head2 attributes
 
