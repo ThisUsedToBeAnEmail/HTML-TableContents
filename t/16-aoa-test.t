@@ -213,7 +213,7 @@ is($table->header_count, 0, "expected header count 0");
 
 is($table->id, 'table-aoa', "table id: table-aoa");
 
-ok(my $row = $table->get_first_row, "get first row");
+ok($row = $table->get_first_row, "get first row");
 
 is($row->id, 'first', "expected row id: first");
 
