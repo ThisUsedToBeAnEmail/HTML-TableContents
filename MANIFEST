@@ -31,6 +31,7 @@ t/13-vertical-tables.t
 t/14-build-one-table.t
 t/15-caption-selectors.t
 t/16-aoa-test.t
+t/17-aoh-test.t
 t/pod.t
 t/html/horizontal/facebook.html
 t/html/horizontal/catch.html
