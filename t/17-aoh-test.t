@@ -177,7 +177,7 @@ is($row->get_last_cell->header->text, 'Postcode', "expected cell header: Postcod
 
 is($row->get_last_cell->class, 'cells', "expected cell class: cells");
 
-my $options = {
+my $no_header_options = {
     aoh   => $aoh,
     no_headers => 1,
     order => ['Name', 'Telephone', 'Postcode'],
@@ -214,7 +214,7 @@ my $options = {
     ],
 };
 
-ok(my $table = $tc->create_table($options));
+ok(my $table = $tc->create_table($no_header_options));
 
 is($table->row_count, 3, "expected row count 3");
 

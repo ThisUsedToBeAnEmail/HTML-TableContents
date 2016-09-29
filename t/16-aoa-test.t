@@ -167,7 +167,7 @@ is($row->get_last_cell->class, 'cells', "expected cell class: cells");
 
 shift @{ $aoa };
 
-my $options = {
+my $no_header_options = {
     aoa   => $aoa,
     no_headers => 1,
     table => {
@@ -203,7 +203,7 @@ my $options = {
     ],
 };
 
-ok(my $table = $tc->create_table($options));
+ok(my $table = $tc->create_table($no_header_options));
 
 is_deeply($table->aoa, $aoa, "aoa is the same as passed in");
 
