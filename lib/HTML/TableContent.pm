@@ -426,12 +426,12 @@ Accepts a HashRef of options, it currently requires an Array of Arrays or an Arr
 
     $t->create_table({ aoh => $aoh });
 
-It will Assume the first array in the array of arrays is the array containing table headers, or for a hash the keys.
+It will Assume the first array in the array of arrays is the array containing table headers, or for a hash its keys.
 You can turn off headers by including the no_headers flag.
 
     $t->create_table({ aoa => $aoa, no_headers => 1 });
 
-Hashes have no order so pass in an array of headers.
+Hashes have no orderd, so to overcome this pass in an array of headers.
 
     $t->create_table({ aoh => $aoh, order => qw/id name address/ });
 

@@ -258,6 +258,12 @@ Get Nested table by index.
 
     $element->get_nested(1);
 
+=head2 links
+
+ArrayRef of href links.
+
+    $element->links;
+
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>
