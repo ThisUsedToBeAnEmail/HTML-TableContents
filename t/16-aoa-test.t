@@ -18,6 +18,26 @@ ok(my $basic = $tc->create_table({ aoa => $aoa }));
 
 is_deeply($basic->aoa, $aoa, "aoa is the same as passed in");
 
+my $aoh = [
+    {
+        'Name' => 'Rich',
+        'Telephone' => '123456',
+        'Postcode' => 'OX16 422',
+    },
+    {
+        'Name' =>  'Sam',
+        'Telephone' => '1243543',
+        'Postcode' => 'OX76 55R',
+    },
+    {
+        'Name' => 'Frank',
+        'Telephone' => '9553234',
+        'Postcode' => 'OX14 R4E',
+    }
+];
+
+is_deeply($basic->aoh, $aoh, "aoa to aoh");
+
 is($basic->row_count, 3, "expected row count 3");
 
 is($basic->header_count, 3, "expected header count 3");
@@ -102,6 +122,8 @@ my $options = {
 ok(my $table = $tc->create_table($options));
 
 is_deeply($table->aoa, $aoa, "aoa is the same as passed in");
+
+is_deeply($table->aoh, $aoh, "aoa to aoh");
 
 is($table->row_count, 3, "expected row count 3");
 

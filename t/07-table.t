@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 14;
+    plan tests => 16;
     my $html = open_file('t/html/horizontal/page-two-tables.html');
     run_tests({
         html => $html,
@@ -92,12 +92,27 @@ subtest "basic_two_column_table" => sub {
         ],
         get_dedupe_header_column => [
             '$100',
+        ],
+        aoa => [
+          [ 'Month', 'Savings' ],
+          [ 'January', '$100' ],
+          [ 'Febuary', '$100' ]
+        ],
+        aoh => [
+            { 
+                'Month' => 'January',
+                'Savings' => '$100',
+            },
+            {
+                'Month' => 'Febuary',
+                'Savings' => '$100',
+            }
         ]
     });
 };
 
 subtest "basic_two_column_table_file" => sub {
-    plan tests => 14;
+    plan tests => 16;
     my $file = 't/html/horizontal/page-two-tables.html';
     run_tests({
         file => $file,
@@ -181,7 +196,22 @@ subtest "basic_two_column_table_file" => sub {
         ],
         get_dedupe_header_column => [
             '$100',
-        ]
+        ],
+        aoa => [
+          [ 'Month', 'Savings' ],
+          [ 'January', '$100' ],
+          [ 'Febuary', '$100' ]
+        ],
+        aoh => [
+            { 
+                'Month' => 'January',
+                'Savings' => '$100',
+            },
+            {
+                'Month' => 'Febuary',
+                'Savings' => '$100',
+            }
+        ],
    });
 };
 
@@ -210,7 +240,10 @@ sub run_tests {
     }
 
     ok(my $table = $t->get_first_table, "get first table");
-        
+    
+    is_deeply($table->aoa, $args->{aoa}, "expected table as aoa");
+    is_deeply($table->aoh, $args->{aoh}, "expected table as aoh");
+
     is($table->header_count, $args->{header_count}, "expected headers count");
 
     is($table->row_count, $args->{row_count}, "expected row count");

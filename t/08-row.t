@@ -8,7 +8,7 @@ BEGIN {
 }
 
 subtest "basic_two_column_table" => sub {
-    plan tests => 7;
+    plan tests => 9;
     my $html = open_file('t/html/horizontal/page-two-tables.html');
     run_tests({
         html => $html,
@@ -35,12 +35,17 @@ subtest "basic_two_column_table" => sub {
                        }
                      ]
         },
+        hash => {
+            'Month' => 'January',
+            'Savings' => '$100',
+        },
+        array => [ 'January', '$100' ],
         get_first_cell => 1,
     });
 };
 
 subtest "basic_two_column_table_file" => sub {
-    plan tests => 7;
+    plan tests => 9;
     my $file = 't/html/horizontal/page-two-tables.html';
     run_tests({
         file => $file,
@@ -68,6 +73,11 @@ subtest "basic_two_column_table_file" => sub {
                      ]
         },
         get_first_cell => 1,
+        hash => {
+            'Month' => 'January',
+            'Savings' => '$100',
+        },
+        array => [ 'January', '$100' ],
    });
 };
 
@@ -98,7 +108,11 @@ sub run_tests {
       
     ok(my $row = $table->get_first_row, "get first row");
 
-    use Data::Dumper;
+    is_deeply($row->hash, $args->{hash}, "hash row");
+
+    my @array = $row->array;
+    is_deeply(\@array, $args->{array}, "array row");
+
     is($table->get_first_row->get_first_cell->links->[0], qw/work.html/);
 
     is($row->cell_count, $args->{cell_count}, "expected row count");
