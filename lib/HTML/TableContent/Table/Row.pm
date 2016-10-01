@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row;
 
 use Moo;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use HTML::TableContent::Table::Header;
 use HTML::TableContent::Table::Row::Cell;
@@ -51,12 +51,12 @@ around has_nested => sub {
 
 sub hash {
     my $hash = { };
-    map { $hash->{$_->header->data->[0]} = $_->data->[0] } $_[0]->all_cells;
+    map { $hash->{$_->header->text} = $_->text } $_[0]->all_cells;
     return $hash;
 }
 
 sub array {
-    my @row = map { $_->data->[0] } $_[0]->all_cells;
+    my @row = map { $_->text } $_[0]->all_cells;
     return @row;
 }
 
@@ -119,7 +119,7 @@ HTML::TableContent::Table::Row - base class for table rows.
 
 =head1 VERSION
 
-Version 0.10
+Version 0.11
 
 =head1 SYNOPSIS
 

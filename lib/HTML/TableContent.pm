@@ -6,7 +6,7 @@ use Moo;
 use HTML::TableContent::Parser;
 use HTML::TableContent::Table;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 has parser => (
     is      => 'rw',
@@ -28,7 +28,7 @@ sub add_table {
     return $table;
 }
 
-sub add_caption_selectors { return push @{ $_[0]->parser->caption_selectors }, $_[1]; }
+sub add_caption_selectors { return push (@{ $_[0]->parser->caption_selectors }, @{ $_[1] }); }
 
 sub get_table { return $_[0]->tables->[ $_[1] ]; }
 
@@ -259,7 +259,7 @@ HTML::TableContent - Extract content from HTML tables.
 
 =head1 VERSION
 
-Version 0.10 
+Version 0.11 
 
 =cut
 

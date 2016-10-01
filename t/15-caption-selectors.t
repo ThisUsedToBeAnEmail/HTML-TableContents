@@ -7,11 +7,9 @@ BEGIN {
     use_ok('HTML::TableContent');
 }
 
-use Data::Dumper;
-
 my $tc = HTML::TableContent->new();
 
-$tc->add_caption_selectors(qw/h3/);
+$tc->add_caption_selectors([qw/h3/]);
 
 $tc->parse_file('t/html/horizontal/facebook.html');
 
@@ -124,6 +122,282 @@ is($table->header_count, 1, "okay header count: 1");
 is($table->get_first_row->cell_count, 1, "okay row cell count");
 
 is($table->get_last_row->cell_count, 1, "okay row cell count: 1");
+
+$tc = HTML::TableContent->new();
+
+$tc->add_caption_selectors([qw/h3 h2/]);
+
+$tc->parse_file('t/html/horizontal/facebook2.html');
+
+is($tc->table_count, 2);
+
+$table = $tc->get_first_table;
+
+is($table->caption->text, 'Fields', "expected caption: Fields");
+
+is($table->row_count, 9, "row count: 7");
+
+is($table->header_count, 3, "header count: 3");
+
+my $aoa = [
+    [ 'Name', 'Description', 'Type' ],
+    [ 'id', 'ID of this particular achievement.', 'string' ],
+    [ 'from', 'The user who achieved this.', 'User' ],
+    [ 'publish_time', 'Time at which this was achieved.', 'datetime' ],
+    [ 'application', 'The app in which the user achieved this.', 'App' ],
+    [ 'data', 'Information about the achievement type this instance is connected with.', 'object' ],
+    [ 'achievement', 'The achievement type that the user achieved.', 'AchievementType' ],
+    [ 'importance', 'A weighting given to each achievement type by the app.', 'int' ],
+    [ 'type', 'Always game.achievement .', 'string' ],
+    [ 'no_feed_story', 'Indicates whether gaining the achievement published a feed story for the user.', 'boolean' ]
+]; 
+
+is_deeply($table->aoa, $aoa, "aoa");
+
+my $aoh = [
+    {
+        'Type' => 'string',
+        'Description' => 'ID of this particular achievement.',
+        'Name' => 'id'
+    },
+    {
+        'Description' => 'The user who achieved this.',
+        'Name' => 'from',
+        'Type' => 'User'
+    },
+    {
+        'Description' => 'Time at which this was achieved.',
+        'Name' => 'publish_time',
+        'Type' => 'datetime'
+    },
+    {
+        'Description' => 'The app in which the user achieved this.',
+        'Name' => 'application',
+        'Type' => 'App'
+    },
+    {
+        'Type' => 'object',
+        'Description' => 'Information about the achievement type this instance is connected with.',
+        'Name' => 'data'
+    },
+    {
+        'Type' => 'AchievementType',
+        'Name' => 'achievement',
+        'Description' => 'The achievement type that the user achieved.'
+    },
+    {
+        'Type' => 'int',
+        'Name' => 'importance',
+        'Description' => 'A weighting given to each achievement type by the app.'
+    },
+    {
+        'Name' => 'type',
+        'Description' => 'Always game.achievement .',
+        'Type' => 'string'
+    },
+    {
+        'Description' => 'Indicates whether gaining the achievement published a feed story for the user.',
+        'Name' => 'no_feed_story',
+        'Type' => 'boolean'
+    }
+];
+
+is_deeply($table->aoh, $aoh, "aoh");
+
+my $first_row = $table->get_first_row;
+
+my $array = [ 'id', 'ID of this particular achievement.', 'string' ],
+
+my @array = $first_row->array;
+is_deeply(\@array, $array, "array");
+
+my $hash = {
+    'Type' => 'string',
+    'Description' => 'ID of this particular achievement.',
+    'Name' => 'id'
+};
+
+is_deeply($first_row->hash, $hash, "hash");
+
+$table = $tc->get_table(1);
+
+is($table->caption->text, 'Edges', "expected caption: Edges");
+
+is($table->row_count, 2, "row count: 2");
+
+is($table->header_count, 2, "header count: 2");
+
+$aoa = [
+    [ 'Name', 'Description' ],
+    [ '/comments', 'Comments on the achievement story.'],
+    [ '/likes', 'Likes on the achievement story.' ]
+];
+
+is_deeply($table->aoa, $aoa, "aoa");
+
+$aoh = [
+    {
+        'Name' => '/comments',
+        'Description' => 'Comments on the achievement story.'
+    },
+    {
+        'Description' => 'Likes on the achievement story.',
+        'Name' => '/likes'
+    }
+];
+
+is_deeply($table->aoh, $aoh, "aoh");
+
+$first_row = $table->get_first_row;
+
+$array = [ '/comments', 'Comments on the achievement story.' ];
+
+@array = $first_row->array;
+is_deeply(\@array, $array, "array");
+
+$hash = {
+        'Name' => '/comments',
+        'Description' => 'Comments on the achievement story.'
+};
+
+is_deeply($first_row->hash, $hash, "hash");
+
+$tc = HTML::TableContent->new();
+
+$tc->add_caption_selectors([qw/fields edges/]);
+
+$tc->parse_file('t/html/horizontal/facebook2.html');
+
+is($tc->table_count, 2);
+
+$table = $tc->get_first_table;
+
+is($table->caption->text, 'Fields', "expected caption: Fields");
+
+is($table->row_count, 9, "row count: 7");
+
+is($table->header_count, 3, "header count: 3");
+
+$aoa = [
+    [ 'Name', 'Description', 'Type' ],
+    [ 'id', 'ID of this particular achievement.', 'string' ],
+    [ 'from', 'The user who achieved this.', 'User' ],
+    [ 'publish_time', 'Time at which this was achieved.', 'datetime' ],
+    [ 'application', 'The app in which the user achieved this.', 'App' ],
+    [ 'data', 'Information about the achievement type this instance is connected with.', 'object' ],
+    [ 'achievement', 'The achievement type that the user achieved.', 'AchievementType' ],
+    [ 'importance', 'A weighting given to each achievement type by the app.', 'int' ],
+    [ 'type', 'Always game.achievement .', 'string' ],
+    [ 'no_feed_story', 'Indicates whether gaining the achievement published a feed story for the user.', 'boolean' ]
+]; 
+
+is_deeply($table->aoa, $aoa, "aoa");
+
+$aoh = [
+    {
+        'Type' => 'string',
+        'Description' => 'ID of this particular achievement.',
+        'Name' => 'id'
+    },
+    {
+        'Description' => 'The user who achieved this.',
+        'Name' => 'from',
+        'Type' => 'User'
+    },
+    {
+        'Description' => 'Time at which this was achieved.',
+        'Name' => 'publish_time',
+        'Type' => 'datetime'
+    },
+    {
+        'Description' => 'The app in which the user achieved this.',
+        'Name' => 'application',
+        'Type' => 'App'
+    },
+    {
+        'Type' => 'object',
+        'Description' => 'Information about the achievement type this instance is connected with.',
+        'Name' => 'data'
+    },
+    {
+        'Type' => 'AchievementType',
+        'Name' => 'achievement',
+        'Description' => 'The achievement type that the user achieved.'
+    },
+    {
+        'Type' => 'int',
+        'Name' => 'importance',
+        'Description' => 'A weighting given to each achievement type by the app.'
+    },
+    {
+        'Name' => 'type',
+        'Description' => 'Always game.achievement .',
+        'Type' => 'string'
+    },
+    {
+        'Description' => 'Indicates whether gaining the achievement published a feed story for the user.',
+        'Name' => 'no_feed_story',
+        'Type' => 'boolean'
+    }
+];
+
+is_deeply($table->aoh, $aoh, "aoh");
+
+$first_row = $table->get_first_row;
+
+$array = [ 'id', 'ID of this particular achievement.', 'string' ],
+
+@array = $first_row->array;
+is_deeply(\@array, $array, "array");
+
+$hash = {
+    'Type' => 'string',
+    'Description' => 'ID of this particular achievement.',
+    'Name' => 'id'
+};
+
+$table = $tc->get_table(1);
+
+is($table->caption->text, 'Edges', "expected caption: Edges");
+
+is($table->row_count, 2, "row count: 2");
+
+is($table->header_count, 2, "header count: 2");
+
+$aoa = [
+    [ 'Name', 'Description' ],
+    [ '/comments', 'Comments on the achievement story.'],
+    [ '/likes', 'Likes on the achievement story.' ]
+];
+
+is_deeply($table->aoa, $aoa, "aoa");
+
+$aoh = [
+    {
+        'Name' => '/comments',
+        'Description' => 'Comments on the achievement story.'
+    },
+    {
+        'Description' => 'Likes on the achievement story.',
+        'Name' => '/likes'
+    }
+];
+
+is_deeply($table->aoh, $aoh, "aoh");
+
+$first_row = $table->get_first_row;
+
+$array = [ '/comments', 'Comments on the achievement story.' ];
+
+@array = $first_row->array;
+is_deeply(\@array, $array, "array");
+
+$hash = {
+        'Name' => '/comments',
+        'Description' => 'Comments on the achievement story.'
+};
+
+is_deeply($first_row->hash, $hash, "hash");
 
 done_testing();
 

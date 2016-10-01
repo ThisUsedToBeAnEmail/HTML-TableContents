@@ -2,7 +2,7 @@ package HTML::TableContent::Parser;
 
 use Moo;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 extends 'HTML::Parser';
 
@@ -66,6 +66,10 @@ sub parse_file {
 sub start {
     my ( $self, $tag, $attr, $attrseq, $origtext ) = @_;
 
+    if ($self->current_element && $attr->{href}) {
+        push @{ $self->current_element->links }, $attr->{href};
+    }
+
     $tag = lc $tag;
     if ( my $option = $self->options->{$tag} ) {
         my $table = $self->current_or_nested;
@@ -76,24 +80,19 @@ sub start {
 
     if ( $self->has_caption_selector ) {
         foreach my $selector ( @{ $self->caption_selectors }) {
-            if ( $tag eq $selector ) {
-                $self->selected({});
+            if ( $selector eq $tag ) {
+                return $self->selected($attr);
             }
             
             for my $field (qw/id class/) {
-               my $val = $attr->{$field};
+                my $val = $attr->{$field};
+                next unless $val;
                
-               next unless $val;
-               
-               if ( $val =~ /$selector/) {
-                    $self->selected($attr);
-               }
-           }
+                if ( $val =~ m/$selector/ixms) {
+                    return $self->selected($attr);
+                }
+            }
         }
-    }
-
-    if ($self->current_element && $attr->{href}) {
-        push @{ $self->current_element->links }, $attr->{href};
     }
 
     return;
@@ -109,9 +108,6 @@ sub text {
         }
     }
     if ( my $selected = $self->selected) {
-        
-        return if $selected->{text};
-
         if ( $text =~ m{\S+}xms ) {
             $selected->{text} = $text;
             $self->selected($selected);
@@ -218,6 +214,7 @@ sub _close_table {
     }
     else {
         push @{ $self->current_tables }, $self->current_table;
+        $self->clear_current_element;
         return $self->clear_current_table;
     }
 }
@@ -260,7 +257,7 @@ HTML::TableContent::Parser - HTML::Parser subclass.
 
 =head1 VERSION
 
-Version 0.10
+Version 0.11
 
 =cut
 
