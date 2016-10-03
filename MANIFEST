@@ -34,6 +34,7 @@ t/16-aoa-test.t
 t/17-aoh-test.t
 t/pod.t
 t/html/horizontal/facebook.html
+t/html/horizontal/facebook2.html
 t/html/horizontal/catch.html
 t/html/horizontal/page-random-tables.html
 t/html/horizontal/page-three-tables.html

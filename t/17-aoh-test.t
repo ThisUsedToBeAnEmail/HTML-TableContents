@@ -259,6 +259,47 @@ is($row->get_last_cell->id, 'three', "expected cell id: three");
 
 is($row->get_last_cell->class, 'cells', "expected cell class: cells");
 
+$aoh = [
+    {
+     'Name' => 'Rich',
+     'Telephone' => '123456',
+     'Postcode' => 'OX16 422',
+    },
+    {
+     'Name' => 'Sam',
+     'Telephone' => '1243543',
+     'Postcode' => 'OX76 55R',
+    },
+    {
+     'Name' => 'Frank',
+     'Telephone' => '9553234',
+     'Postcode' => 'OX14 R4E',
+    },
+    {
+     'Name' => 'Frank',
+     'Telephone' => '9553234',
+     'Postcode' => 'OX14 R4E',
+    }
+];
+
+$tc = HTML::TableContent->new();
+
+ok($table = $tc->create_table({ aoh => $aoh, order => ['Name'] }));
+
+is($table->header_count, 1, "should have one header");
+
+is($table->row_count, 4, "should be four");
+
+ok(my $cells = $table->get_header_column_text(header => 'Name', dedupe => 1));
+
+my $name = [
+   'Rich',
+   'Sam',
+   'Frank'
+];
+
+is_deeply($cells, $name, "expected name column");
+
 done_testing();
 
 1;
