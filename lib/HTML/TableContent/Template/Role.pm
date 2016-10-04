@@ -6,13 +6,14 @@ use Moo::Role;
 
 our $VERSION = '0.11';
 
-requires qw/_headers_data/;
+requires qw/_header_data _data/;
 
 sub process {
     my $self = shift;
 
-    my %header_data = $self->_headers_data;
-    return \%header_data;
+    my $data = $self->_data;
+
+    return $data;
 }
 
 1;

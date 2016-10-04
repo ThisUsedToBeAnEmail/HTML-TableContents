@@ -3,16 +3,15 @@ package HTML::TableContent::Template;
 use strict;
 use warnings;
 use Carp qw/croak/;
-use HTML::TableContent::Table;
 
 our $VERSION = '0.11';
 
 my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_class/;
 
-sub import {
-    my ( undef, @import ) = @_;
+my @TABLE = qw/caption header/;
 
-    my $table = HTML::TableContent::Table->new({});
+sub import {
+    my ( $self, @import ) = @_;
 
     my $target = caller;
    
@@ -32,43 +31,57 @@ sub import {
     if (@target_isa) {    #only in the main class, not a role
         eval '{
         package ' . $target . ';
-        
-            sub _headers_data {
+
+            sub _caption_data {
+                my ($class, @meta) = @_;
+                return $class->maybe::next::method(@meta);
+            }
+
+            sub _header_data {
                 my ( $class, @meta ) = @_;
                 return $class->maybe::next::method(@meta);
             }
 
+            sub _data {
+                my ($class, @meta ) = @_;
+                
+                my $data = $class->data;
+                return $data if scalar @{ $data };
+                die "must supply data";
+            }
         1;
         }';
     }
-
-    my $headers_data = {};
 
     my $apply_modifiers = sub {
         return if $target->can('new_with_headers');
         $with->('HTML::TableContent::Template::Role');
     };
 
-    my $option = sub {
-        my ( $name, %attributes ) = @_;
+    for my $element (@TABLE) {
+        my $element_data = {};
+        my $option = sub {
+            my ( $name, %attributes ) = @_;
 
-        $has->( $name => _filter_attributes($table, %attributes) );
+            my %filtered_attributes = _filter_attributes(%attributes);
 
-        $headers_data->{$name} = { _validate_and_filter_headers(%attributes) };
+            $has->( $name => %filtered_attributes );
 
-        $apply_modifiers->();
+            $element_data->{$name} = \%filtered_attributes;
 
-        $around->(
-            _headers_data => sub {
-                my ( $orig, $self ) = ( shift, shift );
-                return $self->$orig(@_), %$headers_data;
-            }
-        );
+            my $data = sprintf('_%s_data', $element);
+            $around->(
+                $data => sub {
+                    my ( $orig, $self ) = ( shift, shift );
+                    return $self->$orig(@_), %$element_data;
+                }
+            );
+    
+            return;
+        };
 
-        return;
-    };
-
-    { no strict 'refs'; *{"${target}::header"} = $option; }
+        { no strict 'refs'; *{"${target}::$element"} = $option; }
+    }
 
     $apply_modifiers->();
 
@@ -76,22 +89,12 @@ sub import {
 }
 
 sub _filter_attributes {
-    my ($table, %attributes) = @_;
-
-    my $header = $table->add_header(\%attributes);    
+    my (%attributes) = @_;
 
     $attributes{is} = 'ro';
-    $attributes{default} = sub { return $header };
 
     my %filter_key = map { $_ => 1 } @VALID_ATTRIBUTES;
-    return map { ( $_ => $attributes{$_} ) }
-        grep { exists $filter_key{$_} } keys %attributes;
-}
-
-sub _validate_and_filter_headers {
-    my (%headers) = @_;
-
-    return %headers;
+    return map { $_ => $attributes{$_} } grep { exists $filter_key{$_} } keys %attributes;
 }
 
 1;
