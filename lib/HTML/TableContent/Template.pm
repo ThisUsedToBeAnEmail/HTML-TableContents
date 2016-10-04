@@ -3,6 +3,7 @@ package HTML::TableContent::Template;
 use strict;
 use warnings;
 use Carp qw/croak/;
+use HTML::TableContent::Table;
 
 our $VERSION = '0.11';
 
@@ -10,6 +11,8 @@ my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increme
 
 sub import {
     my ( undef, @import ) = @_;
+
+    my $table = HTML::TableContent::Table->new({});
 
     my $target = caller;
    
@@ -49,7 +52,7 @@ sub import {
     my $option = sub {
         my ( $name, %attributes ) = @_;
 
-        $has->( $name => _filter_attributes(%attributes) );
+        $has->( $name => _filter_attributes($table, %attributes) );
 
         $headers_data->{$name} = { _validate_and_filter_headers(%attributes) };
 
@@ -73,15 +76,14 @@ sub import {
 }
 
 sub _filter_attributes {
-    my %attributes = @_;
-    $attributes{is} = 'ro';
+    my ($table, %attributes) = @_;
 
-    if (exists $attributes{text}) {
-        $attributes{default} = $attributes{text};
-    }
+    my $header = $table->add_header(\%attributes);    
+
+    $attributes{is} = 'ro';
+    $attributes{default} = sub { return $header };
 
     my %filter_key = map { $_ => 1 } @VALID_ATTRIBUTES;
-
     return map { ( $_ => $attributes{$_} ) }
         grep { exists $filter_key{$_} } keys %attributes;
 }
