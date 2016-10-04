@@ -9,4 +9,6 @@ my $template = t::TestTemplate->new();
 
 warn Dumper $template->process;
 
+warn Dumper $template->_table;
+
 1;

@@ -3,6 +3,7 @@ package HTML::TableContent::Template;
 use strict;
 use warnings;
 use Carp qw/croak/;
+use HTML::TableContent::Table;
 
 our $VERSION = '0.11';
 
@@ -14,7 +15,8 @@ sub import {
     my ( $self, @import ) = @_;
 
     my $target = caller;
-   
+    my $table = HTML::TableContent::Table->new({});
+
     for my $needed_method (qw/with around has/) {
         next if $target->can($needed_method);
         croak "Can't find method <$needed_method> in <$target>";
@@ -31,6 +33,10 @@ sub import {
     if (@target_isa) {    #only in the main class, not a role
         eval '{
         package ' . $target . ';
+            sub _table {
+                my ($class, @meta) = @_;
+                return $class->maybe::next::method(@meta);
+            }
 
             sub _caption_data {
                 my ($class, @meta) = @_;
@@ -63,7 +69,7 @@ sub import {
         my $option = sub {
             my ( $name, %attributes ) = @_;
 
-            my %filtered_attributes = _filter_attributes(%attributes);
+            my %filtered_attributes = _filter_attributes($element, $table, %attributes);
 
             $has->( $name => %filtered_attributes );
 
@@ -85,13 +91,22 @@ sub import {
 
     $apply_modifiers->();
 
+    $around->(
+        _table => sub {
+            my ( $orig, $self ) = ( shift, shift );
+            return $self->$orig(@_), $table;
+        }
+    );
+
     return; 
 }
 
 sub _filter_attributes {
-    my (%attributes) = @_;
+    my ($element, $table, %attributes) = @_;
 
     $attributes{is} = 'ro';
+    my $default_action = sprintf('add_%s', $element);
+    $attributes{default} = sub { return $table->$default_action(\%attributes); };
 
     my %filter_key = map { $_ => 1 } @VALID_ATTRIBUTES;
     return map { $_ => $attributes{$_} } grep { exists $filter_key{$_} } keys %attributes;
