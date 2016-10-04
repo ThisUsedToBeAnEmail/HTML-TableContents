@@ -8,5 +8,6 @@ use t::TestTemplate;
 my $template = t::TestTemplate->new();
 
 warn Dumper $template->id;
+warn Dumper $template->process;
 
 1;
