@@ -7,8 +7,8 @@ use t::TestTemplate;
 
 my $template = t::TestTemplate->new();
 
-warn Dumper $template->process;
+warn Dumper $template->table;
 
-warn Dumper $template->_table;
+warn Dumper $template->render;
 
 1;

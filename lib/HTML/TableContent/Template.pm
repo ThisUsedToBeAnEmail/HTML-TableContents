@@ -38,16 +38,6 @@ sub import {
                 return $class->maybe::next::method(@meta);
             }
 
-            sub _caption_data {
-                my ($class, @meta) = @_;
-                return $class->maybe::next::method(@meta);
-            }
-
-            sub _header_data {
-                my ( $class, @meta ) = @_;
-                return $class->maybe::next::method(@meta);
-            }
-
             sub _data {
                 my ($class, @meta ) = @_;
                 
@@ -60,7 +50,6 @@ sub import {
     }
 
     my $apply_modifiers = sub {
-        return if $target->can('new_with_headers');
         $with->('HTML::TableContent::Template::Role');
     };
 
@@ -74,14 +63,6 @@ sub import {
             $has->( $name => %filtered_attributes );
 
             $element_data->{$name} = \%filtered_attributes;
-
-            my $data = sprintf('_%s_data', $element);
-            $around->(
-                $data => sub {
-                    my ( $orig, $self ) = ( shift, shift );
-                    return $self->$orig(@_), %$element_data;
-                }
-            );
     
             return;
         };
@@ -104,9 +85,11 @@ sub import {
 sub _filter_attributes {
     my ($element, $table, %attributes) = @_;
 
+    my %tattr = %attributes;
+
     $attributes{is} = 'ro';
     my $default_action = sprintf('add_%s', $element);
-    $attributes{default} = sub { return $table->$default_action(\%attributes); };
+    $attributes{default} = sub { return $table->$default_action(\%tattr); };
 
     my %filter_key = map { $_ => 1 } @VALID_ATTRIBUTES;
     return map { $_ => $attributes{$_} } grep { exists $filter_key{$_} } keys %attributes;

@@ -12,12 +12,12 @@ caption title => (
 header id => (
     class => 'some-class',
     id => 'something-id',
-    text => 'user id',
+    text => 'id',
 );
 
 header name => (
     class => 'okay',
-    text => 'user name',
+    text => 'name',
 );
 
 header address => (
@@ -29,9 +29,16 @@ sub data {
     my $self = shift;
 
     return [
-        [qw/id name address/],
-        [1, 'rob', 'somewhere else'],
-        [2, 'sam', 'hallow road']
+        {
+            id => 1,
+            name => 'rob',
+            address => 'somewhere',
+        },
+        {
+            id => 2,
+            name => 'sam',
+            address => 'somewhere else',
+        }
     ];
 }
 
