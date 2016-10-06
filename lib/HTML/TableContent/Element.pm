@@ -5,7 +5,7 @@ use HTML::TableContent::Table;
 
 our $VERSION = '0.11';
 
-my @ATTRIBUTE = qw/class id style colspan rowspan/;
+my @ATTRIBUTE = qw/class id style colspan rowspan template_attr/;
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -133,6 +133,8 @@ sub _trigger_style { return $_[0]->attributes->{style} = $_[1]; }
 sub _trigger_colspan { return $_[0]->attributes->{colspan} = $_[1]; }
 
 sub _trigger_rowspan { return $_[0]->attributes->{rowspan} = $_[1]; }
+
+sub _trigger_template_attr { return $_[0]->attributes->{template_attr} = $_[1]; }
 
 sub _build_data {
     my $data = delete $_[0]->attributes->{data};

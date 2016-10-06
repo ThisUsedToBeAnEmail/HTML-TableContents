@@ -68,7 +68,7 @@ sub import {
         my $option = sub {
             my ( $name, %attributes ) = @_;
 
-            my %filtered_attributes = _filter_attributes($element, $table, %attributes);
+            my %filtered_attributes = _filter_attributes($name, $element, $table, %attributes);
 
             $has->( $name => %filtered_attributes );
 
@@ -102,7 +102,13 @@ sub import {
 }
 
 sub _filter_attributes {
-    my ($element, $table, %attributes) = @_;
+    my ($name, $element, $table, %attributes) = @_;
+
+    $attributes{template_attr} = $name;
+
+    if ( ! exists $attributes{text} ) {
+        $attributes{text} = $name;
+    }
 
     my %tattr = %attributes;
 
