@@ -4,8 +4,9 @@ use Test::More;
 use Carp qw/croak/;
 
 BEGIN {
-   use_ok("t::Templates::JustHeaders");
-   use_ok("t::Templates::JustHeadersArray");
+    use_ok("t::Templates::JustHeaders");
+    use_ok("t::Templates::JustHeadersArray");
+    use_ok("t::Templates::JustHeadersPassData");
 }
 
 subtest "just_headers" => sub  {
@@ -114,6 +115,134 @@ subtest "just_headers_data_is_aoa" => sub  {
     });
 };
 
+subtest "just_headers_pass_data_aoh" => sub  {
+    plan tests => 33;
+    run_tests({
+        class => 't::Templates::JustHeadersPassData',
+        data => [
+           {
+                id => 1,
+                name => 'rob',
+                address => 'somewhere',
+            },
+            {
+                id => 2,
+                name => 'sam',
+                address => 'somewhere else',
+            },
+            {
+                id => 3,
+                name => 'frank',
+                address => 'out',
+            },
+        ],
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+        },
+        fr_first_cell => {
+            text => '1',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+        },
+        render => '<table><caption class="some-class" id="caption-id" template_attr="title">table caption</caption><tr><th class="some-class" id="something-id" template_attr="id">id</th><th class="okay" template_attr="name">name</th><th class="what" template_attr="address">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
+
+subtest "just_headers_pass_data_aoa" => sub  {
+    plan tests => 33;
+    run_tests({
+        class => 't::Templates::JustHeadersPassData',
+        data => [
+            [qw/id name address/],
+            [ 1, 'rob', 'somewhere'],
+            [ 2, 'sam', 'somewhere else'],
+            [ 3, 'frank', 'out'],        
+        ],
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+        },
+        fr_first_cell => {
+            text => '1',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+        },
+        render => '<table><caption class="some-class" id="caption-id" template_attr="title">table caption</caption><tr><th class="some-class" id="something-id" template_attr="id">id</th><th class="okay" template_attr="name">name</th><th class="what" template_attr="address">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
 
 
 done_testing();
@@ -122,8 +251,13 @@ sub run_tests {
     my $args = shift;
 
     my $class = $args->{class};
-    my $template = $class->new();
-    
+
+    my $template;
+    if (my $data = $args->{data}) {
+        $template = $class->new( data => $data );
+    } else {
+        $template = $class->new();
+    }
     my $exp_caption = $args->{caption};
 
     my @cap_keys = keys %{ $exp_caption };

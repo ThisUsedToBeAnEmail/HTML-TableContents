@@ -6,12 +6,21 @@ use Moo::Role;
 
 our $VERSION = '0.11';
 
-requires qw/_data/;
-
 has table => (
     is => 'rw',
     builder => '_build_table',
 );
+
+has data => (
+    is => 'rw',
+    builder => '_build_data',
+);
+
+sub _build_data {
+    my $self = shift;
+
+    return [ ];
+}
 
 sub _build_table {
     my $self = shift;
@@ -27,7 +36,20 @@ sub _build_table {
     
     $table->sort({ order => \@order });
 
-    my $data = $self->_data;
+    my $data = $self->data;
+
+    if ( ref $data->[0] eq "ARRAY" ) {
+       my $headers = shift @{ $data };
+       my $new = [ ];
+       foreach my $row ( @{ $data } ) { 
+            my %hash = ( );
+            for (0 .. scalar @{ $row } - 1) {
+                $hash{$headers->[$_]} = $row->[$_];
+            }
+            push @{ $new }, \%hash;
+       }
+       $data = $new;
+    }
 
     foreach my $hash ( @{ $data } ) {
         my $row = $table->add_row({});

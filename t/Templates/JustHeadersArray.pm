@@ -1,4 +1,4 @@
-package t::Templates::JustHeaders;
+package t::Templates::JustHeadersArray;
 
 use Moo;
 use HTML::TableContent::Template;
@@ -26,21 +26,10 @@ sub _build_data {
     my $self = shift;
 
     return [
-        {
-            id => 1,
-            name => 'rob',
-            address => 'somewhere',
-        },
-        {
-            id => 2,
-            name => 'sam',
-            address => 'somewhere else',
-        },
-        {
-            id => 3,
-            name => 'frank',
-            address => 'out',
-        },
+        [qw/id name address/],
+        [ 1, 'rob', 'somewhere'],
+        [ 2, 'sam', 'somewhere else'],
+        [ 3, 'frank', 'out'],
     ];
 }
 

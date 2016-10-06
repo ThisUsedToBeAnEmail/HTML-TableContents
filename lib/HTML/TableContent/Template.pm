@@ -47,14 +47,6 @@ sub import {
                 my ($class, @meta) = @_;
                 return $class->maybe::next::method(@meta);
             }
-
-            sub _data {
-                my ($class, @meta ) = @_;
-                
-                my $data = $class->data;
-                return $data if scalar @{ $data };
-                die "must supply data";
-            }
         1;
         }';
     }
