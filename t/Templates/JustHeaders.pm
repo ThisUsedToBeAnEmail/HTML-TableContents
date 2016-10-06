@@ -1,4 +1,4 @@
-package t::TestTemplate;
+package t::Templates::JustHeaders;
 
 use Moo;
 use HTML::TableContent::Template;
@@ -12,17 +12,14 @@ caption title => (
 header id => (
     class => 'some-class',
     id => 'something-id',
-    text => 'id',
 );
 
 header name => (
     class => 'okay',
-    text => 'name',
 );
 
 header address => (
     class => 'what',
-    text => 'address'
 );
 
 sub data {
@@ -38,7 +35,12 @@ sub data {
             id => 2,
             name => 'sam',
             address => 'somewhere else',
-        }
+        },
+        {
+            id => 3,
+            name => 'frank',
+            address => 'out',
+        },
     ];
 }
 
