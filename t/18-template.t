@@ -254,7 +254,8 @@ sub run_tests {
 
     my $template;
     if (my $data = $args->{data}) {
-        $template = $class->new( data => $data );
+        use Data::Dumper;
+        $template = $class->new({ data => $data });
     } else {
         $template = $class->new();
     }

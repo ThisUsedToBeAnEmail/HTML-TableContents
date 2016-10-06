@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp qw/croak/;
 use HTML::TableContent::Table;
+use Role::Tiny qw/does_role/;
 
 our $VERSION = '0.11';
 
@@ -13,7 +14,7 @@ my @TABLE = qw/caption header/;
 
 sub import {
     my ( $self, @import ) = @_;
-
+use Data::Dumper;
     my $target = caller;
     my $table = HTML::TableContent::Table->new({});
 
@@ -27,7 +28,9 @@ sub import {
     my $has = $target->can('has');
 
     my @target_isa;
-    
+
+    return if $target->can('_table');
+
     { no strict 'refs'; @target_isa = @{"${target}::ISA"} };
 
     if (@target_isa) {    #only in the main class, not a role
@@ -36,8 +39,8 @@ sub import {
             sub _table {
                 my ($class, @meta) = @_;
                 return $class->maybe::next::method(@meta);
-            }
-            
+            }   
+
             sub _header_spec {
                 my ($class, @meta) = @_;
                 return $class->maybe::next::method(@meta);
@@ -59,10 +62,12 @@ sub import {
         my @element = ();
         my $option = sub {
             my ( $name, %attributes ) = @_;
-
+            
             my %filtered_attributes = _filter_attributes($name, $element, $table, %attributes);
 
             $has->( $name => %filtered_attributes );
+
+            delete $filtered_attributes{default};
 
             my $element_data->{$name} = \%filtered_attributes;
             push @element, $element_data;
@@ -83,7 +88,7 @@ sub import {
 
     $apply_modifiers->();
 
-    $around->(
+   $around->(
         _table => sub {
             my ( $orig, $self ) = ( shift, shift );
             return $self->$orig(@_), $table;
