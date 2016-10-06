@@ -261,6 +261,36 @@ is($row->get_last_cell->id, 'three', "expected cell id: three");
 
 is($row->get_last_cell->class, 'cells', "expected cell class: cells");
 
+# order
+ok($basic = $tc->create_table({ aoa => $aoa, order => [qw/Name Postcode/] }));
+
+is($basic->header_count, 2, "header count 2");
+
+is($basic->get_first_header->text, 'Name', "first header text: Name");
+
+is($basic->get_header(1)->text, 'Postcode', "second header text: Postcode");
+
+is($basic->get_first_row->cell_count, 2, "first row cell count: 2");
+
+is($basic->get_first_row->get_first_cell->text, 'Rich', "first cell text: Rich");
+
+is($basic->get_first_row->get_cell(1)->text, "OX16 422", "second cell text: OX16 422");
+
+# switch order
+ok($basic = $tc->create_table({ aoa => $aoa, order => [qw/Postcode Name/] }));
+
+is($basic->header_count, 2, "header count 2");
+
+is($basic->get_first_header->text, 'Postcode', "first header text: Postcode");
+
+is($basic->get_header(1)->text, 'Name', "second header text: Name");
+
+is($basic->get_first_row->cell_count, 2, "first row cell count: 2");
+
+is($basic->get_first_row->get_first_cell->text, 'OX16 422', "first cell text: Rich");
+
+is($basic->get_first_row->get_cell(1)->text, 'Rich', "second cell text: OX16 422");
+
 done_testing();
 
 1;

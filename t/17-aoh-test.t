@@ -300,6 +300,20 @@ my $name = [
 
 is_deeply($cells, $name, "expected name column");
 
+ok($table = $tc->create_table({ aoh => $aoh, order => ['Postcode', 'Name']}));
+
+is($table->header_count, 2, "header count 2");
+
+is($table->get_first_header->text, 'Postcode', "first header text: Postcode");
+
+is($table->get_header(1)->text, 'Name', "second header text: Name");
+
+is($table->get_first_row->cell_count, 2, "first row cell count: 2");
+
+is($table->get_first_row->get_first_cell->text, 'OX16 422', "first cell text: Rich");
+
+is($table->get_first_row->get_cell(1)->text, 'Rich', "second cell text: OX16 422");
+
 done_testing();
 
 1;

@@ -17,6 +17,17 @@ sub _build_table {
     my $self = shift;
 
     my $table = $self->_table;
+    
+    my $header_spec = $self->_header_spec;
+    use Data::Dumper;
+    warn Dumper $header_spec;
+    my @order = ( );
+    for (@{$header_spec}){
+        push @order, keys %{ $_ };
+    }
+    warn Dumper \@order;
+    
+    $table->sort({ order => \@order });
 
     my $data = $self->_data;
 

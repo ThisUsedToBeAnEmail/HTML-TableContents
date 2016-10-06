@@ -37,6 +37,16 @@ sub import {
                 my ($class, @meta) = @_;
                 return $class->maybe::next::method(@meta);
             }
+            
+            sub _header_spec {
+                my ($class, @meta) = @_;
+                return $class->maybe::next::method(@meta);
+            }
+            
+            sub _caption_spec {
+                my ($class, @meta) = @_;
+                return $class->maybe::next::method(@meta);
+            }
 
             sub _data {
                 my ($class, @meta ) = @_;
@@ -54,7 +64,7 @@ sub import {
     };
 
     for my $element (@TABLE) {
-        my $element_data = {};
+        my @element = ();
         my $option = sub {
             my ( $name, %attributes ) = @_;
 
@@ -62,8 +72,17 @@ sub import {
 
             $has->( $name => %filtered_attributes );
 
-            $element_data->{$name} = \%filtered_attributes;
-    
+            my $element_data->{$name} = \%filtered_attributes;
+            push @element, $element_data;
+
+            my $spec = sprintf('_%s_spec', $element);
+            $around->(
+                $spec => sub {
+                    my ( $orig, $self ) = ( shift, shift );
+                    return $self->$orig(@_), \@element;
+                }
+            );
+
             return;
         };
 
