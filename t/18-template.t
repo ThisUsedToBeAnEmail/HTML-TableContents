@@ -17,6 +17,8 @@ BEGIN {
     use_ok("t::Templates::IndexNutsCells");
     use_ok("t::Templates::IndexFlagCells");
     use_ok("t::Templates::HeaderCells");
+    use_ok("t::Templates::IncrementRows");
+    use_ok("t::Templates::RowCells");
 }
 
 subtest "just_headers" => sub  {
@@ -803,6 +805,121 @@ subtest "header_cells" => sub  {
         render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="something" id="some-id-1">1</td><td>rob</td><td class="else" id="some-other-id-1">somewhere</td></tr><tr><td class="something" id="some-id-2">2</td><td>sam</td><td class="else" id="some-other-id-2">somewhere else</td></tr><tr><td class="something" id="some-id-3">3</td><td>frank</td><td class="else" id="some-other-id-3">out</td></tr></table>',
     });
 };
+
+subtest "Increment_rows" => sub  {
+    plan tests => 35;
+    run_tests({
+        class => 't::Templates::IncrementRows',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+            class => 'rows',
+            id => 'row-id-1'
+        },
+        fr_first_cell => {
+            text => '1',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="rows" id="row-id-1"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="rows" id="row-id-2"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="rows" id="row-id-3"><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
+
+subtest "row_cells" => sub  {
+    plan tests => 39;
+    run_tests({
+        class => 't::Templates::RowCells',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+            class => 'rows',
+            id => 'row-id-1'
+        },
+        fr_first_cell => {
+            text => '1',
+            class => 'text',
+            id => 'first-row-cell-1'
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+            class => 'text',
+            id => 'first-row-cell-3'
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="rows" id="row-id-1"><td class="text" id="first-row-cell-1">1</td><td class="text" id="first-row-cell-2">rob</td><td class="text" id="first-row-cell-3">somewhere</td></tr><tr class="rows" id="row-id-2"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="rows" id="row-id-3"><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
+
 
 done_testing();
 

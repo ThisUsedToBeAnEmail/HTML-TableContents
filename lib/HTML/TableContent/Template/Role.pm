@@ -77,6 +77,9 @@ sub _build_table {
     my $row_index = 1;
     foreach my $hash ( @{ $data } ) {
         my $row_base = $self->_element_spec($row_index, %row_spec);
+       
+        $cell_spec{current} = defined $row_base->{cells} ? delete $row_base->{cells} : undef;
+        
         my $row = $table->add_row($row_base);
 
         my $cell_index = 1;
@@ -99,6 +102,10 @@ sub _element_spec {
 
     my $base = { };
     my $row_index = delete $spec{row_index};
+
+    if ( my $cells = delete $spec{current}){
+        $base = $self->_add_to_base($base, $index, $cells);
+    }
 
     return $base unless keys %spec;
 
@@ -133,10 +140,7 @@ sub _element_spec {
     } else {
         for (keys %spec) {
             next unless defined $spec{$_}->{index};
-            my $safe = $index;
-            if ( defined $row_index ) {
-                $safe = sprintf('%s__%d', $row_index, $safe);
-            }
+            my $safe = defined $row_index ? sprintf('%s__%d', $row_index, $index) : $index;
             
             if ( $spec{$_}->{index} =~ m{$safe}ixms ) {
                 $base = $self->_add_to_base($base, $index, $spec{$_});
@@ -152,6 +156,10 @@ sub _add_to_base {
 
     if ( my $id = $hash->{increment_id} ) {
         $hash->{id} = sprintf('%s%s', $id, $index);
+    }
+
+    if ( my $cells = $hash->{cells} ) {
+        $base->{cells} = $cells;
     }
 
     for ( keys %{ $hash } ) {
