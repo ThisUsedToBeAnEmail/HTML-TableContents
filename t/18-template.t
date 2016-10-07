@@ -12,6 +12,10 @@ BEGIN {
     use_ok("t::Templates::OddEvenRows");
     use_ok("t::Templates::IndexRows");
     use_ok("t::Templates::IndexFlagRows");
+    use_ok("t::Templates::AllCells");
+    use_ok("t::Templates::OddEvenCells");
+    use_ok("t::Templates::IndexNutsCells");
+    use_ok("t::Templates::IndexFlagCells");
 }
 
 subtest "just_headers" => sub  {
@@ -520,6 +524,227 @@ subtest "by_row_flag_index" => sub  {
     });
 };
 
+subtest "all_cells" => sub  {
+    plan tests => 35;
+    run_tests({
+        class => 't::Templates::AllCells',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+        },
+        fr_first_cell => {
+            text => '1',
+            class => 'all_cells',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+            class => 'all_cells',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="all_cells">1</td><td class="all_cells">rob</td><td class="all_cells">somewhere</td></tr><tr><td class="all_cells">2</td><td class="all_cells">sam</td><td class="all_cells">somewhere else</td></tr><tr><td class="all_cells">3</td><td class="all_cells">frank</td><td class="all_cells">out</td></tr></table>',
+    });
+};
+
+subtest "odd_even_cells" => sub  {
+    plan tests => 35;
+    run_tests({
+        class => 't::Templates::OddEvenCells',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+        },
+        fr_first_cell => {
+            text => '1',
+            class => 'odd',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+            class => 'odd',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="odd">1</td><td class="even">rob</td><td class="odd">somewhere</td></tr><tr><td class="odd">2</td><td class="even">sam</td><td class="odd">somewhere else</td></tr><tr><td class="odd">3</td><td class="even">frank</td><td class="odd">out</td></tr></table>',
+    });
+};
+
+subtest "index_nuts_cells" => sub  {
+    plan tests => 36;
+    run_tests({
+        class => 't::Templates::IndexNutsCells',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+        },
+        fr_first_cell => {
+            text => '1',
+            class => 'nuts',
+            id => 'first-row-first-cell',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+            id => 'first-row-last-cell',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="nuts" id="first-row-first-cell">1</td><td>rob</td><td class="but-works" id="first-row-last-cell">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
+
+subtest "index_flag_cells" => sub  {
+    plan tests => 36;
+    run_tests({
+        class => 't::Templates::IndexFlagCells',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+        },
+        fr_first_cell => {
+            text => '1',
+            class => 'nuts',
+            id => 'first-row-first-cell',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+            id => 'first-row-last-cell',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="nuts" id="first-row-first-cell">1</td><td>rob</td><td class="but-works" id="first-row-last-cell">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
 
 done_testing();
 

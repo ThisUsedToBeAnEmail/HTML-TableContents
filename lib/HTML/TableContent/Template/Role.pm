@@ -66,51 +66,70 @@ sub _build_table {
     }
 
     my %row_spec = $self->_row_spec;
+    my %cell_spec = $self->_cell_spec;
 
     my $row_index = 1;
     foreach my $hash ( @{ $data } ) {
-        my $row_base = $self->_element_spec($row_index++, %row_spec);
+        my $row_base = $self->_element_spec($row_index, %row_spec);
         my $row = $table->add_row($row_base);
+
+        my $cell_index = 1;
         foreach ( $table->all_headers ) {
-            my $cell = $row->add_cell({ text => $hash->{$_->template_attr} });
+            $cell_spec{row_index} = $row_index;
+            my $cell_base = $self->_element_spec($cell_index++, %cell_spec);
+            $cell_base->{text} = $hash->{$_->template_attr};
+            my $cell = $row->add_cell($cell_base);
             $table->parse_to_column($cell);
         }
+
+        $row_index++;
     }
 
     return $table;
 }
 
 sub _element_spec {
-    my ( $self, $index, %row_spec) = @_;
+    my ( $self, $index, %spec) = @_;
 
     my $row_base = { };
+    my $row_index = delete $spec{row_index};
 
-    return $row_base unless keys %row_spec;
+    return $row_base unless keys %spec;
 
-    if (my $all = delete $row_spec{all} ) {
+    if (my $all = delete $spec{all} ) {
         $row_base = $self->_add_to_base($row_base, $all);
     }
 
-    my $odd = delete $row_spec{odd};
+    my $odd = delete $spec{odd};
     if ( defined $odd && $index % 2 == 1 ) {
         $row_base = $self->_add_to_base($row_base, $odd);
     }
 
-    my $even = delete $row_spec{even};
+    my $even = delete $spec{even};
     if ( defined $even && $index % 2 == 0 ) {
         $row_base = $self->_add_to_base($row_base, $even);
     }
 
-    return $row_base unless keys %row_spec;
+    return $row_base unless keys %spec;
 
     my $num = num2en($index);
-    if (my $row = $row_spec{$num}) {
+
+    if (defined $row_index) {
+        $num = sprintf('%s__%s', num2en($row_index), $num);
+    }
+
+    if (my $row = $spec{$num}) {
         $row_base = $self->_add_to_base($row_base, $row);
     } else {
-        for (keys %row_spec) {
-            next unless defined $row_spec{$_}->{index};
-            if ( $row_spec{$_}->{index} == $index ) {
-                $row_base = $self->_add_to_base($row_base, $row_spec{$_});
+        for (keys %spec) {
+            next unless defined $spec{$_}->{index};
+            my $safe = $index;
+            if ( defined $row_index ) {
+                $safe = sprintf('%s__%d', $row_index, $safe);
+            }
+            
+            if ( $spec{$_}->{index} =~ m{$safe}ixms ) {
+                $row_base = $self->_add_to_base($row_base, $spec{$_});
             }
         }
     }
