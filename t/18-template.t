@@ -16,6 +16,7 @@ BEGIN {
     use_ok("t::Templates::OddEvenCells");
     use_ok("t::Templates::IndexNutsCells");
     use_ok("t::Templates::IndexFlagCells");
+    use_ok("t::Templates::HeaderCells");
 }
 
 subtest "just_headers" => sub  {
@@ -743,6 +744,63 @@ subtest "index_flag_cells" => sub  {
             id => 'first-row-last-cell',
         },
         render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="nuts" id="first-row-first-cell">1</td><td>rob</td><td class="but-works" id="first-row-last-cell">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
+
+subtest "header_cells" => sub  {
+    plan tests => 37;
+    run_tests({
+        class => 't::Templates::HeaderCells',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+        },
+        fr_first_cell => {
+            text => '1',
+            class => 'something',
+            id => 'some-id-1',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+            class => 'else',
+            id => 'some-other-id-1',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="something" id="some-id-1">1</td><td>rob</td><td class="else" id="some-other-id-1">somewhere</td></tr><tr><td class="something" id="some-id-2">2</td><td>sam</td><td class="else" id="some-other-id-2">somewhere else</td></tr><tr><td class="something" id="some-id-3">3</td><td>frank</td><td class="else" id="some-other-id-3">out</td></tr></table>',
     });
 };
 

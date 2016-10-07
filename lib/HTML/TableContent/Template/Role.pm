@@ -45,12 +45,21 @@ sub _build_table {
     my $cap = (keys %{ $caption_spec->[0] })[0];
     $table->caption($self->$cap);
 
-    my $header_spec = $self->_header_spec;
-  
-    for (@{$header_spec}){
-        my $attr = (keys %{ $_ })[0];
-        push @{ $table->headers }, $self->$attr;
+    my $header_spec = $self->_header_spec; 
+    my %row_spec = $self->_row_spec;
+    my %cell_spec = $self->_cell_spec; 
+
+    for (0 .. scalar @{$header_spec} - 1){
+        my $attr = (keys %{ $header_spec->[$_] })[0];
+        my $header = $self->$attr;
+
+        if (my $cells = delete $header->attributes->{cells}){
+            $cell_spec{$_ + 1} = $cells;
+        }
+
+        push @{ $table->headers }, $header;
     }
+
 
     if ( ref $data->[0] eq "ARRAY" ) {
        my $headers = shift @{ $data };
@@ -64,9 +73,6 @@ sub _build_table {
        }
        $data = $new;
     }
-
-    my %row_spec = $self->_row_spec;
-    my %cell_spec = $self->_cell_spec;
 
     my $row_index = 1;
     foreach my $hash ( @{ $data } ) {
@@ -91,26 +97,30 @@ sub _build_table {
 sub _element_spec {
     my ( $self, $index, %spec) = @_;
 
-    my $row_base = { };
+    my $base = { };
     my $row_index = delete $spec{row_index};
 
-    return $row_base unless keys %spec;
+    return $base unless keys %spec;
 
     if (my $all = delete $spec{all} ) {
-        $row_base = $self->_add_to_base($row_base, $all);
+        $base = $self->_add_to_base($base, $index, $all);
     }
 
     my $odd = delete $spec{odd};
     if ( defined $odd && $index % 2 == 1 ) {
-        $row_base = $self->_add_to_base($row_base, $odd);
+        $base = $self->_add_to_base($base, $index, $odd);
     }
 
     my $even = delete $spec{even};
     if ( defined $even && $index % 2 == 0 ) {
-        $row_base = $self->_add_to_base($row_base, $even);
+        $base = $self->_add_to_base($base, $index, $even);
     }
 
-    return $row_base unless keys %spec;
+    return $base unless keys %spec;
+
+    if ( my $col = delete $spec{$index} ) {
+        $base = $self->_add_to_base($base, $row_index, $col);        
+    }
 
     my $num = num2en($index);
 
@@ -119,7 +129,7 @@ sub _element_spec {
     }
 
     if (my $row = $spec{$num}) {
-        $row_base = $self->_add_to_base($row_base, $row);
+        $base = $self->_add_to_base($base, $index, $row);
     } else {
         for (keys %spec) {
             next unless defined $spec{$_}->{index};
@@ -129,18 +139,23 @@ sub _element_spec {
             }
             
             if ( $spec{$_}->{index} =~ m{$safe}ixms ) {
-                $row_base = $self->_add_to_base($row_base, $spec{$_});
+                $base = $self->_add_to_base($base, $index, $spec{$_});
             }
         }
     }
 
-    return $row_base;
+    return $base;
 }
 
 sub _add_to_base {
-    my ( $self, $base, $hash ) = @_;
+    my ( $self, $base, $index, $hash ) = @_;
+
+    if ( my $id = $hash->{increment_id} ) {
+        $hash->{id} = sprintf('%s%s', $id, $index);
+    }
 
     for ( keys %{ $hash } ) {
+        next if $_ =~ m{increment_id}ixms;
         $base->{$_} = $hash->{$_};
     }
 

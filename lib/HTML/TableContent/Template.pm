@@ -11,7 +11,7 @@ use Role::Tiny qw/does_role/;
 
 our $VERSION = '0.11';
 
-my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_class lazy index/;
+my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_class lazy index cells/;
 
 my %TABLE = (
     caption => 'HTML::TableContent::Table::Caption',
