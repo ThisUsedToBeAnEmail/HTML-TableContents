@@ -309,9 +309,9 @@ sub run_tests {
     my $template;
     if (my $data = $args->{data}) {
         use Data::Dumper;
-        $template = $class->process({ data => $data });
+        $template = $class->new({ data => $data });
     } else {
-        $template = $class->process();
+        $template = $class->new();
     }
     my $exp_caption = $args->{caption};
 

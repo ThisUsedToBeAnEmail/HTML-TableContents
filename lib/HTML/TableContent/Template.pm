@@ -36,10 +36,6 @@ use Data::Dumper;
     if (@target_isa) {    #only in the main class, not a role
         eval '{
         package ' . $target . ';
-            sub _table {
-                my ($class, @meta) = @_;
-                return $class->maybe::next::method(@meta);
-            }   
 
             sub _header_spec {
                 my ($class, @meta) = @_;
@@ -69,7 +65,7 @@ use Data::Dumper;
 
             delete $filtered_attributes{default};
 
-            my $element_data->{$name} = \%filtered_attributes;
+            my $element_data->{$name} = %filtered_attributes;
             push @element, $element_data;
 
             my $spec = sprintf('_%s_spec', $element);
@@ -88,13 +84,6 @@ use Data::Dumper;
 
     $apply_modifiers->();
 
-   $around->(
-        _table => sub {
-            my ( $orig, $self ) = ( shift, shift );
-            return $self->$orig(@_), $table;
-        }
-    );
-
     return; 
 }
 
@@ -110,8 +99,9 @@ sub _filter_attributes {
     my %tattr = %attributes;
 
     $attributes{is} = 'ro';
+    $attributes{lazy} = 1;
     my $default_action = sprintf('add_%s', $element);
-    $attributes{default} = sub { return $table->$default_action(\%tattr); };
+    $attributes{default} = sub { my %dirt = %tattr; return $table->$default_action(\%dirt); };
 
     my %filter_key = map { $_ => 1 } @VALID_ATTRIBUTES;
     return map { $_ => $attributes{$_} } grep { exists $filter_key{$_} } keys %attributes;

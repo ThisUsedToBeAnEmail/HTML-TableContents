@@ -5,18 +5,9 @@ use warnings;
 
 use Moo::Role;
 
-with 'MooX::Singleton';
-
 use HTML::TableContent::Table;
 
 our $VERSION = '0.11';
-
-sub process {
-    my ($self, $args) = @_;
-
-    $args ||= { };
-    return $self->instance($args);
-}
 
 has table => (
     is => 'rw',
@@ -46,16 +37,19 @@ sub _build_table {
 
     return unless scalar @{ $data };
 
-    my $table = $self->_table;
-    
-    my $header_spec = $self->_header_spec;
-    
-    my @order = ( );
-    for (@{$header_spec}){
-        push @order, keys %{ $_ };
-    }
+    my $table = HTML::TableContent::Table->new({});
+  
+    my $caption_spec = $self->_caption_spec;
 
-    $table->sort({ order_template => \@order });
+    my $cap = (keys %{ $caption_spec->[0] })[0];
+    $table->caption($self->$cap);
+
+    my $header_spec = $self->_header_spec;
+  
+    for (@{$header_spec}){
+        my $attr = (keys %{ $_ })[0];
+        push @{ $table->headers }, $self->$attr;
+    }
 
     if ( ref $data->[0] eq "ARRAY" ) {
        my $headers = shift @{ $data };
