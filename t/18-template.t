@@ -8,6 +8,9 @@ BEGIN {
     use_ok("t::Templates::JustHeadersArray");
     use_ok("t::Templates::JustHeadersPassData");
     use_ok("t::Templates::JustHeadersText");
+    use_ok("t::Templates::AllRows");
+    use_ok("t::Templates::OddEvenRows");
+    use_ok("t::Templates::IndexRows");
 }
 
 subtest "just_headers" => sub  {
@@ -295,6 +298,169 @@ subtest "just_headers_text" => sub {
             text => 'somewhere',
         },
         render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">User Id</th><th class="okay">User Name</th><th class="what">User Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
+
+subtest "all_rows" => sub  {
+    plan tests => 34;
+    run_tests({
+        class => 't::Templates::AllRows',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+            class => 'all_rows',
+        },
+        fr_first_cell => {
+            text => '1',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="all_rows"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="all_rows"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="all_rows"><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
+
+subtest "odd_even_rows" => sub  {
+    plan tests => 34;
+    run_tests({
+        class => 't::Templates::OddEvenRows',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+            class => 'odd',
+        },
+        fr_first_cell => {
+            text => '1',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="odd"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="even"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="odd"><td>3</td><td>frank</td><td>out</td></tr></table>',
+    });
+};
+
+subtest "by_row_index" => sub  {
+    plan tests => 35;
+    run_tests({
+        class => 't::Templates::IndexRows',
+        caption => {
+            title => {
+                template_attr => 'title',
+                class => 'some-class',
+                id => 'caption-id',
+                text => 'table caption',
+            }
+        },
+        headers => {
+            id => {
+                template_attr => 'id',
+                class => 'some-class',
+                id => 'something-id',
+                text => 'id',
+            },
+            name => {
+                template_attr => 'name',
+                class => 'okay',
+                text => 'name',
+            },
+            address => {
+                template_attr => 'address',
+                class => 'what',
+                text => 'address',
+            }
+        },
+        table => {
+            row_count => 3,
+            header_count => 3,
+        },
+        first_header => {
+            template_attr => 'id',
+            class => 'some-class',
+            id => 'something-id',
+            text => 'id',
+        },
+        first_row => {
+            cell_count => 3,
+            class => 'first',
+            id => 'first-row',
+        },
+        fr_first_cell => {
+            text => '1',
+        },
+        fr_last_cell => {
+            text => 'somewhere',
+        },
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="first" id="first-row"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="second" id="second-row"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="third" id="third-row"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 

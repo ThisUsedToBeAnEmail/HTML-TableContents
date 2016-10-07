@@ -10,11 +10,11 @@ our $VERSION = '0.11';
 
 my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_class lazy/;
 
-my @TABLE = qw/caption header/;
+my @TABLE = qw/caption header row/;
 
 sub import {
     my ( $self, @import ) = @_;
-use Data::Dumper;
+    
     my $target = caller;
     my $table = HTML::TableContent::Table->new({});
 
@@ -37,15 +37,21 @@ use Data::Dumper;
         eval '{
         package ' . $target . ';
 
+            sub _caption_spec {
+                my ($class, @meta) = @_;
+                return $class->maybe::next::method(@meta);
+            }
+
             sub _header_spec {
                 my ($class, @meta) = @_;
                 return $class->maybe::next::method(@meta);
             }
             
-            sub _caption_spec {
+            sub _row_spec {
                 my ($class, @meta) = @_;
                 return $class->maybe::next::method(@meta);
             }
+
         1;
         }';
     }
@@ -65,17 +71,26 @@ use Data::Dumper;
 
             delete $filtered_attributes{default};
 
-            my $element_data->{$name} = %filtered_attributes;
-            push @element, $element_data;
-
+            my $element_data->{$name} = \%filtered_attributes;
+           
             my $spec = sprintf('_%s_spec', $element);
-            $around->(
-                $spec => sub {
-                    my ( $orig, $self ) = ( shift, shift );
-                    return $self->$orig(@_), \@element;
-                }
-            );
-
+            
+            if ( $element eq 'row' ) {
+                $around->(
+                    $spec => sub {
+                        my ( $orig, $self ) = ( shift, shift );
+                        return $self->$orig(@_), %$element_data;
+                    }
+                );
+            } else {
+                push @element, $element_data;
+                $around->(
+                    $spec => sub {
+                        my ( $orig, $self ) = ( shift, shift );
+                        return $self->$orig(@_), \@element;
+                    }
+                );
+            }
             return;
         };
 
@@ -101,8 +116,12 @@ sub _filter_attributes {
     $attributes{is} = 'ro';
     $attributes{lazy} = 1;
     my $default_action = sprintf('add_%s', $element);
-    $attributes{default} = sub { my %dirt = %tattr; return $table->$default_action(\%dirt); };
 
+    if ( $element eq 'row' ) {
+        $attributes{default} = sub { return \%tattr; };
+    } else {
+        $attributes{default} = sub { my %dirt = %tattr; return $table->$default_action(\%dirt); };
+    }
     my %filter_key = map { $_ => 1 } @VALID_ATTRIBUTES;
     return map { $_ => $attributes{$_} } grep { exists $filter_key{$_} } keys %attributes;
 }

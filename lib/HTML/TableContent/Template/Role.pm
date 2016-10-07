@@ -6,6 +6,7 @@ use warnings;
 use Moo::Role;
 
 use HTML::TableContent::Table;
+use Lingua::EN::Numbers qw(num2en);
 
 our $VERSION = '0.11';
 
@@ -64,8 +65,12 @@ sub _build_table {
        $data = $new;
     }
 
+    my %row_spec = $self->_row_spec;
+
+    my $row_index = 1;
     foreach my $hash ( @{ $data } ) {
-        my $row = $table->add_row({});
+        my $row_base = $self->_element_spec($row_index++, %row_spec);
+        my $row = $table->add_row($row_base);
         foreach ( $table->all_headers ) {
             my $cell = $row->add_cell({ text => $hash->{$_->template_attr} });
             $table->parse_to_column($cell);
@@ -75,5 +80,42 @@ sub _build_table {
     return $table;
 }
 
+
+sub _element_spec {
+    my ( $self, $index, %row_spec) = @_;
+
+    my $row_base = { };
+
+    return $row_base unless keys %row_spec;
+
+    if (my $all = $row_spec{all} ) {
+        for ( keys %{ $all } ) {
+            $row_base->{$_} = $all->{$_};
+        }
+    }
+
+    if ( defined $row_spec{odd} && $index % 2 == 1 ) {
+        my $odd = $row_spec{odd};
+        for ( keys %{ $odd } ) {
+            $row_base->{$_} = $odd->{$_};
+        }
+    }
+
+    if ( defined $row_spec{even} && $index % 2 == 0 ) {
+        my $even = $row_spec{even};
+        for ( keys %{ $even } ) {
+            $row_base->{$_} = $even->{$_};
+        }
+    }
+
+    my $num = num2en($index);
+    if (my $row = $row_spec{$num}) {
+        for ( keys %{ $row } ) {
+            $row_base->{$_} = $row->{$_};
+        }
+    }
+
+    return $row_base;
+}
 
 1;
