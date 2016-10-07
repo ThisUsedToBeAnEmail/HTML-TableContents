@@ -111,6 +111,7 @@ sub render {
     
     my $attr = '';
     foreach my $attribute (@{ $_[0]->attribute_list }) {
+        next if $attribute eq 'template_attr';
         if (my $val = $args->{$attribute}) {
             $attr .= sprintf '%s="%s" ', $attribute, $val;
         }

@@ -261,6 +261,8 @@ is($row->get_last_cell->id, 'three', "expected cell id: three");
 
 is($row->get_last_cell->class, 'cells', "expected cell class: cells");
 
+=pod
+
 # order
 ok($basic = $tc->create_table({ aoa => $aoa, order => [qw/Name Postcode/] }));
 
@@ -290,6 +292,8 @@ is($basic->get_first_row->cell_count, 2, "first row cell count: 2");
 is($basic->get_first_row->get_first_cell->text, 'OX16 422', "first cell text: Rich");
 
 is($basic->get_first_row->get_cell(1)->text, 'Rich', "second cell text: OX16 422");
+
+=cut
 
 done_testing();
 

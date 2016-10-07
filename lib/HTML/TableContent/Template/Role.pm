@@ -4,9 +4,19 @@ use strict;
 use warnings;
 
 use Moo::Role;
+
+with 'MooX::Singleton';
+
 use HTML::TableContent::Table;
 
 our $VERSION = '0.11';
+
+sub process {
+    my ($self, $args) = @_;
+
+    $args ||= { };
+    return $self->instance($args);
+}
 
 has table => (
     is => 'rw',
@@ -18,6 +28,10 @@ has data => (
     is => 'rw',
     builder => '_build_data',
 );
+
+sub render {
+    return $_[0]->table->render;
+}
 
 sub _build_data {
     my $self = shift;
@@ -41,10 +55,7 @@ sub _build_table {
         push @order, keys %{ $_ };
     }
 
-    $table->sort({ order => \@order });
-
-    use Data::Dumper;
-    warn Dumper $data;
+    $table->sort({ order_template => \@order });
 
     if ( ref $data->[0] eq "ARRAY" ) {
        my $headers = shift @{ $data };
@@ -62,7 +73,7 @@ sub _build_table {
     foreach my $hash ( @{ $data } ) {
         my $row = $table->add_row({});
         foreach ( $table->all_headers ) {
-            my $cell = $row->add_cell({ text => $hash->{$_->text} });
+            my $cell = $row->add_cell({ text => $hash->{$_->template_attr} });
             $table->parse_to_column($cell);
         }
     }
@@ -70,8 +81,5 @@ sub _build_table {
     return $table;
 }
 
-sub render {
-    return $_[0]->table->render;
-}
 
 1;

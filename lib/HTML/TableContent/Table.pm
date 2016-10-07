@@ -307,18 +307,35 @@ sub sort {
     if ( my $order = $options->{order}) {
         my $headers = [ ];
         foreach my $header (@{ $order }) {
-            push @{ $headers }, map { $_ } grep { defined $_->data->[0] && $_->text =~ m/$header/ixms } $self->all_headers;
+            push @{ $headers }, map { $_ } grep { $_->text =~ m/$header/ixms } $self->all_headers;
         }
         $self->headers($headers);
         
         foreach my $row ( $self->all_rows ) {
             my $cells = [ ];
             foreach my $header (@{ $order }) {
-                push @{ $cells }, grep { defined $_->data->[0] && $_->header->text =~ m/$header/ixms } $row->all_cells;
+                push @{ $cells }, grep { $_->header->text =~ m/$header/ixms } $row->all_cells;
             }
             $row->cells($cells); 
         }
     }
+
+    if ( my $order = $options->{order_template}) {
+        my $headers = [ ];
+        foreach my $header (@{ $order }) {
+            push @{ $headers }, map { $_ } grep { $_->template_attr =~ m/$header/ixms } $self->all_headers;
+        }
+        $self->headers($headers);
+        
+        foreach my $row ( $self->all_rows ) {
+            my $cells = [ ];
+            foreach my $header (@{ $order }) {
+                push @{ $cells }, grep { $_->header->text =~ m/$header/ixms } $row->all_cells;
+            }
+            $row->cells($cells); 
+        }
+    }
+
 
     return $self;
 }
