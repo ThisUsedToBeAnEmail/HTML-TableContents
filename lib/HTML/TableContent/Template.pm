@@ -8,7 +8,7 @@ use Role::Tiny qw/does_role/;
 
 our $VERSION = '0.11';
 
-my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_class lazy/;
+my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_class lazy index/;
 
 my @TABLE = qw/caption header row/;
 

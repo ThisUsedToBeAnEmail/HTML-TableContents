@@ -80,7 +80,6 @@ sub _build_table {
     return $table;
 }
 
-
 sub _element_spec {
     my ( $self, $index, %row_spec) = @_;
 
@@ -88,34 +87,45 @@ sub _element_spec {
 
     return $row_base unless keys %row_spec;
 
-    if (my $all = $row_spec{all} ) {
-        for ( keys %{ $all } ) {
-            $row_base->{$_} = $all->{$_};
-        }
+    if (my $all = delete $row_spec{all} ) {
+        $row_base = $self->_add_to_base($row_base, $all);
     }
 
-    if ( defined $row_spec{odd} && $index % 2 == 1 ) {
-        my $odd = $row_spec{odd};
-        for ( keys %{ $odd } ) {
-            $row_base->{$_} = $odd->{$_};
-        }
+    my $odd = delete $row_spec{odd};
+    if ( defined $odd && $index % 2 == 1 ) {
+        $row_base = $self->_add_to_base($row_base, $odd);
     }
 
-    if ( defined $row_spec{even} && $index % 2 == 0 ) {
-        my $even = $row_spec{even};
-        for ( keys %{ $even } ) {
-            $row_base->{$_} = $even->{$_};
-        }
+    my $even = delete $row_spec{even};
+    if ( defined $even && $index % 2 == 0 ) {
+        $row_base = $self->_add_to_base($row_base, $even);
     }
+
+    return $row_base unless keys %row_spec;
 
     my $num = num2en($index);
     if (my $row = $row_spec{$num}) {
-        for ( keys %{ $row } ) {
-            $row_base->{$_} = $row->{$_};
+        $row_base = $self->_add_to_base($row_base, $row);
+    } else {
+        for (keys %row_spec) {
+            next unless defined $row_spec{$_}->{index};
+            if ( $row_spec{$_}->{index} == $index ) {
+                $row_base = $self->_add_to_base($row_base, $row_spec{$_});
+            }
         }
     }
 
     return $row_base;
+}
+
+sub _add_to_base {
+    my ( $self, $base, $hash ) = @_;
+
+    for ( keys %{ $hash } ) {
+        $base->{$_} = $hash->{$_};
+    }
+
+    return $base;
 }
 
 1;
