@@ -7,6 +7,7 @@ use Moo::Role;
 
 use HTML::TableContent::Table;
 use Lingua::EN::Numbers qw(num2en);
+use Data::Dumper;
 
 our $VERSION = '0.11';
 
@@ -60,7 +61,6 @@ sub _build_table {
         push @{ $table->headers }, $header;
     }
 
-
     if ( ref $data->[0] eq "ARRAY" ) {
        my $headers = shift @{ $data };
        my $new = [ ];
@@ -77,14 +77,11 @@ sub _build_table {
     my $row_index = 1;
     foreach my $hash ( @{ $data } ) {
         my $row_base = $self->_element_spec($row_index, %row_spec);
-       
-        $cell_spec{current} = defined $row_base->{cells} ? delete $row_base->{cells} : undef;
         
+        %cell_spec = $self->_reset_cell_spec($row_base, $row_index, %cell_spec);
         my $row = $table->add_row($row_base);
-
         my $cell_index = 1;
         foreach ( $table->all_headers ) {
-            $cell_spec{row_index} = $row_index;
             my $cell_base = $self->_element_spec($cell_index++, %cell_spec);
             $cell_base->{text} = $hash->{$_->template_attr};
             my $cell = $row->add_cell($cell_base);
@@ -103,11 +100,15 @@ sub _element_spec {
     my $base = { };
     my $row_index = delete $spec{row_index};
 
+    return $base unless keys %spec;
+
+    if ( my $col = delete $spec{$index} ) {
+        $base = $self->_add_to_base($base, $row_index, $col);        
+    }
+
     if ( my $cells = delete $spec{current}){
         $base = $self->_add_to_base($base, $index, $cells);
     }
-
-    return $base unless keys %spec;
 
     if (my $all = delete $spec{all} ) {
         $base = $self->_add_to_base($base, $index, $all);
@@ -125,19 +126,15 @@ sub _element_spec {
 
     return $base unless keys %spec;
 
-    if ( my $col = delete $spec{$index} ) {
-        $base = $self->_add_to_base($base, $row_index, $col);        
-    }
-
     my $num = num2en($index);
 
     if (defined $row_index) {
         $num = sprintf('%s__%s', num2en($row_index), $num);
     }
 
-    if (my $row = $spec{$num}) {
+    if (my $row = delete $spec{$num}) {
         $base = $self->_add_to_base($base, $index, $row);
-    } else {
+    } else { 
         for (keys %spec) {
             next unless defined $spec{$_}->{index};
             my $safe = defined $row_index ? sprintf('%s__%d', $row_index, $index) : $index;
@@ -147,7 +144,7 @@ sub _element_spec {
             }
         }
     }
-
+    
     return $base;
 }
 
@@ -162,12 +159,45 @@ sub _add_to_base {
         $base->{cells} = $cells;
     }
 
+    if ( my $cells = $hash->{alternate_classes} ) {
+        my $class = shift @{ $cells };
+        $base->{class} = $self->_join_class($class, $base->{class});
+        push @{ $cells }, $class;
+    }
+
     for ( keys %{ $hash } ) {
         next if $_ =~ m{increment_id}ixms;
+
+        if ( $_ eq 'class' ) {
+            $base->{$_} = $self->_join_class($hash->{$_}, $base->{$_});
+        }
+
         $base->{$_} = $hash->{$_};
     }
 
     return $base;
+}
+
+sub _reset_cell_spec {
+    my ($self, $row_base, $row_index, %cell_spec) = @_;
+
+     defined $row_base->{cells} ? $cell_spec{current} = delete $row_base->{cells} : delete $cell_spec{current};
+
+    $cell_spec{row_index} = $row_index;
+
+    for (keys %cell_spec) {
+        next unless ref $cell_spec{$_} eq 'HASH' && defined $cell_spec{$_}->{oac};
+        my @classes = @{ $cell_spec{$_}->{oac} };
+        $cell_spec{$_}->{alternate_classes} = \@classes;
+    }
+
+    return %cell_spec;
+}
+
+sub _join_class {
+    my ( $self, $class, $current ) = @_;
+
+    return defined $current ? sprintf('%s %s', $current, $class) : sprintf('%s', $class);
 }
 
 1;

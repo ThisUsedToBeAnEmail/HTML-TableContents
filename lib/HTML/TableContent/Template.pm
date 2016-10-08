@@ -11,7 +11,7 @@ use Role::Tiny qw/does_role/;
 
 our $VERSION = '0.11';
 
-my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_class lazy index cells/;
+my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_classes lazy index cells oac/;
 
 my %TABLE = (
     caption => 'HTML::TableContent::Table::Caption',
@@ -79,7 +79,9 @@ sub import {
             
             my %filtered_attributes = _filter_attributes($name, $element, %attributes);
 
-            $has->( $name => %filtered_attributes );
+            if ( $element =~ m{caption|header}ixms ){ 
+                $has->( $name => %filtered_attributes );
+            }
 
             delete $filtered_attributes{default};
 
@@ -121,6 +123,11 @@ sub _filter_attributes {
 
     if ( ! exists $attributes{text} ) {
         $attributes{text} = $name;
+    }
+
+    if ( $element eq 'cell' && exists $attributes{alternate_classes} ) {
+         my @classes = @{ $attributes{alternate_classes} };
+         $attributes{oac} = \@classes;
     }
 
     my %tattr = %attributes;

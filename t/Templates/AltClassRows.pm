@@ -23,7 +23,7 @@ header address => (
 );
 
 row all => (
-    alternate_classes => qw/first-class second-class/,
+    alternate_classes => [qw/first-class second-class/],
 );
 
 sub _build_data {

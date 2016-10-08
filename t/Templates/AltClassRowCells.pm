@@ -24,7 +24,7 @@ header address => (
 
 row one => (
     cells => {
-        alternate_classes => qw/first-class second-class/,
+        alternate_classes => [qw/first-class second-class/],
     }
 );
 

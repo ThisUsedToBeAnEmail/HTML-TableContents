@@ -13,21 +13,21 @@ header id => (
     class => 'some-class',
     id => 'something-id',
     cells => {
-        alternate_class => qw/first-head-first-class first-head-second-class first-head-third-class/,
+        alternate_classes => [qw/first-head-first-class first-head-second-class first-head-third-class/],
     }
 );
 
 header name => (
     class => 'okay',
     cells => {
-        alternate_class => qw/second-head-first-class second-head-second-class second-head-third-class/,
+        alternate_classes => [qw/second-head-first-class second-head-second-class second-head-third-class/],
     }
 );
 
 header address => (
     class => 'what',
     cells => {
-        alternate_class => qw/third-head-first-class third-head-second-class third-head-third-class/,
+        alternate_classes => [qw/third-head-first-class third-head-second-class third-head-third-class/],
     }
 );
 

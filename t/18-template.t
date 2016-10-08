@@ -928,7 +928,7 @@ subtest "row_cells" => sub  {
 };
 
 subtest "alt_class_rows" => sub  {
-    plan tests => 33;
+    plan tests => 34;
     run_tests({
         class => 't::Templates::AltClassRows',
         caption => {
@@ -982,7 +982,7 @@ subtest "alt_class_rows" => sub  {
 };
 
 subtest "alt_class_row_odd" => sub  {
-    plan tests => 33;
+    plan tests => 34;
     run_tests({
         class => 't::Templates::AltClassOddRows',
         caption => {
@@ -1023,7 +1023,7 @@ subtest "alt_class_row_odd" => sub  {
         },
         first_row => {
             cell_count => 3,
-            class = 'first-class',
+            class => 'first-class',
         },
         fr_first_cell => {
             text => '1',
@@ -1036,7 +1036,7 @@ subtest "alt_class_row_odd" => sub  {
 };
 
 subtest "alt_class_row_cells" => sub  {
-    plan tests => 33;
+    plan tests => 35;
     run_tests({
         class => 't::Templates::AltClassRowCells',
         caption => {
@@ -1090,9 +1090,8 @@ subtest "alt_class_row_cells" => sub  {
     });
 };
 
-
 subtest "alt_class_all_cells" => sub  {
-    plan tests => 33;
+    plan tests => 35;
     run_tests({
         class => 't::Templates::AltClassCells',
         caption => {
@@ -1145,6 +1144,7 @@ subtest "alt_class_all_cells" => sub  {
         render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="first-class">1</td><td class="second-class">rob</td><td class="first-class">somewhere</td></tr><tr><td class="first-class">2</td><td class="second-class">sam</td><td class="first-class">somewhere else</td></tr><tr><td class="first-class">3</td><td class="second-class">frank</td><td class="first-class">out</td></tr></table>',
     });
 };
+
 
 subtest "alt_class_odd_cells" => sub  {
     plan tests => 33;
@@ -1200,7 +1200,7 @@ subtest "alt_class_odd_cells" => sub  {
 };
 
 subtest "alt_class_header_cells" => sub  {
-    plan tests => 33;
+    plan tests => 35;
     run_tests({
         class => 't::Templates::AltClassHeaderCells',
         caption => {
@@ -1254,8 +1254,8 @@ subtest "alt_class_header_cells" => sub  {
     });
 };
 
-subtest "alt_class_header_cells" => sub  {
-    plan tests => 33;
+subtest "nuts" => sub  {
+    plan tests => 36;
     run_tests({
         class => 't::Templates::AltNuts',
         caption => {
@@ -1310,7 +1310,6 @@ subtest "alt_class_header_cells" => sub  {
     });
 };
 
-
 done_testing();
 
 sub run_tests {
@@ -1320,7 +1319,6 @@ sub run_tests {
 
     my $template;
     if (my $data = $args->{data}) {
-        use Data::Dumper;
         $template = $class->new({ data => $data });
     } else {
         $template = $class->new();
