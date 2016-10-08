@@ -76,7 +76,7 @@ sub _build_table {
     foreach my $hash ( @{ $data } ) {
         my $row_base = $self->_element_spec($row_index, %row_spec);
         
-        %cell_spec = $self->_reset_cell_spec($row_base, $row_index, %cell_spec);
+        %cell_spec = $self->_refresh_cell_spec($row_base, $row_index, %cell_spec);
         my $row = $table->add_row($row_base);
         my $cell_index = 1;
         foreach ( $table->all_headers ) {
@@ -176,10 +176,10 @@ sub _add_to_base {
     return $base;
 }
 
-sub _reset_cell_spec {
+sub _refresh_cell_spec {
     my ($self, $row_base, $row_index, %cell_spec) = @_;
 
-     defined $row_base->{cells} ? $cell_spec{current} = delete $row_base->{cells} : delete $cell_spec{current};
+    defined $row_base->{cells} ? $cell_spec{current} = delete $row_base->{cells} : delete $cell_spec{current};
 
     $cell_spec{row_index} = $row_index;
 
