@@ -6,6 +6,10 @@ use Data::Dumper;
 
 BEGIN {
     use_ok("t::Templates::JustHeaders");
+    use_ok("t::Templates::HeaderHtml");
+    use_ok("t::Templates::HeaderHtmlCustom");
+    use_ok("t::Templates::OneHeaderHtml");
+    use_ok("t::Templates::SubHeaderHtml");
 }
 
 ok(my $template = t::Templates::JustHeaders->new());
@@ -79,10 +83,38 @@ is($template->table->get_first_row->get_cell(1)->header->text, 'User Name', "fir
 
 $html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">User Id</th><th class="test" id="test-id">User Name</th><th class="what">address</th></tr><tr><td>1</td><td>Rex</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
 
-is($template->render, $html, "expected html");
+is($template->render, $html, "$html");
 
-warn Dumper $template->render;
+ok($template = t::Templates::HeaderHtml->new());
 
-done_testing( );
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id"><a href="some/endpoint">id</a></th><th class="okay"><a href="some/endpoint">name</a></th><th class="what"><a href="some/endpoint">address</a></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+ok($template->id->set_text('User Id'), 'set id text');
+
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id"><a href="some/endpoint">User Id</a></th><th class="okay"><a href="some/endpoint">name</a></th><th class="what"><a href="some/endpoint">address</a></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+ok($template = t::Templates::HeaderHtmlCustom->new());
+
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id"><a href="some/endpoint?sort=id">User Id</a></th><th class="okay"><a href="some/endpoint?sort=name">User Name</a></th><th class="what"><a href="some/endpoint?sort=address">User Address</a></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+ok($template = t::Templates::OneHeaderHtml->new());
+
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id"><a href="some/endpoint?sort=id">User Id</a></th><th class="okay">User Name</th><th class="what">User Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+ok($template = t::Templates::SubHeaderHtml->new());
+
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id"><a href="some/endpoint?sort=id">User Id</a></th><th class="okay">User Name</th><th class="what"><a href="some/endpoint?sort=address">User Address</a></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+done_testing();
 
 1;

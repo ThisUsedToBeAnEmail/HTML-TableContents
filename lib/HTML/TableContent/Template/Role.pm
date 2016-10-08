@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moo::Role;
+use Carp qw/croak/;
 
 use HTML::TableContent::Table;
 use Lingua::EN::Numbers qw(num2en);
@@ -52,10 +53,25 @@ sub _build_table {
         my $attr = (keys %{ $header_spec->[$_] })[0];
         my $header = $self->$attr;
 
-        if (my $cells = delete $header->attributes->{cells}){
+        my $header_attributes = $header->attributes;
+        if (my $cells = delete $header_attributes->{cells}){
             $cell_spec{$_ + 1} = $cells;
         }
 
+
+        if ( $self->can('render_header') ) {
+            $header->inner_html($self->render_header);
+        } 
+        elsif ( my $inner_html = delete $header_attributes->{inner_html}) {
+            if ( ref $inner_html eq 'ARRAY' ) {
+                $header->inner_html($inner_html);
+            } elsif ( $self->can($inner_html) ) {
+                $header->inner_html($self->$inner_html);
+            } else {
+                croak "inner_html on $header->template_attr needs to be either an ArrayRef or A reference to a Sub";
+            }
+        }
+        
         push @{ $table->headers }, $header;
     }
 

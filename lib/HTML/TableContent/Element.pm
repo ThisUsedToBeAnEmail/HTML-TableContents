@@ -20,7 +20,7 @@ around BUILDARGS => sub {
             $build->{$field} = $args->{$field};
         }
     }
-    
+
     return $class->$orig( $build );
 };
 
@@ -34,22 +34,27 @@ for my $field (@ATTRIBUTE) {
 }
 
 has attributes => (
-    is      => 'rw',
+    is => 'rw',
     default => sub { {} }
 );
 
 has attribute_list => (
-    is      => 'rw',
+    is => 'rw',
 );
 
 has data => (
-    is      => 'rw',
+    is => 'rw',
     clearer => 1,
     builder => 1,
 );
 
+has inner_html => (
+    is => 'rw',
+    lazy => 1,
+);
+
 has [qw/nested links/] => (
-    is      => 'rw',
+    is => 'rw',
     default => sub { [] },
 );
 
@@ -119,8 +124,21 @@ sub render {
         }
     }
 
+    my $render = $_[0]->_render_element;
+
+    if ( my $inner_html = $_[0]->inner_html ) {
+       my $inner_count = scalar @{ $inner_html };
+       if ( $inner_count == 1 ) {
+            $render = sprintf($inner_html->[0], $render);
+       } else {
+           use Data::Dumper;
+           my @inner = @{ $inner_html };
+            $render = sprintf($inner_html->[0], map { $_[0]->$_ } @{ $inner_html }[1 .. $inner_count - 1] );
+       }
+    }
+
     my $tag = $_[0]->html_tag;
-    return $_[0]->tidy_html(sprintf("<%s %s>%s</%s>", $tag, $attr, $_[0]->_render_element, $tag));
+    return $_[0]->tidy_html(sprintf("<%s %s>%s</%s>", $tag, $attr, $render, $tag));
 }
 
 sub _render_element {
