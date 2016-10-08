@@ -10,6 +10,10 @@ BEGIN {
     use_ok("t::Templates::HeaderHtmlCustom");
     use_ok("t::Templates::OneHeaderHtml");
     use_ok("t::Templates::SubHeaderHtml");
+    use_ok("t::Templates::CaptionHtml");
+    use_ok("t::Templates::CaptionHtmlCustom");
+    use_ok("t::Templates::ArrCaptionHtml");
+    use_ok("t::Templates::SubCaptionHtml");
 }
 
 ok(my $template = t::Templates::JustHeaders->new());
@@ -112,6 +116,30 @@ is($template->render, $html, "$html");
 ok($template = t::Templates::SubHeaderHtml->new());
 
 $html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id"><a href="some/endpoint?sort=id">User Id</a></th><th class="okay">User Name</th><th class="what"><a href="some/endpoint?sort=address">User Address</a></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+ok($template = t::Templates::CaptionHtml->new());
+
+$html = '<table><caption class="some-class" id="caption-id"><a href="some/endpoint">table caption</a></caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+ok($template = t::Templates::CaptionHtmlCustom->new());
+
+$html = '<table><caption class="some-class" id="caption-id"><a href="www.somelinktosomethingspecial.com">table caption</a></caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+ok($template = t::Templates::ArrCaptionHtml->new());
+
+$html = '<table><caption class="some-class" id="caption-id"><a href="www.somelinktosomethingspecial.com">table caption</a></caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
+
+is($template->render, $html, "$html");
+
+ok($template = t::Templates::SubCaptionHtml->new());
+
+$html = '<table><caption class="some-class" id="caption-id"><a href="www.somelinktosomethingspecial.com">table caption</a></caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
 
 is($template->render, $html, "$html");
 

@@ -43,8 +43,21 @@ sub _build_table {
     my $caption_spec = $self->_caption_spec;
 
     my $cap = (keys %{ $caption_spec->[0] })[0];
-    $table->caption($self->$cap);
+    my $caption = $table->caption($self->$cap);
 
+    if ( $self->can('render_caption') ) {
+        $caption->inner_html($self->render_caption);
+    } 
+    elsif ( my $inner_html = delete $caption->attributes->{inner_html}) {
+        if ( ref $inner_html eq 'ARRAY' ) {
+            $caption->inner_html($inner_html);
+        } elsif ( $self->can($inner_html) ) {
+            $caption->inner_html($self->$inner_html);
+        } else {
+            croak "inner_html on $caption->template_attr needs to be either an ArrayRef or A reference to a Sub";
+        }
+    }
+    
     my $header_spec = $self->_header_spec; 
     my %row_spec = $self->_row_spec;
     my %cell_spec = $self->_cell_spec; 

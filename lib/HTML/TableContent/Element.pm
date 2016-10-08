@@ -12,6 +12,12 @@ around BUILDARGS => sub {
     
     my $build = ( );
 
+    if (my $links = delete $args->{links}) {
+        if ( ref $links eq 'ARRAY' ) {
+            $build->{links} = $links;
+        }
+    }
+
     $build->{attributes} = $args;
     $build->{attribute_list} = \@ATTRIBUTE;
 
@@ -72,6 +78,16 @@ sub get_first_nested { return $_[0]->nested->[0]; }
 sub get_nested { return $_[0]->nested->[ $_[1] ]; }
 
 sub all_nested { return @{ $_[0]->nested }; }
+
+sub has_links { return scalar @{ $_[0]->links } ? 1 : 0; }
+
+sub count_links { return scalar @{ $_[0]->links }; }
+
+sub get_first_link { return $_[0]->links->[0]; }
+
+sub get_link { return $_[0]->links->[ $_[1] ]; }
+
+sub all_links { return @{ $_[0]->links }; }
 
 sub add_nested { 
     my $table = HTML::TableContent::Table->new($_[1]);
