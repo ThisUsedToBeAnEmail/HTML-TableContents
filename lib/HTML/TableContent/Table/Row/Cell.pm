@@ -26,6 +26,14 @@ around _render_element => sub {
     return $text;
 };
 
+sub header_template_attr {
+    return $_[0]->header->template_attr;
+}
+
+sub header_text {
+    return $_[0]->header->text;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
