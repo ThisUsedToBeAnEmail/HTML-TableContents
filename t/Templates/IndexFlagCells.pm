@@ -34,7 +34,7 @@ cell else => (
     id => 'first-row-last-cell',
 );
 
-sub _build_data {
+sub _data {
     my $self = shift;
 
     return [

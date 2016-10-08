@@ -26,7 +26,7 @@ cell odd => (
     alternate_classes => [qw/first-class second-class/],
 );
 
-sub _build_data {
+sub _data {
     my $self = shift;
 
     return [

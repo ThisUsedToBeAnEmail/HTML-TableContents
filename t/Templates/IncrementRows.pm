@@ -27,7 +27,7 @@ row all => (
     increment_id => 'row-id-',
 );
 
-sub _build_data {
+sub _data {
     my $self = shift;
 
     return [

@@ -45,7 +45,7 @@ cell all => (
     alternate_classes => [qw/nuts crazy/],
 );
 
-sub _build_data {
+sub _data {
     my $self = shift;
 
     return [

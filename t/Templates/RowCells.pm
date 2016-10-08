@@ -34,7 +34,7 @@ row one => (
     }
 );
 
-sub _build_data {
+sub _data {
     my $self = shift;
 
     return [

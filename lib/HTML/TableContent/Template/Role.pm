@@ -27,9 +27,7 @@ sub render {
 }
 
 sub _build_data {
-    my $self = shift;
-
-    return [ ];
+   return $_[0]->can('_data') ? $_[0]->_data : [ ];
 }
 
 sub _build_table {

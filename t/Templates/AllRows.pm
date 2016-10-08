@@ -26,7 +26,7 @@ row all => (
     class => 'all_rows',
 );
 
-sub _build_data {
+sub _data {
     my $self = shift;
 
     return [
