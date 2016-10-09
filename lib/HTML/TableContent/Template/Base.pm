@@ -1,4 +1,4 @@
-package HTML::TableContent::Template::Role;
+package HTML::TableContent::Template::Base;
 
 use strict;
 use warnings;
@@ -312,3 +312,209 @@ sub _num_to_en {
 }
 
 1;
+
+__END__
+
+=head1 Name
+
+HTML::TableContent::Template::Base - Base for Templates.
+
+=head1 VERSION
+
+Version 0.11
+
+=cut
+
+=head1 SYNOPSIS
+
+    Package MyApp::Table::Demo;
+
+    use Moo;
+    use HTML::TableContent::Template;
+    
+    header id => ( 
+        class => 'table-header',
+        id => 'header-id',
+        cells => {
+            inner_html => ['<b>%s</b>']
+            increment_id => 'some-id-'
+        }
+    );
+
+    header name => ( );
+
+    row odd => ( 
+        class => 'odd-rows', 
+        inner_html => '_even_rows',
+    );
+
+    row even => ( class => 'even-rows' );
+
+    cell all => ( alternate_classes => qw['one', 'two'] );
+
+    sub _render_header {
+        my ($self, $header) = @_;
+
+        return ['<a href="some/endpoint?sort=%s">%s</a>', 'template_attr', 'text'] 
+    }
+
+    sub _even_rows {
+        return ['<div>%s</div>', '_render_element']
+    }
+
+    .... 
+
+    my $template = Framework::Tables::Demo->new({ data => $aoh });
+    $template->render;
+        
+
+=head1 DESCRIPTION
+
+Base Role for Table Templates.
+
+=head1 SUBROUTINES/METHODS
+
+=head2 data
+
+You need to pass data or define a _data method in your template class for this to work.
+Data can be either an array of arrays or an array of hashes.
+
+    sub _data {
+        return [ 
+            [qw/id name/],
+            ['1', 'frank'],
+            ['2', 'turn']
+        ];§
+    }
+
+=head2 OPTIONS
+
+=head3 class
+
+Set element class.
+
+    class => 'some-class';
+
+=head3 alternate_classes
+
+Alternate classes on rows or cells
+
+    alternate_classes => ['class-1', 'class-2', 'class-3']
+
+=head3 id
+
+Set Element id if found.
+
+   id => 'element-id';
+
+=head3 increment_id
+
+Increment Id on rows or cells.
+
+    increment_id => 'cell-id-',
+    
+=head3 text
+
+Set element text, if not set defaults to attributes name.
+
+    text = 'some text';
+
+=head3 data
+
+Set an Array of text strings.
+
+    data => ['data', 'data', 'data'];
+
+=head3 rowspan
+
+Set element rowspan
+
+    rowspan => '2'
+
+=head3 colspan
+
+Set element colspan
+
+    colspan => '2'
+
+=head3 inner_html
+
+inner_html accepts either an ArrayRef or a string that is a reference to a user defined sub routine.
+
+    inner_html => '_render_this_header',
+    inner_html => ['<h1>%s</h1>', 'text'],
+
+If you want to define inner_html for all headers/rows/cells you can just write a default render_$element.
+
+    sub render_header {    
+        return ['<h1>%s</h1>', 'text'],
+    }
+
+=head2 table
+
+Return the processed table - L<HTML::TableContent::Table>
+
+    $self->table
+
+=head2 last_chance
+
+If you define a last_chance method in your template class, a processed table object will be sent there 
+just before it's set as the table attribute.
+
+    sub last_chance { my ($self, $table) = @_; ... }
+
+=head1 AUTHOR
+
+LNATION, C<< <thisusedtobeanemail at gmail.com> >>
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 ACKNOWLEDGEMENTS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT 
+
+=head1 INCOMPATIBILITIES
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2016 LNATION.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+Any use, modification, and distribution of the Standard or Modified
+Versions is governed by this Artistic License. By using, modifying or
+distributing the Package, you accept this license. Do not use, modify,
+or distribute the Package, if you do not accept this license.
+
+If your Modified Version has been derived from a Modified Version made
+by someone other than you, you are nevertheless required to ensure that
+your Modified Version complies with the requirements of this license.
+
+This license does not grant you the right to use any trademark, service
+mark, tradename, or logo of the Copyright Holder.
+
+This license includes the non-exclusive, worldwide, free-of-charge
+patent license to make, have made, use, offer to sell, sell, import and
+otherwise transfer the Package with respect to any patent claims
+licensable by the Copyright Holder that are necessarily infringed by the
+Package. If you institute patent litigation (including a cross-claim or
+counterclaim) against any party alleging that the Package constitutes
+direct or contributory patent infringement, then this Artistic License
+to you shall terminate on the date that such litigation is filed.
+
+Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
+AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
+THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
+YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
+CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
+CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=cut
