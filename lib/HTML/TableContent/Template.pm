@@ -193,7 +193,7 @@ Version 0.12
         
 =head1 DESCRIPTION
 
-Template - Table Classes - For options see L<HTML::TableContent::Template::Base>
+Define Table Template Classes - For options see L<HTML::TableContent::Template::Base>
 
 =head1 SUBROUNTINES/METHODS
 
@@ -201,7 +201,7 @@ Template - Table Classes - For options see L<HTML::TableContent::Template::Base>
 
 =head3 header
 
-header's define your table - L<HTML::TableContent::Table::Header>'r.
+header's define your table. name should be a reference to a key/header in your passed data - L<HTML::TableContent::Table::Header>'r.
 
     header name => (
         ...
@@ -209,7 +209,7 @@ header's define your table - L<HTML::TableContent::Table::Header>'r.
 
     ...
 
-    header name => (
+    header id => (
         ...
         cells => {
             ....

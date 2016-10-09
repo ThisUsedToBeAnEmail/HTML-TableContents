@@ -255,7 +255,7 @@ __END__
 
 =head1 NAME
 
-HTML::TableContent - Extract content from HTML tables.
+HTML::TableContent - HTML tables.
 
 =head1 VERSION
 

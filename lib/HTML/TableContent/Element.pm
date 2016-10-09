@@ -303,6 +303,42 @@ ArrayRef of href links.
 
     $element->links;
 
+=head2 all_links
+
+Array of links.
+
+    $element->links
+
+=head2 has_links
+
+Boolean check, returns true if the element has links.
+
+    $element->has_links
+
+=head2 count_links
+
+Count number of links.
+
+    $element->count_links
+
+=head2 get_first_link
+
+Get the first nested table.
+
+    $element->get_first_link
+
+=head2 get_last_link
+
+Get the first nested table.
+
+    $element->get_last_link
+
+=head2 get_link
+
+Get Nested table by index.
+
+    $element->get_link(1);
+
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>

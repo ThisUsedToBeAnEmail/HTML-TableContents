@@ -158,6 +158,48 @@ Add nested L<HTML::TableContent::Table> to the Cell.
 
     $cell->add_nested({ id => 'nested-table-id', class => 'nested-table-class' }); 
 
+=head2 links
+
+ArrayRef of href links.
+
+    $cell->links;
+
+=head2 all_links
+
+Array of links.
+
+    $cell->links
+
+=head2 has_links
+
+Boolean check, returns true if the element has links.
+
+    $cell->has_links
+
+=head2 count_links
+
+Count number of links.
+
+    $cell->count_links
+
+=head2 get_first_link
+
+Get the first nested table.
+
+    $cell->get_first_link
+
+=head2 get_last_link
+
+Get the first nested table.
+
+    $cell->get_last_link
+
+=head2 get_link
+
+Get Nested table by index.
+
+    $cell->get_link(1);
+
 =head1 AUTHOR
 
 LNATION, C<< <thisusedtobeanemail at gmail.com> >>
