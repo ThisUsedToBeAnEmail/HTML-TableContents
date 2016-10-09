@@ -24,7 +24,7 @@ header address => (
 
 row one => (
     cells => {
-        inner_html => ['<span id="first-%s">%s</span', 'header_template_attr', 'text']
+        inner_html => ['<span id="first-%s">%s</span>', 'header_template_attr', '_render_element']
     }
 );
 

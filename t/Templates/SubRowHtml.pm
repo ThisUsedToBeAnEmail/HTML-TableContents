@@ -36,7 +36,7 @@ sub render_row {
 sub special_row {
     my ($self, $element) = @_;
 
-    return [ '<div><a href="%s">%s</a></div>', 'get_first_link', 'text' ];
+    return [ '<div><a href="%s">%s</a></div>', 'get_first_link', '_render_element' ];
 }
 
 sub _data {

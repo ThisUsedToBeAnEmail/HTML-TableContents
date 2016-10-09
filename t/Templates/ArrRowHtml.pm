@@ -23,7 +23,7 @@ header address => (
 );
 
 row one => (
-    inner_html => [ '<div><a href="%s">%s</a></div>', 'get_first_link', 'text' ],
+    inner_html => [ '<div><a href="%s">%s</a></div>', 'get_first_link', '_render_element' ],
     links => ['some/endpoint']
 );
 

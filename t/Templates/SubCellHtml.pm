@@ -24,7 +24,7 @@ header address => (
 
 cell one__one => (
     links => ['some/endpoint'],
-    inner_html => 'special_cell';
+    inner_html => 'special_cell',
 );
 
 sub render_row {

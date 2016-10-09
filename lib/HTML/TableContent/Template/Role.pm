@@ -44,19 +44,7 @@ sub _build_table {
 
     my $cap = (keys %{ $caption_spec->[0] })[0];
     my $caption = $table->caption($self->$cap);
-
-    if ( $self->can('render_caption') ) {
-        $caption->inner_html($self->render_caption);
-    } 
-    elsif ( my $inner_html = delete $caption->attributes->{inner_html}) {
-        if ( ref $inner_html eq 'ARRAY' ) {
-            $caption->inner_html($inner_html);
-        } elsif ( $self->can($inner_html) ) {
-            $caption->inner_html($self->$inner_html);
-        } else {
-            croak "inner_html on $caption->template_attr needs to be either an ArrayRef or A reference to a Sub";
-        }
-    }
+    $caption = $self->_set_inner_html('render_caption', $caption);
     
     my $header_spec = $self->_header_spec; 
     my %row_spec = $self->_row_spec;
@@ -66,24 +54,11 @@ sub _build_table {
         my $attr = (keys %{ $header_spec->[$_] })[0];
         my $header = $self->$attr;
 
-        my $header_attributes = $header->attributes;
-        if (my $cells = delete $header_attributes->{cells}){
+        if (my $cells = delete $header->attributes->{cells}) {
             $cell_spec{$_ + 1} = $cells;
         }
 
-
-        if ( $self->can('render_header') ) {
-            $header->inner_html($self->render_header);
-        } 
-        elsif ( my $inner_html = delete $header_attributes->{inner_html}) {
-            if ( ref $inner_html eq 'ARRAY' ) {
-                $header->inner_html($inner_html);
-            } elsif ( $self->can($inner_html) ) {
-                $header->inner_html($self->$inner_html);
-            } else {
-                croak "inner_html on $header->template_attr needs to be either an ArrayRef or A reference to a Sub";
-            }
-        }
+        $header = $self->_set_inner_html('render_header', $header);
         
         push @{ $table->headers }, $header;
     }
@@ -107,11 +82,14 @@ sub _build_table {
         
         %cell_spec = $self->_refresh_cell_spec($row_base, $row_index, %cell_spec);
         my $row = $table->add_row($row_base);
+        $row = $self->_set_inner_html('render_row', $row);
+
         my $cell_index = 1;
         foreach ( $table->all_headers ) {
             my $cell_base = $self->_element_spec($cell_index++, %cell_spec);
             $cell_base->{text} = $hash->{$_->template_attr};
             my $cell = $row->add_cell($cell_base);
+            $cell = $self->_set_inner_html('render_cell', $cell);
             $table->parse_to_column($cell);
         }
 
@@ -225,6 +203,26 @@ sub _join_class {
     my ( $self, $class, $current ) = @_;
 
     return defined $current ? sprintf('%s %s', $current, $class) : sprintf('%s', $class);
+}
+
+sub _set_inner_html {
+    my ($self, $action, $element, $attr) = @_;
+ 
+    $attr ||= $element->attributes;
+
+    if ( my $inner_html = delete $attr->{inner_html}) {
+        if ( ref $inner_html eq 'ARRAY' ) {
+            $element->inner_html($inner_html);
+        } elsif ( $self->can($inner_html) ) {
+            $element->inner_html($self->$inner_html);
+        } else {
+            croak "inner_html on $element->template_attr needs to be either an ArrayRef or A reference to a Sub";
+        }
+    } elsif ( $self->can($action) ) {
+        $element->inner_html($self->$action);
+    } 
+   
+    return $element;
 }
 
 1;

@@ -117,6 +117,7 @@ $html = '<table><caption class="some-class" id="caption-id">table caption</capti
 
 is($template->render, $html, "$html");
 
+
 ok($template = t::Templates::OneHeaderHtml->new());
 
 $html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id"><a href="some/endpoint?sort=id">User Id</a></th><th class="okay">User Name</th><th class="what">User Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
@@ -155,37 +156,39 @@ is($template->render, $html, "$html");
 
 ok($template = t::Templates::RowHtml->new());
 
-$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td>1</td><td>rob</td><td>somewhere</td></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></tr></div></table>';
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td>1</td><td>rob</td><td>somewhere</td></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></div></tr></table>';
 
 is($template->render, $html, "$html");
 
+
 ok($template = t::Templates::ArrRowHtml->new());
 
-$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><a href="some/endpoint"><td>1</td><td>rob</td><td>somewhere</td></a></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></tr></div></table>';
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><a href="some/endpoint"><td>1</td><td>rob</td><td>somewhere</td></a></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></div></tr></table>';
 
 is($template->render, $html, "$html");
 
 ok($template = t::Templates::SubRowHtml->new());
 
-$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><a href="some/endpoint"><td>1</td><td>rob</td><td>somewhere</td></a></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></tr></div></table>';
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><a href="some/endpoint"><td>1</td><td>rob</td><td>somewhere</td></a></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></div></tr></table>';
 
 is($template->render, $html, "$html");
 
+
 ok($template = t::Templates::CellHtml->new());
 
-$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span>1</span></td><td><span>rob</span></td><td><span>somewhere</span></td></div></tr><tr><div><td><span>2</span></td><td><span>sam</span></td><td><span>somewhere else</span></td></div></tr><tr><div><td><span>3</span></td><td><span>frank</span></td><td><span>out</span></td></tr></div></table>';
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span>1</span></td><td><span>rob</span></td><td><span>somewhere</span></td></div></tr><tr><div><td><span>2</span></td><td><span>sam</span></td><td><span>somewhere else</span></td></div></tr><tr><div><td><span>3</span></td><td><span>frank</span></td><td><span>out</span></td></div></tr></table>';
 
 is($template->render, $html, "$html");
 
 ok($template = t::Templates::ArrCellHtml->new());
 
-$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span><a href="some/endpoint">1</a></span></td><td><span>rob</span></td><td><span>somewhere</span></td></div></tr><tr><div><td><span>2</span></td><td><span>sam</span></td><td><span>somewhere else</span></td></div></tr><tr><div><td><span>3</span></td><td><span>frank</span></td><td><span>out</span></td></tr></div></table>';
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span><a href="some/endpoint">1</a></span></td><td><span>rob</span></td><td><span>somewhere</span></td></div></tr><tr><div><td><span>2</span></td><td><span>sam</span></td><td><span>somewhere else</span></td></div></tr><tr><div><td><span>3</span></td><td><span>frank</span></td><td><span>out</span></td></div></tr></table>';
 
 is($template->render, $html, "$html");
 
 ok($template = t::Templates::SubCellHtml->new());
 
-$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span><a href="some/endpoint">1</a></span></td><td><span>rob</span></td><td><span>somewhere</span></td></div></tr><tr><div><td><span>2</span></td><td><span>sam</span></td><td><span>somewhere else</span></td></div></tr><tr><div><td><span>3</span></td><td><span>frank</span></td><td><span>out</span></td></tr></div></table>';
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span><a href="some/endpoint">1</a></span></td><td><span>rob</span></td><td><span>somewhere</span></td></div></tr><tr><div><td><span>2</span></td><td><span>sam</span></td><td><span>somewhere else</span></td></div></tr><tr><div><td><span>3</span></td><td><span>frank</span></td><td><span>out</span></td></div></tr></table>';
 
 is($template->render, $html, "$html");
 
@@ -203,7 +206,7 @@ is($template->render, $html, "$html");
 
 ok($template = t::Templates::RowCellHtml->new());
 
-$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span id="first-id">1</span></td><td><span id="first-name">rob</span></td><td><span id="first-address">somewhere</span></td></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></tr></div></table>';
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span id="first-id">1</span></td><td><span id="first-name">rob</span></td><td><span id="first-address">somewhere</span></td></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></div></tr></table>';
 
 is($template->render, $html, "$html");
 
