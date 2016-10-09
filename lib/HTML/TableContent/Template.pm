@@ -3,6 +3,7 @@ package HTML::TableContent::Template;
 use strict;
 use warnings;
 use Carp qw/croak/;
+
 use HTML::TableContent::Table;
 use HTML::TableContent::Table::Caption;
 use HTML::TableContent::Table::Header;
@@ -11,7 +12,7 @@ use Role::Tiny qw/does_role/;
 
 our $VERSION = '0.11';
 
-my @VALID_ATTRIBUTES = qw/is default text id class rowspan style colspan increment_id alternate_classes lazy index cells oac inner_html links/;
+my @OPTIONS = qw/is default text id class rowspan style colspan increment_id alternate_classes lazy index cells oac inner_html links/;
 
 my %TABLE = (
     caption => 'HTML::TableContent::Table::Caption',
@@ -40,7 +41,7 @@ sub import {
 
     { no strict 'refs'; @target_isa = @{"${target}::ISA"} };
 
-    if (@target_isa) {    #only in the main class, not a role
+    if (@target_isa) {   
         eval '{
         package ' . $target . ';
 
@@ -88,7 +89,6 @@ sub import {
             my $element_data->{$name} = \%filtered_attributes;
            
             my $spec = sprintf('_%s_spec', $element);
-            
             if ( $element =~ m{row|cell}ixms ) {
                 $around->(
                     $spec => sub {
@@ -134,15 +134,15 @@ sub _filter_attributes {
 
     $attributes{is} = 'ro';
     $attributes{lazy} = 1;
-    my $default_action = sprintf('add_%s', $element);
-
+  
     if ( $element =~ m{row|cell}ixms ) {
         $attributes{default} = sub { return \%tattr; };
     } else {
         my $class = $TABLE{$element};
         $attributes{default} = sub { my %dirt = %tattr; return $class->new(\%dirt); };
     }
-    my %filter_key = map { $_ => 1 } @VALID_ATTRIBUTES;
+
+    my %filter_key = map { $_ => 1 } @OPTIONS;
     return map { $_ => $attributes{$_} } grep { exists $filter_key{$_} } keys %attributes;
 }
 

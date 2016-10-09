@@ -7,7 +7,6 @@ use Moo::Role;
 use Carp qw/croak/;
 
 use HTML::TableContent::Table;
-use Lingua::EN::Numbers qw(num2en);
 use Data::Dumper;
 
 our $VERSION = '0.11';
@@ -123,10 +122,10 @@ sub _element_spec {
 
     return $base unless keys %spec;
 
-    my $num = num2en($index);
+    my $num = $self->_num_to_en($index);
 
     if (defined $row_index) {
-        $num = sprintf('%s__%s', num2en($row_index), $num);
+        $num = sprintf('%s__%s', $self->_num_to_en($row_index), $num);
     }
 
     my @pot = ($index, qw/current all odd even/, $num);
@@ -249,6 +248,67 @@ sub _set_inner_html {
     } 
    
     return $element;
+}
+
+has '_small_num_en' => ( 
+    is => 'ro',
+    lazy => 1,
+    default => sub {
+        my %NUM = ( );
+        @NUM{1 .. 20,30,40,50,60,70,80,90} = qw/
+             one two three four five six seven eight nine ten
+             eleven twelve thirteen fourteen fifteen
+             sixteen seventeen eighteen nineteen
+             twenty thirty forty fifty sixty seventy eighty ninety
+        /;
+        return \%NUM;
+   }
+);
+
+has '_large_num_en' => (
+    is => 'ro',
+    lazy => 1,
+    default => sub {
+        my %NUM = ( );
+        @NUM{3 .. 6} = qw/hundred thousand billion trillion/;
+        return \%NUM;
+    }
+);
+
+sub _num_to_en {
+    return unless $_[1] =~ m/^\d+$/xms;   
+
+    my $num = '';
+    if ($num = $_[0]->_small_num_en->{$_[1]} ){
+        return $num;
+    }
+
+    my @numbers = split '', $_[1];
+
+    if ( scalar @numbers == 2 ) {
+        return sprintf('%s_%s', $_[0]->_small_num_en->{$numbers[0] . 0}, $_[0]->small_num_en->{$numbers[1]});
+    } else {
+        my $count = 0;
+        @numbers = reverse(@numbers);
+        my $string = '';
+        foreach (@numbers) {
+            my $new = $_;
+            
+            if ( $_ == 0 ) { $count++; next; }
+
+            unless ( $count == 0 ) {
+                $new .= sprintf '%s' x $count, map { '0' } 0 .. $count;
+            }
+
+            unless ($num = $_[0]->_small_num_en->{$new}) {
+                $num = sprintf('%s_%s', $_[0]->_small_num_en->{$_}, $_[0]->_large_num_en->{$count + 1});
+            }
+
+            $string = defined $string ? sprintf('%s_%s', $num, $string) : sprintf('%s', $num);
+            $count++;
+        }
+        return $string;
+    }
 }
 
 1;
