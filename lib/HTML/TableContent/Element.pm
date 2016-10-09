@@ -3,7 +3,7 @@ package HTML::TableContent::Element;
 use Moo;
 use HTML::TableContent::Table;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 my @ATTRIBUTE = qw/class id style colspan rowspan template_attr/;
 
@@ -202,7 +202,7 @@ HTML::TableContent::Element - attributes, text, data, class, id
 
 =head1 VERSION
 
-Version 0.11
+Version 0.12
 
 =cut
 
@@ -227,7 +227,7 @@ and L<HTML::TableContent::Table::Caption>
 
 =head2 attributes
 
-hash consisting of the html attributes belonding to the current element.
+hash consisting of the html attributes belonging to the current element.
 
     $element->attributes;
 

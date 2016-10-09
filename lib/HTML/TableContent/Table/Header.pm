@@ -3,7 +3,7 @@ package HTML::TableContent::Table::Header;
 use Moo;
 use HTML::TableContent::Table::Row::Cell;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 extends 'HTML::TableContent::Element';
 
@@ -43,7 +43,7 @@ HTML::TableContent::Table::Header - base class for table headers.
 
 =head1 VERSION
 
-Version 0.11 
+Version 0.12 
 
 =head1 SYNOPSIS
 
