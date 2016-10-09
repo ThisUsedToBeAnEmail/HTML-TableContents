@@ -21,6 +21,8 @@ has table => (
 has data => (
     is => 'rw',
     builder => '_build_data',
+    lazy => 1,
+    trigger => 1,
 );
 
 sub render {
@@ -28,7 +30,30 @@ sub render {
 }
 
 sub _build_data {
-   return $_[0]->can('_data') ? $_[0]->_data : [ ];
+   return $_[0]->can('_data') ? $_[0]->_coerce_data($_[0]->_data) : [ ];
+}
+
+sub _trigger_data {
+    if ( ref $_[1]->[0] eq 'ARRAY' ) {
+        return $_[0]->data($_[0]->_coerce_data($_[1]));
+    }
+    return;
+}
+
+sub _coerce_data {
+    if ( ref $_[1]->[0] eq "ARRAY" ) {
+       my $headers = shift @{ $_[1] };
+       my $new = [ ];
+       foreach my $row ( @{ $_[1] } ) { 
+            my %hash = ( );
+            for (0 .. scalar @{ $row } - 1) {
+                $hash{$headers->[$_]} = $row->[$_];
+            }
+            push @{ $new }, \%hash;
+       }
+       return $new;
+    }
+    return $_[1];
 }
 
 sub _build_table {
@@ -61,19 +86,6 @@ sub _build_table {
         $header = $self->_set_inner_html('render_header', $header);
         
         push @{ $table->headers }, $header;
-    }
-
-    if ( ref $data->[0] eq "ARRAY" ) {
-       my $headers = shift @{ $data };
-       my $new = [ ];
-       foreach my $row ( @{ $data } ) { 
-            my %hash = ( );
-            for (0 .. scalar @{ $row } - 1) {
-                $hash{$headers->[$_]} = $row->[$_];
-            }
-            push @{ $new }, \%hash;
-       }
-       $data = $new;
     }
 
     my $row_index = 1;
@@ -224,5 +236,9 @@ sub _set_inner_html {
    
     return $element;
 }
+
+
+
+
 
 1;
