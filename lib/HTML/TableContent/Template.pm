@@ -8,11 +8,7 @@ use HTML::TableContent::Table;
 use HTML::TableContent::Table::Caption;
 use HTML::TableContent::Table::Header;
 
-use Role::Tiny qw/does_role/;
-
 our $VERSION = '0.11';
-
-my @OPTIONS = qw/is default text id class rowspan style colspan increment_id alternate_classes lazy index cells oac inner_html links/;
 
 my %TABLE = (
     caption => 'HTML::TableContent::Table::Caption',
@@ -131,10 +127,8 @@ sub _filter_attributes {
     }
 
     my %tattr = %attributes;
-
     $attributes{is} = 'ro';
     $attributes{lazy} = 1;
-  
     if ( $element =~ m{row|cell}ixms ) {
         $attributes{default} = sub { return \%tattr; };
     } else {
@@ -142,8 +136,7 @@ sub _filter_attributes {
         $attributes{default} = sub { my %dirt = %tattr; return $class->new(\%dirt); };
     }
 
-    my %filter_key = map { $_ => 1 } @OPTIONS;
-    return map { $_ => $attributes{$_} } grep { exists $filter_key{$_} } keys %attributes;
+    return %attributes;
 }
 
 1;

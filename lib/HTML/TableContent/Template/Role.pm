@@ -7,7 +7,6 @@ use Moo::Role;
 use Carp qw/croak/;
 
 use HTML::TableContent::Table;
-use Data::Dumper;
 
 our $VERSION = '0.11';
 
@@ -278,30 +277,31 @@ has '_large_num_en' => (
 sub _num_to_en {
     return unless $_[1] =~ m/^\d+$/xms;   
 
+    my $small = $_[0]->_small_num_en;
     my $num = '';
-    if ($num = $_[0]->_small_num_en->{$_[1]} ){
+    if ($num = $small->{$_[1]} ){
         return $num;
     }
 
     my @numbers = split '', $_[1];
 
     if ( scalar @numbers == 2 ) {
-        return sprintf('%s_%s', $_[0]->_small_num_en->{$numbers[0] . 0}, $_[0]->small_num_en->{$numbers[1]});
+        return sprintf('%s_%s', $small->{$numbers[0] . 0}, $small->{$numbers[1]});
     } else {
         my $count = 0;
         @numbers = reverse(@numbers);
-        my $string = '';
-        foreach (@numbers) {
+        my $string;
+        for (@numbers) {
             my $new = $_;
             
-            if ( $_ == 0 ) { $count++; next; }
+            if ( $new == 0 ) { $count++; next; }
 
             unless ( $count == 0 ) {
-                $new .= sprintf '%s' x $count, map { '0' } 0 .. $count;
+                $new .= sprintf '%s' x $count, map { '0' } 1 .. $count;
             }
-
-            unless ($num = $_[0]->_small_num_en->{$new}) {
-                $num = sprintf('%s_%s', $_[0]->_small_num_en->{$_}, $_[0]->_large_num_en->{$count + 1});
+            
+            unless ($num = $small->{$new}) {
+                $num = sprintf('%s_%s', $small->{$_}, $_[0]->_large_num_en->{$count + 1});
             }
 
             $string = defined $string ? sprintf('%s_%s', $num, $string) : sprintf('%s', $num);

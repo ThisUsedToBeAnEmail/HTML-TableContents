@@ -24,6 +24,7 @@ BEGIN {
     use_ok("t::Templates::SubHeaderCellHtml");
     use_ok("t::Templates::RowCellHtml");
     use_ok("t::Templates::SubRowCellHtml");
+    use_ok("t::Templates::BigData");
 }
 
 ok(my $template = t::Templates::JustHeaders->new());
@@ -209,6 +210,28 @@ ok($template = t::Templates::RowCellHtml->new());
 $html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><div><td><span id="first-id">1</span></td><td><span id="first-name">rob</span></td><td><span id="first-address">somewhere</span></td></div></tr><tr><div><td>2</td><td>sam</td><td>somewhere else</td></div></tr><tr><div><td>3</td><td>frank</td><td>out</td></div></tr></table>';
 
 is($template->render, $html, "$html");
+
+my %hash = (
+    id => '1',
+    name => 'rob',
+    address => 'thing',
+);
+
+my $data = [ ];
+for ( 0 .. 1000 ) {
+    $hash{counting} = $_;
+    push @{ $data }, \%hash;
+}
+
+ok($template = t::Templates::BigData->new({ data => $data }));
+
+is($template->table->row_count, '1001', "expected row count: 1001");
+is($template->table->get_first_row->class, 'thing', "expected class: thing");
+is($template->table->get_last_row->class, 'one_thousand_one', "expected class: one_thousand_one");
+is($template->table->get_row(99)->class, 'hundred', "expected class: hundred");
+is($template->table->get_row(149)->class, 'one_hundred_fifty', "expected class: one_hundred_fifty");
+
+my $hun = $template->table->get_row('99');
 
 done_testing();
 
