@@ -384,7 +384,7 @@ Data can be either an array of arrays or an array of hashes.
             [qw/id name/],
             ['1', 'frank'],
             ['2', 'turn']
-        ];§
+        ];
     }
 
 =head2 OPTIONS
