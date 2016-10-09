@@ -108,6 +108,10 @@ sub _build_table {
         $row_index++;
     }
 
+    if ( $self->can('last_chance') ) {
+        $table = $self->last_chance($table);
+    }
+
     return $table;
 }
 
@@ -119,67 +123,63 @@ sub _element_spec {
 
     return $base unless keys %spec;
 
-    if ( my $col = delete $spec{$index} ) {
-        $base = $self->_add_to_base($base, $row_index, $col);        
-    }
-
-    if ( my $cells = delete $spec{current}){
-        $base = $self->_add_to_base($base, $index, $cells);
-    }
-
-    if (my $all = delete $spec{all} ) {
-        $base = $self->_add_to_base($base, $index, $all);
-    }
-
-    my $odd = delete $spec{odd};
-    if ( defined $odd && $index % 2 == 1 ) {
-        $base = $self->_add_to_base($base, $index, $odd);
-    }
-
-    my $even = delete $spec{even};
-    if ( defined $even && $index % 2 == 0 ) {
-        $base = $self->_add_to_base($base, $index, $even);
-    }
-
-    return $base unless keys %spec;
-
     my $num = num2en($index);
 
     if (defined $row_index) {
         $num = sprintf('%s__%s', num2en($row_index), $num);
     }
 
-    if (my $row = delete $spec{$num}) {
-        $base = $self->_add_to_base($base, $index, $row);
-    } else { 
-        for (keys %spec) {
-            next unless defined $spec{$_}->{index};
-            my $safe = defined $row_index ? sprintf('%s__%d', $row_index, $index) : $index;
-            
-            if ( $spec{$_}->{index} =~ m{$safe}ixms ) {
-                $base = $self->_add_to_base($base, $index, $spec{$_});
+    my @pot = ($index, qw/current all odd even/, $num);
+    
+    for (@pot) {
+        if ( my $sp = delete $spec{$_} ) {
+            if ( $_ =~ m{odd|even} ) { 
+                my $action = sprintf('_add_%s', $_);
+                $base = $self->$action($base, $index, $sp);
+            } else {
+                my $req_index = $_ =~ m{^\d$}xms ? $row_index : $index;
+                $base = $self->_add_base($base, $req_index, $sp);
             }
         }
     }
+
+    return $base unless keys %spec;
     
+    for (keys %spec) {
+        next unless defined $spec{$_}->{index};
+        my $safe = defined $row_index ? sprintf('%s__%d', $row_index, $index) : $index;
+        
+        if ( $spec{$_}->{index} =~ m{$safe}ixms ) {
+            $base = $self->_add_to_base($base, $index, $spec{$_});
+        }
+    }
+
     return $base;
+}
+
+sub _add_base {
+    return $_[0]->_add_to_base($_[1], $_[2], $_[3]);
+}
+
+sub _add_odd {
+    return $_[1] unless $_[2] % 2 == 1;
+    return $_[0]->_add_to_base($_[1], $_[2], $_[3]);
+}
+
+sub _add_even {
+    return $_[1] unless $_[2] % 2 == 0;
+    return $_[0]->_add_to_base($_[1], $_[2], $_[3]);
 }
 
 sub _add_to_base {
     my ( $self, $base, $index, $hash ) = @_;
 
-    if ( my $id = $hash->{increment_id} ) {
-        $hash->{id} = sprintf('%s%s', $id, $index);
-    }
-
-    if ( my $cells = $hash->{cells} ) {
-        $base->{cells} = $cells;
-    }
-
-    if ( my $cells = $hash->{alternate_classes} ) {
-        my $class = shift @{ $cells };
-        $base->{class} = $self->_join_class($class, $base->{class});
-        push @{ $cells }, $class;
+    my @pot = (qw/increment_id cells alternate_classes/);
+    for (@pot) {
+        if ( my $p = $hash->{$_} ) {
+            my $action = sprintf('_base_%s', $_);
+            $self->$action($p, $base, $index, $hash);
+        }
     }
 
     for ( keys %{ $hash } ) {
@@ -193,6 +193,20 @@ sub _add_to_base {
     }
 
     return $base;
+}
+
+sub _base_increment_id {
+    return $_[4]->{id} = sprintf('%s%s', $_[1], $_[3]);
+}
+
+sub _base_cells {
+    return $_[2]->{cells} = $_[1];
+}
+
+sub _base_alternate_classes {
+    my $class = shift @{ $_[1] };
+    $_[2]->{class} = $_[0]->_join_class($class, $_[2]->{class});
+    push @{ $_[1] }, $class;
 }
 
 sub _refresh_cell_spec {
@@ -236,9 +250,5 @@ sub _set_inner_html {
    
     return $element;
 }
-
-
-
-
 
 1;
