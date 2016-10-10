@@ -8,7 +8,7 @@ use HTML::TableContent::Table;
 use HTML::TableContent::Table::Caption;
 use HTML::TableContent::Table::Header;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 my %TABLE = (
     caption => 'HTML::TableContent::Table::Caption',
@@ -74,6 +74,7 @@ sub import {
         my $option = sub {
             my ( $name, %attributes ) = @_;
             
+            my $element_data = { };
             my %filtered_attributes = _filter_attributes($name, $element, %attributes);
 
             if ( $element =~ m{caption|header}ixms ){ 
@@ -82,7 +83,7 @@ sub import {
 
             delete $filtered_attributes{default};
 
-            my $element_data->{$name} = \%filtered_attributes;
+            $element_data->{$name} = \%filtered_attributes;
            
             my $spec = sprintf('_%s_spec', $element);
             if ( $element =~ m{row|cell}ixms ) {
@@ -149,7 +150,7 @@ HTML::TableContent::Template - MooX Template Tables.
 
 =head1 VERSION
 
-Version 0.13
+Version 0.14
 
 =cut
 

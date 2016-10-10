@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row;
 
 use Moo;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 use HTML::TableContent::Table::Header;
 use HTML::TableContent::Table::Row::Cell;
@@ -119,7 +119,7 @@ HTML::TableContent::Table::Row - base class for table rows.
 
 =head1 VERSION
 
-Version 0.13
+Version 0.14
 
 =head1 SYNOPSIS
 
