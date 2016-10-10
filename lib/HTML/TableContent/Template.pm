@@ -156,7 +156,7 @@ Version 0.14
 
 =head1 SYNOPSIS
 
-    Package MyApp::Table::Demo;
+    package MyApp::Table::Demo;
 
     use Moo;
     use HTML::TableContent::Template;
