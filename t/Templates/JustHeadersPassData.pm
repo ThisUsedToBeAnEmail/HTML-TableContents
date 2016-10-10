@@ -1,7 +1,6 @@
 package t::Templates::JustHeadersPassData;
 
 use Moo;
-with 'MooX::Singleton';
 use HTML::TableContent::Template;
 
 caption title => (
