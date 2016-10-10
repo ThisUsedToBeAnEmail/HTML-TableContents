@@ -65,10 +65,12 @@ sub _build_table {
   
     my $caption_spec = $self->_caption_spec;
 
-    my $cap = (keys %{ $caption_spec->[0] })[0];
-    my $caption = $table->caption($self->$cap);
-    $caption = $self->_set_inner_html('render_caption', $caption);
-    
+    if (defined $caption_spec) {
+        my $cap = (keys %{ $caption_spec->[0] })[0];
+        my $caption = $table->caption($self->$cap);
+        $caption = $self->_set_inner_html('render_caption', $caption);
+    }
+
     my $header_spec = $self->_header_spec; 
     my %row_spec = $self->_row_spec;
     my %cell_spec = $self->_cell_spec; 
