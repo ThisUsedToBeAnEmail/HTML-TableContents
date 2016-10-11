@@ -8,7 +8,7 @@ use Carp qw/croak/;
 
 use HTML::TableContent::Table;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 has table => (
     is => 'rw',
@@ -323,7 +323,7 @@ HTML::TableContent::Template::Base - Base for Templates.
 
 =head1 VERSION
 
-Version 0.14
+Version 0.15
 
 =cut
 

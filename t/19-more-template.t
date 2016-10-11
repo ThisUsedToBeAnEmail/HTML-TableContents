@@ -67,8 +67,6 @@ is($template->name->text, 'name', "expected header name");
 
 is($template->name->class, 'okay', "expected class: some-class");
 
-is($template->name->id, '', "expected id: something-id");
-
 is($template->name->get_first_cell->text, 'rob', "expected header first cell text: rob");
 
 is($template->name->get_first_cell->header->text, 'name', "cell header text");
