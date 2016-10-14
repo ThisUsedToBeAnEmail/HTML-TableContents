@@ -1,4 +1,4 @@
-package t::Templates::TableStuff;
+package t::Templates::TableInnerSubStuff;
 
 use Moo;
 use HTML::TableContent::Template;
@@ -7,6 +7,7 @@ sub table_spec {
    return {
        class => 'some-table-class',
        id => 'some-table-id',
+       inner_html => 'wrap_div',
    };
 }
 
@@ -28,6 +29,10 @@ header name => (
 header address => (
     class => 'what',
 );
+
+sub wrap_div {
+    return ['<div>%s</div>'];
+}
 
 sub _data {
     my $self = shift;

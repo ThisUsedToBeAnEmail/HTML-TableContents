@@ -60,9 +60,15 @@ sub _build_table {
     my $data = $self->data;
 
     return unless scalar @{ $data };
+    
+    my $table_spec = { };
+    if ($self->can('table_spec')) {
+        $table_spec = $self->table_spec;
+    }
 
-    my $table = HTML::TableContent::Table->new({});
-  
+    my $table = HTML::TableContent::Table->new($table_spec);
+    $table = $self->_set_inner_html('render_table', $table);
+
     my $caption_spec = $self->_caption_spec;
 
     if (defined $caption_spec) {

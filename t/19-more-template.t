@@ -27,6 +27,7 @@ BEGIN {
     use_ok("t::Templates::BigData");
     use_ok("t::Templates::TableStuff");
     use_ok("t::Templates::TableInnerStuff");
+    use_ok("t::Templates::TableInnerSubStuff");
 }
 
 ok(my $template = t::Templates::JustHeaders->new());
@@ -237,16 +238,15 @@ ok(my $t = $template->table);
 is($t->class, "some-table-class", "okay table class");
 is($t->id, "some-table-id", "okay table id");
 
-ok($t = $template->spec);
-
-is($t->class, "some-table-class", "okay table class");
-is($t->id, "some-table-id", "okay table id");
-
 $html = '<table class="some-table-class" id="some-table-id"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>';
 
 is($template->render, $html, "$html");
 
 ok($template = t::Templates::TableInnerStuff->new());
+
+$html = '<table class="some-table-class" id="some-table-id"><div><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></div></table>';
+
+ok($template = t::Templates::TableInnerSubStuff->new());
 
 $html = '<table class="some-table-class" id="some-table-id"><div><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></div></table>';
 

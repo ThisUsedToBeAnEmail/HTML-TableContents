@@ -1,13 +1,15 @@
-package t::Templates::TableStuff;
+package t::Templates::TableInnerStuff;
 
 use Moo;
 use HTML::TableContent::Template;
 
-table spec => (
-    class => 'some-table-class',
-    id => 'some-table-id',
-    inner_html => ['<div>%s</div>']
-);
+sub table_spec {
+   return {
+       class => 'some-table-class',
+       id => 'some-table-id',
+       inner_html => ['<div>%s</div>']
+   };
+}
 
 caption title => (
     class => 'some-class',
