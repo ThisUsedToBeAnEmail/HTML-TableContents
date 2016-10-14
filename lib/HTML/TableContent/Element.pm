@@ -59,10 +59,26 @@ has inner_html => (
     lazy => 1,
 );
 
+has wrap_html => (
+    is => 'rw',
+    lazy => 1,
+);
+
 has [qw/nested links/] => (
     is => 'rw',
     default => sub { [] },
 );
+
+has tag => (
+    is => 'rw',
+    builder => 1,
+);
+
+sub _build_tag {
+    my $caller = caller();
+    my ( $tag ) = $caller =~ /.*\:\:(.*)/;
+    return lc $tag;
+}
 
 has html_tag => (
     is => 'rw',
@@ -145,16 +161,25 @@ sub render {
     if ( my $inner_html = $_[0]->inner_html ) {
        my $inner_count = scalar @{ $inner_html };
        if ( $inner_count == 1 ) {
-            $render = sprintf($inner_html->[0], $render);
+           $render = sprintf($inner_html->[0], $render);
        } else {
-           use Data::Dumper;
-           my @inner = @{ $inner_html };
-            $render = sprintf($inner_html->[0], map { $_[0]->$_ } @{ $inner_html }[1 .. $inner_count - 1] );
+           $render = sprintf($inner_html->[0], map { $_[0]->$_ } @{ $inner_html }[1 .. $inner_count - 1]);
        }
     }
 
     my $tag = $_[0]->html_tag;
-    return $_[0]->tidy_html(sprintf("<%s %s>%s</%s>", $tag, $attr, $render, $tag));
+    my $html = sprintf("<%s %s>%s</%s>", $tag, $attr, $render, $tag);
+    
+    if ( my $wrap_html = $_[0]->wrap_html ) {
+        my $wrap_count = scalar @{ $wrap_html };
+        if ( $wrap_count  == 1 ) {
+            $html = sprintf($wrap_html->[0], $html);
+        } else {
+            $html = sprintf($wrap_html->[0], map { $_[0]->$_ } @{ $wrap_html }[1 .. $wrap_html - 1]);
+        }
+    }
+
+    return $_[0]->tidy_html($html);
 }
 
 sub _render_element {

@@ -67,14 +67,14 @@ sub _build_table {
     }
 
     my $table = HTML::TableContent::Table->new($table_spec);
-    $table = $self->_set_inner_html('render_table', $table);
+    $table = $self->_set_html($table);
 
     my $caption_spec = $self->_caption_spec;
 
     if (defined $caption_spec) {
         my $cap = (keys %{ $caption_spec->[0] })[0];
         my $caption = $table->caption($self->$cap);
-        $caption = $self->_set_inner_html('render_caption', $caption);
+        $caption = $self->_set_html($caption);
     }
 
     my $header_spec = $self->_header_spec; 
@@ -89,7 +89,7 @@ sub _build_table {
             $cell_spec{$_ + 1} = $cells;
         }
 
-        $header = $self->_set_inner_html('render_header', $header);
+        $header = $self->_set_html($header);
         
         push @{ $table->headers }, $header;
     }
@@ -100,14 +100,14 @@ sub _build_table {
         
         %cell_spec = $self->_refresh_cell_spec($row_base, $row_index, %cell_spec);
         my $row = $table->add_row($row_base);
-        $row = $self->_set_inner_html('render_row', $row);
+        $row = $self->_set_html($row);
 
         my $cell_index = 1;
         foreach ( $table->all_headers ) {
             my $cell_base = $self->_element_spec($cell_index++, %cell_spec);
             $cell_base->{text} = $hash->{$_->template_attr};
             my $cell = $row->add_cell($cell_base);
-            $cell = $self->_set_inner_html('render_cell', $cell);
+            $cell = $self->_set_html($cell);
             $table->parse_to_column($cell);
         }
 
@@ -237,23 +237,39 @@ sub _join_class {
     return defined $current ? sprintf('%s %s', $current, $class) : sprintf('%s', $class);
 }
 
-sub _set_inner_html {
-    my ($self, $action, $element, $attr) = @_;
- 
-    $attr ||= $element->attributes;
+sub _set_html {
+    my ($self, $element, $attr) = @_;
 
-    if ( my $inner_html = delete $attr->{inner_html}) {
-        if ( ref $inner_html eq 'ARRAY' ) {
-            $element->inner_html($inner_html);
-        } elsif ( $self->can($inner_html) ) {
-            $element->inner_html($self->$inner_html);
-        } else {
-            croak "inner_html on $element->template_attr needs to be either an ArrayRef or A reference to a Sub";
-        }
-    } elsif ( $self->can($action) ) {
-        $element->inner_html($self->$action);
-    } 
-   
+    $attr ||= $element->attributes;
+    
+    my $inner_action = sprintf 'render_%s', $element->tag;
+    if ( my $inner_html = delete $attr->{inner_html} ) {
+        $self->_from_attributes($inner_html, 'inner_html', $element);
+    } elsif ( $self->can($inner_action) ) {
+        $element->inner_html($self->$inner_action);
+    }
+
+    my $wrap_action = sprintf 'wrap_%s', $element->tag;
+    if ( my $wrap_html = delete $attr->{wrap_html} ) {
+        $element = $self->_from_attributes($wrap_html, 'wrap_html', $element);
+    } elsif ( $self->can($wrap_action) ) {
+        $element->wrap_html($self->$wrap_action);
+    }
+
+    return $element;
+}
+
+sub _from_attributes {
+    my ($self, $data, $action, $element) = @_;
+
+    if ( ref $data eq 'ARRAY' ) {
+        $element->$action($data);
+    } elsif ( $self->can($data) ) {
+        $element->$action($self->$data);
+    }
+    else {
+        croak "$action on $element->template_attr needs to be either an ArrayRef or A reference to a Sub";
+    }
     return $element;
 }
 
