@@ -22,6 +22,33 @@ has '+html_tag' => (
     default => 'table',
 );
 
+my @html5 = qw/html5 thead tbody/;
+for (@html5) {
+    has $_ => (
+        is => 'rw',
+        lazy => 1,
+        builder => 1,
+    );
+}
+
+sub _build_html5 {
+    return defined $_[0]->attributes->{html5} 
+        ? delete $_[0]->attributes->{html5}
+        : undef;
+}
+
+sub _build_thead {
+    return defined $_[0]->attributes->{thead} 
+        ? delete $_[0]->attributes->{thead}
+        : undef;
+}
+
+sub _build_tbody {
+    return defined $_[0]->attributes->{tbody} 
+        ? delete $_[0]->attributes->{tbody}
+        : undef;
+}
+
 around raw => sub {
     my ( $orig, $self ) = ( shift, shift );
 
@@ -118,33 +145,51 @@ sub clear_last_header { return $_[0]->clear_header( $_[0]->header_count - 1 ); }
 sub _render_element {
     my $args = $_[0]->attributes;
     
-    my @rows = ( );
+    my @table_rows = ( );
     
     if ( $_[0]->has_caption ) {
-        push @rows, $_[0]->caption->render;    
+        push @table_rows, $_[0]->caption->render;    
     }
 
     if ( $_[0]->header_count ) {
         my @headers = map { $_->render } $_[0]->all_headers;
         my $headers = sprintf '%s' x @headers, @headers;
         my $header_row = sprintf '<tr>%s</tr>', $headers; 
-        push @rows, $header_row;
+        if ( $_[0]->html5 ) {
+            my $attr = $_[0]->_generate_element_attr('thead');
+            $header_row = sprintf '<thead %s>%s</thead>', $attr, $header_row;
+        }
+        push @table_rows, $header_row;
     }
     
     if ($_[0]->row_count) {
-        push @rows, map { $_->render } $_[0]->all_rows;
+        my @rows = map { $_->render } $_[0]->all_rows;
+        my $row = sprintf '%s' x @rows, @rows;
+        if ( $_[0]->html5 ) {
+            my $attr = $_[0]->_generate_element_attr('tbody');
+            $row = sprintf '<tbody %s>%s</tbody>', $attr, $row;
+        }
+        push @table_rows, $row;
     }
         
-    my $row = sprintf '%s' x @rows, @rows;
+    my $table = sprintf '%s' x @table_rows, @table_rows;
+    return $table;
+}
 
-    return $row;
+sub _generate_element_attr {
+    my ($self, $element) = @_;
+    my $attr = '';
+    if ( my $attributes = $self->$element ) {
+        for ( keys %{ $attributes } ) {
+            $attr .= sprintf '%s="%s" ', $_, $attributes->{$_};
+        }
+    }
+    return $attr;
 }
 
 sub headers_spec {
-    my $self = shift;
-
     my $headers = {};
-    map { $headers->{ $_->lc_text }++ } $self->all_headers;
+    map { $headers->{ $_->lc_text }++ } $_[0]->all_headers;
     return $headers;
 }
 
@@ -157,17 +202,13 @@ sub header_exists {
 }
 
 sub get_col {
-    my ( $self, $col ) = @_;
-
-    my %args = ( header => $col );
-    return $self->get_header_column(%args);
+    my %args = ( header => $_[1] );
+    return $_[0]->get_header_column(%args);
 }
 
 sub get_col_text {
-    my ( $self, $col ) = @_;
-
-    my %args = ( header => $col );
-    return $self->get_header_column_text(%args);
+    my %args = ( header => $_[1] );
+    return $_[0]->get_header_column_text(%args);
 }
 
 sub get_header_column {
