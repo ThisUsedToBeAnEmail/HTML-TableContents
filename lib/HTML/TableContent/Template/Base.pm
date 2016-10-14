@@ -8,7 +8,7 @@ use Carp qw/croak/;
 
 use HTML::TableContent::Table;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 has table => (
     is => 'rw',
@@ -329,7 +329,7 @@ HTML::TableContent::Template::Base - Base for Templates.
 
 =head1 VERSION
 
-Version 0.15
+Version 0.16
 
 =cut
 
@@ -339,13 +339,19 @@ Version 0.15
 
     use Moo;
     use HTML::TableContent::Template;
-    
+   
+    sub table_spec {
+        return {
+            id => 'first-table-id',
+        }
+    }
+
     header id => ( 
         class => 'table-header',
         id => 'header-id',
         cells => {
-            inner_html => ['<b>%s</b>']
-            increment_id => 'some-id-'
+            inner_html => ['<b>%s</b>'],
+            increment_id => 'some-id-',
         }
     );
 
@@ -363,11 +369,11 @@ Version 0.15
     sub _render_header {
         my ($self, $header) = @_;
 
-        return ['<a href="some/endpoint?sort=%s">%s</a>', 'template_attr', 'text'] 
+        return ['<a href="some/endpoint?sort=%s">%s</a>', 'template_attr', 'text'];
     }
 
     sub _even_rows {
-        return ['<div>%s</div>', '_render_element']
+        return ['<div>%s</div>', '_render_element'];
     }
 
     .... 

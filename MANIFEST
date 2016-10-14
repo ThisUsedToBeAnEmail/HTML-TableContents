@@ -114,5 +114,8 @@ t/Templates/SubHeaderCellHtml.pm
 t/Templates/SubHeaderHtml.pm
 t/Templates/SubRowCellHtml.pm
 t/Templates/SubRowHtml.pm
+t/Templates/TableStuff.pm
+t/Templates/TableInnerStuff.pm
+t/Templates/TableInnerSubStuff.pm
 META.yml                                 Module YAML meta-data (added by MakeMaker)
 META.json                                Module JSON meta-data (added by MakeMaker)

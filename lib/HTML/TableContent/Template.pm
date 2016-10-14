@@ -8,7 +8,7 @@ use HTML::TableContent::Table;
 use HTML::TableContent::Table::Caption;
 use HTML::TableContent::Table::Header;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 my %TABLE = (
     caption => 'HTML::TableContent::Table::Caption',
@@ -150,7 +150,7 @@ HTML::TableContent::Template - MooX Template Tables.
 
 =head1 VERSION
 
-Version 0.15
+Version 0.16
 
 =cut
 

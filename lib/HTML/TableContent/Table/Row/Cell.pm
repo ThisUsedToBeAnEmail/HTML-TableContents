@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Row::Cell;
 
 use Moo;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 extends 'HTML::TableContent::Element';
 
@@ -46,7 +46,7 @@ HTML::TableContent::Table::Row::Cell - base class for table cells.
 
 =head1 VERSION
 
-Version 0.15
+Version 0.16
 
 =head1 SYNOPSIS
 
