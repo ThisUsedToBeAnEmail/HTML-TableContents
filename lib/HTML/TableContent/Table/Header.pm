@@ -31,6 +31,10 @@ sub get_cell { return $_[0]->cells->[ $_[1] ]; }
 
 sub get_first_cell { return $_[0]->get_cell(0); }
 
+sub _render_element {
+    return $_[0]->ucf_text;
+}
+
 1;
 
 __PACKAGE__->meta->make_immutable;

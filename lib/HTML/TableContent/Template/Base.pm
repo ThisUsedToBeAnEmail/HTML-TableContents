@@ -244,14 +244,14 @@ sub _set_html {
     
     my $inner_action = sprintf 'render_%s', $element->tag;
     if ( my $inner_html = delete $attr->{inner_html} ) {
-        $self->_from_attributes($inner_html, 'inner_html', $element);
+        $self->_from_attributes('inner_html', $inner_html, $element);
     } elsif ( $self->can($inner_action) ) {
         $element->inner_html($self->$inner_action);
     }
 
     my $wrap_action = sprintf 'wrap_%s', $element->tag;
     if ( my $wrap_html = delete $attr->{wrap_html} ) {
-        $element = $self->_from_attributes($wrap_html, 'wrap_html', $element);
+        $element = $self->_from_attributes('wrap_html', $wrap_html, $element);
     } elsif ( $self->can($wrap_action) ) {
         $element->wrap_html($self->$wrap_action);
     }
@@ -260,7 +260,7 @@ sub _set_html {
 }
 
 sub _from_attributes {
-    my ($self, $data, $action, $element) = @_;
+    my ($self, $action, $data, $element) = @_;
 
     if ( ref $data eq 'ARRAY' ) {
         $element->$action($data);

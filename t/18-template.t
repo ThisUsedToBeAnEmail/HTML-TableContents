@@ -77,7 +77,7 @@ subtest "just_headers" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -130,7 +130,7 @@ subtest "just_headers_data_is_aoa" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -200,7 +200,7 @@ subtest "just_headers_pass_data_aoh" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -259,7 +259,7 @@ subtest "just_headers_pass_data_aoa" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -366,7 +366,7 @@ subtest "all_rows" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="all_rows"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="all_rows"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="all_rows"><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="all_rows"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="all_rows"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="all_rows"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -420,7 +420,7 @@ subtest "odd_even_rows" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="odd"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="even"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="odd"><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="odd"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="even"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="odd"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -475,7 +475,7 @@ subtest "by_row_index" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="first" id="first-row"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="second" id="second-row"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="third" id="third-row"><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="first" id="first-row"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="second" id="second-row"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="third" id="third-row"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -530,7 +530,7 @@ subtest "by_row_flag_index" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="first" id="first-row"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="second" id="second-row"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="third" id="third-row"><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="first" id="first-row"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="second" id="second-row"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="third" id="third-row"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -585,7 +585,7 @@ subtest "all_cells" => sub  {
             text => 'somewhere',
             class => 'all_cells',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="all_cells">1</td><td class="all_cells">rob</td><td class="all_cells">somewhere</td></tr><tr><td class="all_cells">2</td><td class="all_cells">sam</td><td class="all_cells">somewhere else</td></tr><tr><td class="all_cells">3</td><td class="all_cells">frank</td><td class="all_cells">out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="all_cells">1</td><td class="all_cells">rob</td><td class="all_cells">somewhere</td></tr><tr><td class="all_cells">2</td><td class="all_cells">sam</td><td class="all_cells">somewhere else</td></tr><tr><td class="all_cells">3</td><td class="all_cells">frank</td><td class="all_cells">out</td></tr></table>',
     });
 };
 
@@ -640,7 +640,7 @@ subtest "odd_even_cells" => sub  {
             text => 'somewhere',
             class => 'odd',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="odd">1</td><td class="even">rob</td><td class="odd">somewhere</td></tr><tr><td class="odd">2</td><td class="even">sam</td><td class="odd">somewhere else</td></tr><tr><td class="odd">3</td><td class="even">frank</td><td class="odd">out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="odd">1</td><td class="even">rob</td><td class="odd">somewhere</td></tr><tr><td class="odd">2</td><td class="even">sam</td><td class="odd">somewhere else</td></tr><tr><td class="odd">3</td><td class="even">frank</td><td class="odd">out</td></tr></table>',
     });
 };
 
@@ -696,7 +696,7 @@ subtest "index_nuts_cells" => sub  {
             text => 'somewhere',
             id => 'first-row-last-cell',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="nuts" id="first-row-first-cell">1</td><td>rob</td><td class="but-works" id="first-row-last-cell">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="nuts" id="first-row-first-cell">1</td><td>rob</td><td class="but-works" id="first-row-last-cell">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -752,7 +752,7 @@ subtest "index_flag_cells" => sub  {
             text => 'somewhere',
             id => 'first-row-last-cell',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="nuts" id="first-row-first-cell">1</td><td>rob</td><td class="but-works" id="first-row-last-cell">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="nuts" id="first-row-first-cell">1</td><td>rob</td><td class="but-works" id="first-row-last-cell">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -809,7 +809,7 @@ subtest "header_cells" => sub  {
             class => 'else',
             id => 'some-other-id-1',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="something" id="some-id-1">1</td><td>rob</td><td class="else" id="some-other-id-1">somewhere</td></tr><tr><td class="something" id="some-id-2">2</td><td>sam</td><td class="else" id="some-other-id-2">somewhere else</td></tr><tr><td class="something" id="some-id-3">3</td><td>frank</td><td class="else" id="some-other-id-3">out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="something" id="some-id-1">1</td><td>rob</td><td class="else" id="some-other-id-1">somewhere</td></tr><tr><td class="something" id="some-id-2">2</td><td>sam</td><td class="else" id="some-other-id-2">somewhere else</td></tr><tr><td class="something" id="some-id-3">3</td><td>frank</td><td class="else" id="some-other-id-3">out</td></tr></table>',
     });
 };
 
@@ -864,7 +864,7 @@ subtest "Increment_rows" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="rows" id="row-id-1"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="rows" id="row-id-2"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="rows" id="row-id-3"><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="rows" id="row-id-1"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="rows" id="row-id-2"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="rows" id="row-id-3"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -923,7 +923,7 @@ subtest "row_cells" => sub  {
             class => 'text',
             id => 'first-row-cell-3'
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="rows" id="row-id-1"><td class="text" id="first-row-cell-1">1</td><td class="text" id="first-row-cell-2">rob</td><td class="text" id="first-row-cell-3">somewhere</td></tr><tr class="rows" id="row-id-2"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="rows" id="row-id-3"><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="rows" id="row-id-1"><td class="text" id="first-row-cell-1">1</td><td class="text" id="first-row-cell-2">rob</td><td class="text" id="first-row-cell-3">somewhere</td></tr><tr class="rows" id="row-id-2"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="rows" id="row-id-3"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -977,7 +977,7 @@ subtest "alt_class_rows" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="first-class"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="second-class"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="first-class"><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="first-class"><td>1</td><td>rob</td><td>somewhere</td></tr><tr class="second-class"><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="first-class"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -1031,7 +1031,7 @@ subtest "alt_class_row_odd" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="first-class"><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="second-class"><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="first-class"><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr class="second-class"><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -1086,7 +1086,7 @@ subtest "alt_class_row_cells" => sub  {
             text => 'somewhere',
             class => 'first-class',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="first-class">1</td><td class="second-class">rob</td><td class="first-class">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="first-class">1</td><td class="second-class">rob</td><td class="first-class">somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></table>',
     });
 };
 
@@ -1141,7 +1141,7 @@ subtest "alt_class_all_cells" => sub  {
             text => 'somewhere',
             class => 'first-class'
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="first-class">1</td><td class="second-class">rob</td><td class="first-class">somewhere</td></tr><tr><td class="first-class">2</td><td class="second-class">sam</td><td class="first-class">somewhere else</td></tr><tr><td class="first-class">3</td><td class="second-class">frank</td><td class="first-class">out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="first-class">1</td><td class="second-class">rob</td><td class="first-class">somewhere</td></tr><tr><td class="first-class">2</td><td class="second-class">sam</td><td class="first-class">somewhere else</td></tr><tr><td class="first-class">3</td><td class="second-class">frank</td><td class="first-class">out</td></tr></table>',
     });
 };
 
@@ -1195,7 +1195,7 @@ subtest "alt_class_odd_cells" => sub  {
         fr_last_cell => {
             text => 'somewhere',
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="first-class">1</td><td>rob</td><td class="second-class">somewhere</td></tr><tr><td class="first-class">2</td><td>sam</td><td class="second-class">somewhere else</td></tr><tr><td class="first-class">3</td><td>frank</td><td class="second-class">out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="first-class">1</td><td>rob</td><td class="second-class">somewhere</td></tr><tr><td class="first-class">2</td><td>sam</td><td class="second-class">somewhere else</td></tr><tr><td class="first-class">3</td><td>frank</td><td class="second-class">out</td></tr></table>',
     });
 };
 
@@ -1250,7 +1250,7 @@ subtest "alt_class_header_cells" => sub  {
             text => 'somewhere',
             class => 'third-head-first-class'
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr><td class="first-head-first-class">1</td><td class="second-head-first-class">rob</td><td class="third-head-first-class">somewhere</td></tr><tr><td class="first-head-second-class">2</td><td class="second-head-second-class">sam</td><td class="third-head-second-class">somewhere else</td></tr><tr><td class="first-head-third-class">3</td><td class="second-head-third-class">frank</td><td class="third-head-third-class">out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td class="first-head-first-class">1</td><td class="second-head-first-class">rob</td><td class="third-head-first-class">somewhere</td></tr><tr><td class="first-head-second-class">2</td><td class="second-head-second-class">sam</td><td class="third-head-second-class">somewhere else</td></tr><tr><td class="first-head-third-class">3</td><td class="second-head-third-class">frank</td><td class="third-head-third-class">out</td></tr></table>',
     });
 };
 
@@ -1306,7 +1306,7 @@ subtest "nuts" => sub  {
             text => 'somewhere',
             class => 'third-head-first-class three nuts'
         },
-        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></tr><tr class="first-class"><td class="first-head-first-class one nuts">1</td><td class="second-head-first-class two crazy">rob</td><td class="third-head-first-class three nuts">somewhere</td></tr><tr class="second-class"><td class="first-head-second-class nuts">2</td><td class="second-head-second-class crazy">sam</td><td class="third-head-second-class nuts">somewhere else</td></tr><tr class="third-class"><td class="first-head-third-class nuts">3</td><td class="second-head-third-class crazy">frank</td><td class="third-head-third-class nuts">out</td></tr></table>',
+        render => '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr class="first-class"><td class="first-head-first-class one nuts">1</td><td class="second-head-first-class two crazy">rob</td><td class="third-head-first-class three nuts">somewhere</td></tr><tr class="second-class"><td class="first-head-second-class nuts">2</td><td class="second-head-second-class crazy">sam</td><td class="third-head-second-class nuts">somewhere else</td></tr><tr class="third-class"><td class="first-head-third-class nuts">3</td><td class="second-head-third-class crazy">frank</td><td class="third-head-third-class nuts">out</td></tr></table>',
     });
 };
 

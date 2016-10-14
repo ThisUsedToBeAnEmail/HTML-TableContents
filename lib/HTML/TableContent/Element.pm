@@ -123,6 +123,8 @@ sub set_text { $_[0]->data([ $_[1] ]); }
 
 sub lc_text { return lc $_[0]->text; }
 
+sub ucf_text { return ucfirst $_[0]->text; }
+
 sub add_class { my $class = $_[0]->class; return $_[0]->class(sprintf('%s %s', $class, $_[1])); }
 
 sub add_style { my $style = $_[0]->style; return $_[0]->style(sprintf('%s %s', $style, $_[1])); }
