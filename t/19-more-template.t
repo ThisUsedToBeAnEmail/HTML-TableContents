@@ -252,6 +252,14 @@ $html = '<table class="some-table-class" id="some-table-id"><div><caption class=
 
 is($template->render, $html, "$html");
 
+ok($template = t::Templates::TableValid5->new());
+
+$html = '<table class="some-table-class" id="some-table-id"><caption class="some-class" id="caption-id">table caption</caption><thead><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></thead><tbody</tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></tbody></table>';
+
+ok($template = t::Templates::TableValid5wrap->new());
+
+$html = '<div class="responsive"><table class="some-table-class" id="some-table-id"><caption class="some-class" id="caption-id">table caption</caption><thead><tr><th class="some-class" id="something-id">id</th><th class="okay">name</th><th class="what">address</th></thead><tbody</tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr></tbody></table></div>';
+
 ##### OUTER HTML is going to need to be a thing at some point
 
 done_testing();
