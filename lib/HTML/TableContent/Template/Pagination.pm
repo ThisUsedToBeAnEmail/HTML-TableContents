@@ -3,6 +3,7 @@ package HTML::TableContent::Template::Pagination;
 use Moo::Role;
 use POSIX qw(ceil);
 use HTML::TableContent::Element;
+use feature qw/switch/;
 
 around _set_html => sub {
     my ($orig, $self, $args) = @_;
@@ -38,15 +39,22 @@ sub setup_pagination {
     if ( $row_count > $table_options->{display} ) {
         my $pager_name = $self->pager_name($table);
         my $page_count = ceil($row_count / $table_options->{display});
-        my $pagination = HTML::TableContent::Element->new({ html_tag => 'ul' });
+        my $pagination = HTML::TableContent::Element->new({ html_tag => 'ul', class => 'pagination' });
         $pagination->wrap_html(['<div>%s</div>']);
 
         my @pages = ( );
         my $tag = $self->package_name;
+
+        my $back = $pagination->add_child({ html_tag => 'li', text => '<', tag => $pager_name });
+        $back = $self->set_inner_pager_item_html($back);
+
         for (1 .. $page_count) {
             my $page = $pagination->add_child({ html_tag => 'li', text => $_, tag => $pager_name });
-            $page = $self->set_inner_pag_item_html($page); 
+            $page = $self->set_inner_pager_item_html($page); 
         }
+
+        my $forward = $pagination->add_child({ html_tag => 'li', text => '>', tag => $pager_name });
+        $forward = $self->set_inner_pager_item_html($forward);
 
         if ( $table_options->{pagination} =~ m{after_element|before_element}xms ) {
             my $action = $table_options->{pagination};
@@ -55,22 +63,33 @@ sub setup_pagination {
             push @{ $table->after_element }, $pagination;
         }
 
-        $self->add_pag_js($table, $pager_name);
+        $self->add_pag_js($table, $pager_name, $page_count);
     }
     
     return $table;
 }
 
-sub set_inner_pag_item_html {
-    if ( $_[1]->text eq '1' ) {
-        return $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-selected" onclick="%sPager.showPage(%s)">%s</a>', 'text', 'tag', 'text', 'text']);
-    }
-    return $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.showPage(%s);">%s</a>', 'text', 'tag', 'text', 'text']);
+sub set_inner_pager_item_html {
+    given ($_[1]->text) {
+        when (/1/) {
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-selected" onclick="%sPager.showPage(%s)">%s</a>', 'text', 'tag', 'text', 'text']);
+        }
+        when (/</) {
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.prev();">%s</a>', 'text', 'tag', 'text']);
+        }
+        when (/>/) {
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.next();">%s</a>', 'text', 'tag', 'text']);
+        }
+        default {
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.showPage(%s);">%s</a>', 'text', 'tag', 'text', 'text']);
+        }
+    } 
+    return $_[1];
 }
 
 sub add_pag_js {
-    my $table_script = sprintf '<script type="text/javascript">var %sPager = new Pager("%s", %s);</script>', 
-        $_[2], $_[1]->id, $_[1]->attributes->{display};
+    my $table_script = sprintf '<script type="text/javascript">var %sPager = new Pager("%s", %s, %s);</script>', 
+       $_[2], $_[1]->id, $_[1]->attributes->{display}, $_[3];
 
     push @{ $_[1]->after_element }, $table_script;
    
@@ -92,11 +111,11 @@ sub pager_name {
 
 sub add_pag_header_js {
     my $js = " 
-        function Pager(tableName, itemsPerPage) {
+        function Pager(tableName, itemsPerPage, totalPages) {
             this.tableName = tableName;
             this.itemsPerPage = itemsPerPage;
             this.currentPage = 1;
-            this.pages = 0;
+            this.pages = totalPages;
             this.showRecords = function(from, to) {
                 var rows = document.getElementById(tableName).rows;
                 for (var i = 1; i < rows.length; i++) {
