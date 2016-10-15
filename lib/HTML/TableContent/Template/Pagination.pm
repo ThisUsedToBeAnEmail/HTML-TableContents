@@ -38,7 +38,7 @@ sub setup_pagination {
     if ( $row_count > $table_options->{display} ) {
         my $pager_name = $self->pager_name($table);
         my $page_count = ceil($row_count / $table_options->{display});
-        my $pagination = HTML::TableContent::Element->new({ html_tag => 'ul' });
+        my $pagination = HTML::TableContent::Element->new({ html_tag => 'ul', class => 'pagination' });
         $pagination->wrap_html(['<div>%s</div>']);
 
         my @pages = ( );
