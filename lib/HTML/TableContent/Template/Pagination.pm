@@ -54,23 +54,23 @@ sub setup_pagination {
         } else {
             push @{ $table->after_element }, $pagination;
         }
+
+        $self->add_pag_js($table, $pager_name);
     }
-    
-    $self->add_pag_js($table);
     
     return $table;
 }
 
 sub set_inner_pag_item_html {
     if ( $_[1]->text eq '1' ) {
-        return $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-selected" onclick="%sPager.showPage(%s);', 'text', 'tag', 'text']);
+        return $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-selected" onclick="%sPager.showPage(%s)">%s</a>', 'text', 'tag', 'text', 'text']);
     }
-    return $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.showPage(%s);', 'text', 'tag', 'text']);
+    return $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.showPage(%s);">%s</a>', 'text', 'tag', 'text', 'text']);
 }
 
 sub add_pag_js {
-    my $table_script = sprintf "<script type=\"text/javascript\">var %sPager = new Pager('%s', %s);</script>", 
-        $_[0]->package_name, $_[1]->id, $_[1]->attributes->{display};
+    my $table_script = sprintf '<script type="text/javascript">var %sPager = new Pager("%s", %s);</script>', 
+        $_[2], $_[1]->id, $_[1]->attributes->{display};
 
     push @{ $_[1]->after_element }, $table_script;
    
