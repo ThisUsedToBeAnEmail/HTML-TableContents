@@ -21,7 +21,7 @@ around BUILDARGS => sub {
     $build->{attributes} = $args;
     $build->{attribute_list} = \@ATTRIBUTE;
 
-    for my $field ( @ATTRIBUTE, 'html_tag' ) {
+    for my $field ( @ATTRIBUTE, 'html_tag', 'tag' ) {
         if (defined $args->{$field}) {
             $build->{$field} = $args->{$field};
         }
@@ -179,13 +179,15 @@ sub render {
    
     if ( my $before_element = $_[0]->before_element ) {
         for (@{ $before_element }) {
-           $html = sprintf "%s%s", $_->render, $html;
+            my $ren = ref \$_ eq 'SCALAR' ? $_ : $_->render;
+            $html = sprintf "%s%s", $ren, $html;
         }
     }
    
     if ( my $after_element = $_[0]->after_element ) {
         for (@{ $after_element }) {
-           $html = sprintf "%s%s", $html, $_->render;
+           my $ren = ref \$_ eq 'SCALAR' ? $_ : $_->render;
+           $html = sprintf "%s%s", $html, $ren;
         }
     }
 

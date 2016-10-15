@@ -343,6 +343,10 @@ sub _num_to_en {
     }
 }
 
+sub package_name {
+    return $_[0]->package =~ /.*\:\:(.*)/;
+}
+
 1;
 
 __END__

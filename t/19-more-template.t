@@ -270,6 +270,7 @@ is($template->render, $html, "$html");
 ok($template = t::Templates::Pagination->new());
 use Data::Dumper;
 warn Dumper $template->render;
+warn Dumper $template->render_header_js;
 
 done_testing();
 
