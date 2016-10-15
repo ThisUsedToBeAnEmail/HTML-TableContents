@@ -4,6 +4,7 @@ use Moo::Role;
 use POSIX qw(ceil);
 use HTML::TableContent::Element;
 use feature qw/switch/;
+no warnings 'experimental';
 
 around _set_html => sub {
     my ($orig, $self, $args) = @_;
