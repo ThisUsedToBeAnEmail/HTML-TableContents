@@ -30,6 +30,7 @@ BEGIN {
     use_ok("t::Templates::TableInnerSubStuff");
     use_ok("t::Templates::TableValid5");
     use_ok("t::Templates::TableValid5wrap");
+    use_ok("t::Templates::Pagination");
 }
 
 ok(my $template = t::Templates::JustHeaders->new());
@@ -266,7 +267,9 @@ $html = '<div class="responsive"><table class="some-table-class" id="some-table-
 
 is($template->render, $html, "$html");
 
-##### OUTER HTML is going to need to be a thing at some point
+ok($template = t::Templates::Pagination->new());
+use Data::Dumper;
+warn Dumper $template->render;
 
 done_testing();
 

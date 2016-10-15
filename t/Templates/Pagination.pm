@@ -6,7 +6,8 @@ use HTML::TableContent::Template;
 sub table_spec {
     return {
         pagination => 1,
-        display => 10,
+        display => 5,
+        wrap_html => ['<div>%s</div>']
     }
 }
 

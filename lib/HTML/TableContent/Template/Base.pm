@@ -23,6 +23,12 @@ has data => (
     trigger => 1,
 );
 
+has table_options => (
+    is => 'rw',
+    lazy => 1,
+    default => sub { { } }
+);
+
 sub render {
     return $_[0]->table->render;
 }
@@ -64,6 +70,7 @@ sub _build_table {
     my $table_spec = { };
     if ($self->can('table_spec')) {
         $table_spec = $self->table_spec;
+        $self->table_options($table_spec);
     }
 
     my $table = HTML::TableContent::Table->new($table_spec);
@@ -114,19 +121,20 @@ sub _build_table {
         $row_index++;
     }
 
-    if ( $self->can('last_chance') ) {
-        $table = $self->last_chance($table);
-    }
+    $table = $self->last_chance($table);
 
     return $table;
+}
+
+sub last_chance {
+    return $_[1];
 }
 
 sub _element_spec {
     my ( $self, $index, %spec) = @_;
 
-    my $base = { };
     my $row_index = delete $spec{row_index};
-
+    my $base = { row_index => $row_index // $index };
     return $base unless keys %spec;
 
     my $num = $self->_num_to_en($index);

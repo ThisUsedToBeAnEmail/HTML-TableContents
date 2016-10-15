@@ -5,7 +5,7 @@ use HTML::TableContent::Table;
 
 our $VERSION = '0.16';
 
-my @ATTRIBUTE = qw/class id style colspan rowspan template_attr/;
+my @ATTRIBUTE = qw/class id style colspan rowspan/;
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -21,7 +21,7 @@ around BUILDARGS => sub {
     $build->{attributes} = $args;
     $build->{attribute_list} = \@ATTRIBUTE;
 
-    for my $field ( @ATTRIBUTE ) {
+    for my $field ( @ATTRIBUTE, 'html_tag' ) {
         if (defined $args->{$field}) {
             $build->{$field} = $args->{$field};
         }
@@ -39,51 +39,51 @@ for my $field (@ATTRIBUTE) {
     );
 }
 
+has [qw/template_attr row_index data tag/] => (
+    is => 'rw',
+    clearer => 1,
+    builder => 1, 
+);
+
 has attributes => (
     is => 'rw',
     default => sub { {} }
 );
 
-has attribute_list => (
+has [qw/inner_html wrap_html attribute_list/] => (
     is => 'rw',
 );
 
-has data => (
-    is => 'rw',
-    clearer => 1,
-    builder => 1,
-);
-
-has inner_html => (
-    is => 'rw',
-    lazy => 1,
-);
-
-has wrap_html => (
-    is => 'rw',
-    lazy => 1,
-);
-
-has [qw/nested links/] => (
+has [qw/children nested links before_element after_element/] => (
     is => 'rw',
     default => sub { [] },
 );
 
-has tag => (
+has html_tag => (
     is => 'rw',
-    builder => 1,
+    default => 'table',
 );
+
+sub _build_row_index {
+    return defined $_[0]->attributes->{row_index} 
+        ? delete $_[0]->attributes->{row_index}
+        : undef;
+}
+
+sub _build_template_attr {
+    return defined $_[0]->attributes->{template_attr} 
+        ? delete $_[0]->attributes->{template_attr}
+        : undef;
+}
 
 sub _build_tag {
     my $caller = caller();
     my ( $tag ) = $caller =~ /.*\:\:(.*)/;
     return lc $tag;
 }
+sub has_children { return scalar @{ $_[0]->children } ? 1 : 0; }
 
-has html_tag => (
-    is => 'rw',
-    default => sub { return 'table'; },
-);
+sub count_children { return scalar @{ $_[0]->children }; }
 
 sub has_nested { return scalar @{ $_[0]->nested } ? 1 : 0; }
 
@@ -104,6 +104,12 @@ sub get_first_link { return $_[0]->links->[0]; }
 sub get_link { return $_[0]->links->[ $_[1] ]; }
 
 sub all_links { return @{ $_[0]->links }; }
+
+sub add_child {
+    my $element = $_[0]->new($_[1]);
+    push @{ $_[0]->children }, $element;
+    return $element;
+}
 
 sub add_nested { 
     my $table = HTML::TableContent::Table->new($_[1]);
@@ -152,7 +158,6 @@ sub render {
     
     my $attr = '';
     foreach my $attribute (@{ $_[0]->attribute_list }) {
-        next if $attribute eq 'template_attr';
         if (my $val = $args->{$attribute}) {
             $attr .= sprintf '%s="%s" ', $attribute, $val;
         }
@@ -171,7 +176,19 @@ sub render {
 
     my $tag = $_[0]->html_tag;
     my $html = sprintf("<%s %s>%s</%s>", $tag, $attr, $render, $tag);
-    
+   
+    if ( my $before_element = $_[0]->before_element ) {
+        for (@{ $before_element }) {
+           $html = sprintf "%s%s", $_->render, $html;
+        }
+    }
+   
+    if ( my $after_element = $_[0]->after_element ) {
+        for (@{ $after_element }) {
+           $html = sprintf "%s%s", $html, $_->render;
+        }
+    }
+
     if ( my $wrap_html = $_[0]->wrap_html ) {
         my $wrap_count = scalar @{ $wrap_html };
         if ( $wrap_count  == 1 ) {
@@ -185,7 +202,10 @@ sub render {
 }
 
 sub _render_element {
-    return $_[0]->text;
+    return $_[0]->text unless $_[0]->has_children;
+
+    my @elements = map { $_->render } @{ $_[0]->children };
+    return sprintf '%s' x @elements, @elements;
 }
 
 sub _trigger_class { return $_[0]->attributes->{class} = $_[1]; }
@@ -211,6 +231,8 @@ sub _build_data {
     return $data if defined $data && scalar @{ $data };
     return [ ];
 }
+
+sub has_id { return length $_[0]->id ? 1 : 0; }
 
 sub tidy_html {
     $_[1] =~ s/\s+>/>/g;

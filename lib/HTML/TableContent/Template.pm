@@ -65,8 +65,12 @@ sub import {
         }';
     }
 
+    $has->( 'package' => ( is => 'ro', lazy => 1, default => sub { return $target; } ) );
+
     my $apply_modifiers = sub {
-        $with->('HTML::TableContent::Template::Base');
+       $with->('HTML::TableContent::Template::Base');
+       $with->('HTML::TableContent::Template::Javascript');
+       $with->('HTML::TableContent::Template::Pagination');
     };
 
     for my $element (keys %TABLE) {
