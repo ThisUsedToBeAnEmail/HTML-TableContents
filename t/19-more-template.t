@@ -31,6 +31,7 @@ BEGIN {
     use_ok("t::Templates::TableValid5");
     use_ok("t::Templates::TableValid5wrap");
     use_ok("t::Templates::Pagination");
+    use_ok("t::Templates::PaginationAbove");
 }
 
 ok(my $template = t::Templates::JustHeaders->new());
@@ -92,11 +93,11 @@ is($template->name->class, 'test', "expected class: test");
 
 is($template->name->id, 'test-id', "expected id: test-id");
 
-is($template->name->get_first_cell->text, 'Rex', "expected header first cell text: rob");
+is($template->name->get_first_cell->text, 'Rex', "expected header first cell text: Rex");
 
 is($template->name->get_first_cell->header->text, 'User Name', "cell header text");
 
-is($template->table->get_first_row->get_cell(1)->text, 'Rex', "first row first cell text: rob");
+is($template->table->get_first_row->get_cell(1)->text, 'Rex', "first row first cell text: Rex");
 
 is($template->table->get_first_row->get_cell(1)->header->text, 'User Name', "first row first cell header text: name");
 
@@ -268,9 +269,28 @@ $html = '<div class="responsive"><table class="some-table-class" id="some-table-
 is($template->render, $html, "$html");
 
 ok($template = t::Templates::Pagination->new());
-use Data::Dumper;
-warn Dumper $template->render;
-warn Dumper $template->render_header_js;
+
+is($template->page_count, 3, "expected page count 3");
+
+$html = '<div><table id="paginationTable"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr><tr><td>4</td><td>rob</td><td>somewhere</td></tr><tr><td>5</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>6</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>7</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>8</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>9</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>10</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>11</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>12</td><td>frank</td><td>out</td></tr></table><div><ul class="pagination"><li><a href="#" id="tc<" class="tc-normal" onclick="paginationPager.prev();"><</a></li><li><a href="#" id="tc1" class="tc-selected" onclick="paginationPager.showPage(1)">1</a></li><li><a href="#" id="tc2" class="tc-normal" onclick="paginationPager.showPage(2);">2</a></li><li><a href="#" id="tc3" class="tc-normal" onclick="paginationPager.showPage(3);">3</a></li><li><a href="#" id="tc>" class="tc-normal" onclick="paginationPager.next();">></a></li></ul></div><script type="text/javascript">var paginationPager = new Pager("paginationTable", 5, 3);</script></div>';
+
+is($template->render, $html, "expected html $html");
+
+my $js = '<script type="text/javascript">function Pager(tableName, itemsPerPage, totalPages) { this.tableName = tableName; this.itemsPerPage = itemsPerPage; this.currentPage = 1; this.pages = totalPages; this.showRecords = function(from, to) { var rows = document.getElementById(tableName).rows; for (var i = 1; i < rows.length; i++) { if (i < from || i > to) rows[i].style.display = \'none\'; else rows[i].style.display = \'\'; } } this.showPage = function(pageNumber) { var oldPageAnchor = document.getElementById(\'tc\'+this.currentPage); oldPageAnchor.className = \'tc-normal\'; this.currentPage = pageNumber; var newPageAnchor = document.getElementById(\'tc\'+this.currentPage); newPageAnchor.className = \'tc-selected\'; var from = (pageNumber - 1) * itemsPerPage + 1; var to = from + itemsPerPage - 1; this.showRecords(from, to); } this.prev = function() { if (this.currentPage > 1) { this.showPage(this.currentPage - 1); } } this.next = function() { if (this.currentPage < this.pages) { this.showPage(this.currentPage + 1); } } }</script>';
+
+is($template->render_header_js, $js, "expected js $js");
+
+ok($template = t::Templates::Pagination->new(data => $data), 'new with lots of data');
+
+is($template->page_count, 201, "expected page count 21");
+
+ok($template = t::Templates::PaginationAbove->new());
+
+is($template->page_count, 3, "expected page count 3");
+
+$html = '<div><div><ul class="pagination"><li><a href="#" id="tc<" class="tc-normal" onclick="paginationabovePager.prev();"><</a></li><li><a href="#" id="tc1" class="tc-selected" onclick="paginationabovePager.showPage(1)">1</a></li><li><a href="#" id="tc2" class="tc-normal" onclick="paginationabovePager.showPage(2);">2</a></li><li><a href="#" id="tc3" class="tc-normal" onclick="paginationabovePager.showPage(3);">3</a></li><li><a href="#" id="tc>" class="tc-normal" onclick="paginationabovePager.next();">></a></li></ul></div><table id="paginationaboveTable"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr><tr><td>4</td><td>rob</td><td>somewhere</td></tr><tr><td>5</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>6</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>7</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>8</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>9</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>10</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>11</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>12</td><td>frank</td><td>out</td></tr></table><script type="text/javascript">var paginationabovePager = new Pager("paginationaboveTable", 5, 3);</script></div>';
+
+is($template->render, $html, "okay html - $html");
 
 done_testing();
 
