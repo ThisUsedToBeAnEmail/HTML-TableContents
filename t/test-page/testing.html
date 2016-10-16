@@ -64,16 +64,16 @@ function Pager(tableName, itemsPerPage) {
             var sortnr = row.cells[col].textContent || row.cells[col].innerText;
             store.push([sortnr, row]);
         }
-        
+
+
         if ( action == 'desc') {
             store.sort(this.sortdesc);
             ele.setAttribute('onclick', "pager.sortData(this, " + col + ", 'asc')");
-            console.log(ele.innerText);
-            console.log(ele.children);
-        } else if (action == 'asc') {
+        } else {
             store.sort(this.sortasc);
             ele.setAttribute('onclick', "pager.sortData(this, " + col + ", 'desc')");
         }
+        
         for(var i=0; i < store.length; i++) { 
             tbl.appendChild(store[i][1]);
         }
@@ -90,7 +90,7 @@ function Pager(tableName, itemsPerPage) {
 
             var change = '\u25ba';
             if (cell.innerHTML == ele.innerHTML) {
-                change = action == 'desc' ? '\u25bc' : '\u25b2';
+                change = action == 'desc' ? '\u25b2' : '\u25bc';
             }
             cell.children[0].innerHTML = cell.children[0].innerHTML.replace(/[\u25bc \u25b2 \u25ba]/g, change);
         }
@@ -142,7 +142,7 @@ function Pager(tableName, itemsPerPage) {
         </div>
       </div>
       <div id="content" class="inner cover">
-          <div><table id="tablepaging" class="table"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id" onclick="pager.sortData(this, 0, 'desc')">Id <i>&#9650;</i></th><th class="okay" onclick="pager.sortData(this, 1, 'desc')">Name <i>&#9658;</i></th><th class="what" onclick="pager.sortData(this, 2, 'desc')">Address <i>&#9658;</i></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr><tr><td>4</td><td>rob</td><td>somewhere</td></tr><tr><td>5</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>6</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>7</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>8</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>9</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>10</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>11</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>12</td><td>frank</td><td>out</td></tr></table><div><ul class="pagination"><li><a href="#" id="pg1" class="pg-selected" onclick="pager.showPage(1);">1</a></li><li><a href="#" id="pg2" class="pg-normal" onclick="pager.showPage(2);">2</a></li><li><a href="#" id="pg3" class="pg-normal" onclick="pager.showPage(3);">3</a></li></ul></div></div>
+          <div><table id="tablepaging" class="table"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id" onclick="pager.sortData(this, 0, 'desc')">Id <i>&#9660;</i></th><th class="okay" onclick="pager.sortData(this, 1, 'desc')">Name <i>&#9658;</i></th><th class="what" onclick="pager.sortData(this, 2, 'desc')">Address <i>&#9658;</i></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr><tr><td>4</td><td>rob</td><td>somewhere</td></tr><tr><td>5</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>6</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>7</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>8</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>9</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>10</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>11</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>12</td><td>frank</td><td>out</td></tr></table><div><ul class="pagination"><li><a href="#" id="pg1" class="pg-selected" onclick="pager.showPage(1);">1</a></li><li><a href="#" id="pg2" class="pg-normal" onclick="pager.showPage(2);">2</a></li><li><a href="#" id="pg3" class="pg-normal" onclick="pager.showPage(3);">3</a></li></ul></div></div>
           <script type="text/javascript"><!--
               var pager = new Pager('tablepaging', 5);
           </script>
