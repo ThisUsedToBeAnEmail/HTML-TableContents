@@ -97,7 +97,42 @@ function Pager(tableName, itemsPerPage) {
         
         return;
     }
-    this.sortdesc = function(a, b){
+    this.search = function (ele) {
+        var input = ele.value.toUpperCase();
+        var tbl = document.getElementById(tableName);
+
+        if (tbl.tBodies.length){
+            tbl = tbl.tBodies[0];
+        }
+
+        var match = [];
+        for ( var i=1; i < tbl.rows.length; i++ ) {
+            var row = tbl.rows[i];
+            var cells = row.cells;
+            for ( var c=0; c < cells.length; c++ ) {
+                var cell = cells[c];
+                if (cell.innerHTML.toUpperCase().indexOf(input) > -1) {
+                    match.push([10, row]);
+                    break;
+                } 
+            }
+
+            if ( ! match.length || match[match.length - 1][1].cells[0].innerHTML !== cells[0].innerHTML )
+                match.push([1, row]);
+        }
+
+        match.sort(this.sortdesc);
+        
+        for(var i=0; i < match.length; i++) { 
+            var row = match[i][1];
+            tbl.appendChild(row);
+        }
+
+        match = null;
+
+        this.showPage(this.currentPage);
+    }
+    this.sortdesc = function (a, b){
         if(isNaN(a[0])) {
             if (b[0] < a[0]){
               return -1;
@@ -110,7 +145,7 @@ function Pager(tableName, itemsPerPage) {
             return b[0] - a[0];
         }
     }
-    this.sortasc = function(a, b) {
+    this.sortasc = function (a, b) {
         if(isNaN(a[0])) {
             if (a[0] < b[0]){
               return -1;
@@ -142,7 +177,9 @@ function Pager(tableName, itemsPerPage) {
         </div>
       </div>
       <div id="content" class="inner cover">
-          <div><table id="tablepaging" class="table"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id" onclick="pager.sortData(this, 0, 'desc')">Id <i>&#9660;</i></th><th class="okay" onclick="pager.sortData(this, 1, 'desc')">Name <i>&#9658;</i></th><th class="what" onclick="pager.sortData(this, 2, 'desc')">Address <i>&#9658;</i></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr><tr><td>4</td><td>rob</td><td>somewhere</td></tr><tr><td>5</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>6</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>7</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>8</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>9</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>10</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>11</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>12</td><td>frank</td><td>out</td></tr></table><div><ul class="pagination"><li><a href="#" id="pg1" class="pg-selected" onclick="pager.showPage(1);">1</a></li><li><a href="#" id="pg2" class="pg-normal" onclick="pager.showPage(2);">2</a></li><li><a href="#" id="pg3" class="pg-normal" onclick="pager.showPage(3);">3</a></li></ul></div></div>
+          <div>
+              <input style="color:#000;" type="text" id="tablepaging-input" onkeyup="pager.search(this)" placeholder="Search for Something..">
+              <table id="tablepaging" class="table"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id" onclick="pager.sortData(this, 0, 'desc')">Id <i>&#9660;</i></th><th class="okay" onclick="pager.sortData(this, 1, 'desc')">Name <i>&#9658;</i></th><th class="what" onclick="pager.sortData(this, 2, 'desc')">Address <i>&#9658;</i></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr><tr><td>4</td><td>rob</td><td>somewhere</td></tr><tr><td>5</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>6</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>7</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>8</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>9</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>10</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>11</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>12</td><td>frank</td><td>out</td></tr></table><div><ul class="pagination"><li><a href="#" id="pg1" class="pg-selected" onclick="pager.showPage(1);">1</a></li><li><a href="#" id="pg2" class="pg-normal" onclick="pager.showPage(2);">2</a></li><li><a href="#" id="pg3" class="pg-normal" onclick="pager.showPage(3);">3</a></li></ul></div></div>
           <script type="text/javascript"><!--
               var pager = new Pager('tablepaging', 5);
           </script>
