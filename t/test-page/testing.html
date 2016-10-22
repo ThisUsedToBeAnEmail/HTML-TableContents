@@ -5,6 +5,12 @@
     <link href="bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="cover.css" rel="stylesheet">
+
+<style>
+    .search-hide {
+        display: none;
+     }
+</style>
 <script type="text/javascript">
 
 function Pager(tableName, itemsPerPage) {
@@ -80,7 +86,7 @@ function Pager(tableName, itemsPerPage) {
         store = null;
 
         this.setSortArrow(ele, action);
-        this.showPage(this.currentPage);
+        this.search;
     }
     this.setSortArrow = function (ele, action) {
         var headers = document.getElementById(tableName).rows[0].cells;
@@ -112,13 +118,16 @@ function Pager(tableName, itemsPerPage) {
             for ( var c=0; c < cells.length; c++ ) {
                 var cell = cells[c];
                 if (cell.innerHTML.toUpperCase().indexOf(input) > -1) {
+                    row.classList.remove('search-hide');
                     match.push([10, row]);
                     break;
                 } 
             }
 
-            if ( ! match.length || match[match.length - 1][1].cells[0].innerHTML !== cells[0].innerHTML )
+            if ( ! match.length || match[match.length - 1][1].cells[0].innerHTML !== cells[0].innerHTML ){
+                row.classList.add('search-hide');
                 match.push([1, row]);
+            }
         }
 
         match.sort(this.sortdesc);
