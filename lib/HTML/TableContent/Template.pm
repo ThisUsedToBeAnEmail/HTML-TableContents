@@ -70,7 +70,7 @@ sub import {
     my $apply_modifiers = sub {
        $with->('HTML::TableContent::Template::Base');
        $with->('HTML::TableContent::Template::Javascript');
-       $with->('HTML::TableContent::Template::Pagination');
+       $with->('HTML::TableContent::Template::Paginate');
     };
 
     for my $element (keys %TABLE) {

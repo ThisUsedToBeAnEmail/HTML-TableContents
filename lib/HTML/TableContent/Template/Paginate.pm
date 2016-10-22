@@ -1,4 +1,4 @@
-package HTML::TableContent::Template::Pagination;
+package HTML::TableContent::Template::Paginate;
 
 use Moo::Role;
 use POSIX qw(ceil);
