@@ -71,6 +71,8 @@ sub import {
        $with->('HTML::TableContent::Template::Base');
        $with->('HTML::TableContent::Template::Javascript');
        $with->('HTML::TableContent::Template::Paginate');
+       $with->('HTML::TableContent::Template::Sort');
+       $with->('HTML::TableContent::Template::Search');
     };
 
     for my $element (keys %TABLE) {

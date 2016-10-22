@@ -2,6 +2,11 @@ package HTML::TableContent::Template::Javascript;
 
 use Moo::Role;
 
+has js_name => (
+    is => 'rw',
+    lazy => 1,
+);
+
 has 'header_js' => (
     is => 'ro',
     default => sub { [ ] },

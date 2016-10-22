@@ -16,6 +16,11 @@ has table => (
     clearer => 1,
 );
 
+has table_name => (
+    is => 'rw',
+    lazy => 1
+);
+
 has data => (
     is => 'rw',
     builder => '_build_data',
@@ -75,6 +80,7 @@ sub _build_table {
 
     my $table = HTML::TableContent::Table->new($table_spec);
     $table = $self->_set_html($table);
+    $self->table_name($self->_extract_table_name($table));
 
     my $caption_spec = $self->_caption_spec;
 
@@ -96,6 +102,7 @@ sub _build_table {
             $cell_spec{$_ + 1} = $cells;
         }
 
+        $header->index($_);
         $header = $self->_set_html($header);
         
         push @{ $table->headers }, $header;
@@ -134,7 +141,7 @@ sub _element_spec {
     my ( $self, $index, %spec) = @_;
 
     my $row_index = delete $spec{row_index};
-    my $base = { row_index => $row_index // $index };
+    my $base = { row_index => $row_index // $index, index => $index };
     return $base unless keys %spec;
 
     my $num = $self->_num_to_en($index);
@@ -343,8 +350,14 @@ sub _num_to_en {
     }
 }
 
-sub package_name {
-    return $_[0]->package =~ /.*\:\:(.*)/;
+sub _extract_table_name {
+    if ( $_[1]->has_id ) {
+        return $_[1]->id;
+    }
+    else {
+        my ($package_name) = (lc $_[0]->package) =~ /.*\:\:(.*)/;
+        return $package_name;
+    }
 }
 
 1;

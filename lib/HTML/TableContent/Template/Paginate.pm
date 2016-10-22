@@ -44,7 +44,8 @@ sub setup_pagination {
     my $row_count = $table->row_count;
     
     if ( $row_count > $table_options->{display} ) {
-        my $pager_name = $self->pager_name($table);
+        my $pager_name = $self->table_name;
+        $table->id(sprintf '%sTable', $pager_name);
         my $page_count = ceil($row_count / $table_options->{display});
         $self->page_count($page_count);
 
@@ -102,17 +103,6 @@ sub add_pager_js {
     $_[0]->add_pager_header_js;
     
     return $_[1];
-}
-
-sub pager_name {
-    if ( $_[1]->has_id ) {
-        return $_[1]->id;
-    }
-    else {
-        my ( $package_name ) = (lc $_[0]->package) =~ /.*\:\:(.*)/;
-        $_[1]->id($package_name . 'Table');
-        return $package_name;
-    }
 }
 
 sub add_pager_header_js {

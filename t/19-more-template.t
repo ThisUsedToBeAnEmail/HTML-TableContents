@@ -32,9 +32,14 @@ BEGIN {
     use_ok("t::Templates::TableValid5wrap");
     use_ok("t::Templates::Pagination");
     use_ok("t::Templates::PaginationAbove");
+    use_ok("t::Templates::Sort");
+    use_ok("t::Templates::Search");
 }
 
 ok(my $template = t::Templates::JustHeaders->new());
+
+warn Dumper $template;
+
 
 is($template->table->header_count, 3, "expected header count");
 
@@ -291,6 +296,14 @@ is($template->page_count, 3, "expected page count 3");
 $html = '<div><div><ul class="pagination"><li><a href="#" id="tc<" class="tc-normal" onclick="paginationabovePager.prev();"><</a></li><li><a href="#" id="tc1" class="tc-selected" onclick="paginationabovePager.showPage(1)">1</a></li><li><a href="#" id="tc2" class="tc-normal" onclick="paginationabovePager.showPage(2);">2</a></li><li><a href="#" id="tc3" class="tc-normal" onclick="paginationabovePager.showPage(3);">3</a></li><li><a href="#" id="tc>" class="tc-normal" onclick="paginationabovePager.next();">></a></li></ul></div><table id="paginationaboveTable"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><th class="okay">Name</th><th class="what">Address</th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr><tr><td>4</td><td>rob</td><td>somewhere</td></tr><tr><td>5</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>6</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>7</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>8</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>9</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>10</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>11</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>12</td><td>frank</td><td>out</td></tr></table><script type="text/javascript">var paginationabovePager = new Pager("paginationaboveTable", 5, 3);</script></div>';
 
 is($template->render, $html, "okay html - $html");
+
+ok($template = t::Templates::Sort->new());
+
+warn Dumper $template->render;
+
+ok($template = t::Templates::Search->new());
+
+warn Dumper $template->render;
 
 done_testing();
 

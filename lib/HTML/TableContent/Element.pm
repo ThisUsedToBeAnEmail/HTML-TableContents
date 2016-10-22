@@ -5,7 +5,7 @@ use HTML::TableContent::Table;
 
 our $VERSION = '0.16';
 
-my @ATTRIBUTE = qw/class id style colspan rowspan/;
+my @ATTRIBUTE = qw/class id style colspan rowspan onclick type onkeyup placeholder/;
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -39,7 +39,7 @@ for my $field (@ATTRIBUTE) {
     );
 }
 
-has [qw/template_attr row_index data tag/] => (
+has [qw/template_attr row_index index data tag/] => (
     is => 'rw',
     clearer => 1,
     builder => 1, 
@@ -70,6 +70,12 @@ sub _build_row_index {
         : undef;
 }
 
+sub _build_index {
+    return defined $_[0]->attributes->{index} 
+        ? delete $_[0]->attributes->{index}
+        : undef;
+}
+
 sub _build_template_attr {
     return defined $_[0]->attributes->{template_attr} 
         ? delete $_[0]->attributes->{template_attr}
@@ -81,6 +87,7 @@ sub _build_tag {
     my ( $tag ) = $caller =~ /.*\:\:(.*)/;
     return lc $tag;
 }
+
 sub has_children { return scalar @{ $_[0]->children } ? 1 : 0; }
 
 sub count_children { return scalar @{ $_[0]->children }; }
@@ -219,6 +226,14 @@ sub _trigger_style { return $_[0]->attributes->{style} = $_[1]; }
 sub _trigger_colspan { return $_[0]->attributes->{colspan} = $_[1]; }
 
 sub _trigger_rowspan { return $_[0]->attributes->{rowspan} = $_[1]; }
+
+sub _trigger_onclick { return $_[0]->attributes->{onclick} = $_[1]; }
+
+sub _trigger_type { return $_[0]->attributes->{type} = $_[1]; }
+
+sub _trigger_onkeyup { return $_[0]->attributes->{onkeyup} = $_[1]; }
+
+sub _trigger_placeholder { return $_[0]->attributes->{placeholder} = $_[1]; }
 
 sub _trigger_template_attr { return $_[0]->attributes->{template_attr} = $_[1]; }
 
