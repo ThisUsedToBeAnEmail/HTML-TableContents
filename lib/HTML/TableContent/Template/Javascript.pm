@@ -28,9 +28,186 @@ sub add_pager_js {
 }
 
 sub render_header_js {
-    my $js = "function HtmlTC(a,b){this.tableName=a,this.itemsPerPage=b,this.currentPage=1,this.pages=0,this.searched=0,this.showRecords=function(b,c){for(var d=document.getElementById(a).rows,e=0,f=1;f<d.length;f++)d[f].classList.contains(\"search-hide\")||e++,f<b||f>c?d[f].style.display=\"none\":d[f].style.display=\"\";return this.paginationPages(e)},this.paginationPages=function(a){for(var b=document.getElementsByClassName(\"pg-normal\"),c=0;c<b.length;c++)a-=this.itemsPerPage,a<=0?b[c].classList.add(\"search-hide\"):b[c].classList.remove(\"search-hide\")},this.showPage=function(a){var c=document.getElementById(\"pg\"+this.currentPage);c.className=\"pg-normal\",this.currentPage=a;var d=document.getElementById(\"pg\"+this.currentPage);d.className=\"pg-selected\";var e=(a-1)*b+1,f=e+b-1;this.showRecords(e,f)},this.prev=function(){this.currentPage>1&&this.showPage(this.currentPage-1)},this.next=function(){this.currentPage<this.pages&&this.showPage(this.currentPage+1)},this.sortData=function(b,c,d){var e=document.getElementById(a);e.tBodies.length&&(e=e.tBodies[0]);for(var f=e.rows,g=[],h=1;h<f.length;h++){var i=f[h],j=i.cells[c].textContent||i.cells[c].innerText;g.push([j,i])}\"desc\"==d?(g.sort(this.sortdesc),b.setAttribute(\"onclick\",\"Tc.sortData(this, \"+c+\", 'asc')\")):(g.sort(this.sortasc),b.setAttribute(\"onclick\",\"Tc.sortData(this, \"+c+\", 'desc')\"));for(var h=0;h<g.length;h++)e.appendChild(g[h][1]);g=null,this.setSortArrow(b,d),1===this.searched?this.search:this.showPage(this.currentPage)},this.setSortArrow=function(b,c){for(var d=document.getElementById(a).rows[0].cells,e=0;e<d.length;e++){var f=d[e],g=\"►\";f.innerHTML==b.innerHTML&&(g=\"desc\"==c?\"▲\":\"▼\"),f.children[0].innerHTML=f.children[0].innerHTML.replace(/[\\u25bc \u25b2 \u25ba]/g,g)}},this.search=function(b){var c=b.value.toUpperCase(),d=document.getElementById(a);c?this.searched=1:this.searched=0,d.tBodies.length&&(d=d.tBodies[0]);for(var e=[],f=1;f<d.rows.length;f++){for(var g=d.rows[f],h=g.cells,i=0;i<h.length;i++){var j=h[i];if(j.innerHTML.toUpperCase().indexOf(c)>-1){g.classList.remove(\"search-hide\"),e.push([10,g]);break}}e.length&&e[e.length-1][1].cells[0].innerHTML===h[0].innerHTML||(g.classList.add(\"search-hide\"),e.push([1,g]))}e.sort(this.sortdesc);for(var f=0;f<e.length;f++){var g=e[f][1];d.appendChild(g)}e=null,this.showPage(this.currentPage)},this.sortdesc=function(a,b){return isNaN(a[0])?b[0]<a[0]?-1:b[0]>a[0]?1:0:b[0]-a[0]},this.sortasc=function(a,b){return isNaN(a[0])?a[0]<b[0]?-1:a[0]>b[0]?1:0:a[0]-b[0]}}";
+    my $js = 'function HtmlTC(tableName, itemsPerPage) {
+    this.tableName = tableName;
+    this.itemsPerPage = itemsPerPage;
+    this.currentPage = 1;
+    this.pages = 0;
+    this.searched = 0;
+    this.showRecords = function(from, to) {
+        var rows = document.getElementById(tableName).rows;
+        var active = 0;
+        // i starts from 1 to skip table header row
+        for (var i = 1; i < rows.length; i++) {
+            if (!rows[i].classList.contains(\'search-hide\')) active++;
+            if (i < from || i > to)
+                rows[i].style.display = \'none\';
+            else
+                rows[i].style.display = \'\';
+        }
 
-    return sprintf '<script type="text/javascript">%s</script>', $js;
+        return this.paginationPages(active);
+    }
+    this.paginationPages = function(active) {
+        var pages = document.getElementsByClassName(\'tc-normal\');
+
+        for (var i = 0; i < pages.length; i++) {
+            console.log(pages[i].innerText);
+            if (pages[i].innerText == /\d/g) {
+                active = active - this.itemsPerPage;
+                active <= -5
+                    ? pages[i].classList.add(\'search-hide\')
+                    : pages[i].classList.remove(\'search-hide\');
+            }
+        }
+    }
+    this.showPage = function(pageNumber) {
+
+        var oldPageAnchor = document.getElementById(\'tc\'+this.currentPage);
+
+        oldPageAnchor.className = \'tc-normal\';
+
+        this.currentPage = pageNumber;
+
+        var newPageAnchor = document.getElementById(\'tc\'+this.currentPage);
+
+        newPageAnchor.className = \'tc-selected\';
+
+        var from = (pageNumber - 1) * itemsPerPage + 1;
+
+        var to = from + itemsPerPage - 1;
+
+        this.showRecords(from, to);
+
+    }
+    this.prev = function() {
+        if (this.currentPage > 1) this.showPage(this.currentPage - 1);
+    }
+    this.next = function() {
+       if (this.currentPage > this.pages) this.showPage(this.currentPage + 1);
+    }
+    this.sortData = function(ele, col, action) {
+        var tbl = document.getElementById(tableName);
+        var rows;
+        if (tbl.tBodies.length) {
+            tbl = tbl.tBodies[0];
+            rows = tbl.rows;
+        } else {
+            rows = tbl.rows;
+            rows.shift();
+        }
+
+        var store = [];
+        for (var i=0; i < rows.length; i++){
+            var row = rows[i];
+            var sortnr = row.cells[col].textContent || row.cells[col].innerText;
+
+            store.push([sortnr.toLowerCase(), row]);
+        }
+
+        if ( action == \'desc\') {
+            store.sort(this.sortdesc);
+            ele.attributes.onclick.nodeValue = ele.attributes.onclick.nodeValue.replace(/desc/, \'asc\');
+        } else {
+            store.sort(this.sortasc);
+            ele.attributes.onclick.nodeValue = ele.attributes.onclick.nodeValue.replace(/asc/, \'desc\');
+        }
+
+        for(var i=0; i < store.length; i++) {
+            tbl.appendChild(store[i][1]);
+        }
+        store = null;
+
+        this.setSortArrow(ele, action);
+
+        if (this.searched === 1)  this.search;
+        else this.showPage(this.currentPage);
+    }
+    this.setSortArrow = function (ele, action) {
+        var headers = document.getElementById(tableName).rows[0].cells;
+
+        console.log(headers);
+
+        for (var i=0; i < headers.length; i++) {
+            var cell = headers[i];
+
+            var change = \'\u25ba\';
+            if (cell.innerHTML == ele.innerHTML) {
+                change = action == \'desc\' ? \'\u25b2\' : \'\u25bc\';
+            }
+
+            cell.children[0].innerHTML = cell.children[0].innerHTML.replace(/[\u25bc \u25b2 \u25ba]/g, change);  
+        }
+
+        return;
+    }
+    this.search = function (ele) {
+        var input = ele.value.toUpperCase();
+        var tbl = document.getElementById(tableName);
+
+        if (!input) this.searched = 0;
+        else this.searched = 1;
+
+        var rows;
+        if (tbl.tBodies.length) {
+            tbl = tbl.tBodies[0];
+            rows = tbl.rows;
+        } else {
+            rows = tbl.rows;
+            rows.shift();
+        }
+
+        var match = [];
+        for ( var i=0; i < rows.length; i++ ) {
+            var row = rows[i];
+            var cells = row.cells;
+            for ( var c=0; c < cells.length; c++ ) {
+                var cell = cells[c];
+                if (cell.innerHTML.toUpperCase().indexOf(input) > -1) {
+                    row.classList.remove(\'search-hide\');
+                    match.push([10, row]);
+                    break;
+                }
+            }
+
+            if ( ! match.length || match[match.length - 1][1].cells[0].innerHTML !== cells[0].innerHTML ){
+                row.classList.add(\'search-hide\');
+                match.push([1, row]);
+            }
+        }
+
+        match.sort(this.sortdesc);
+
+        for(var i=0; i < match.length; i++) {
+            var row = match[i][1];
+            tbl.appendChild(row);
+        }
+
+        match = null;
+
+        this.showPage(this.currentPage);
+    }
+    this.sortdesc = function (a, b){
+        if(isNaN(a[0])) {
+            if (b[0] < a[0]) return -1;
+            else if (b[0] > a[0]) return  1;
+            else return 0;
+         } else {
+            return b[0] - a[0];
+        }
+    }
+    this.sortasc = function (a, b) {
+        if(isNaN(a[0])) {
+            if (a[0] < b[0]) return -1;
+            else if (a[0] > b[0]) return  1;
+            else return 0;
+        } else {
+            return a[0] - b[0];
+        }
+    }
+}';
+
+    return sprintf '<style>.search-hide{ display: none; }</style><script type="text/javascript">%s</script>', $js;
 }
 
 1;
