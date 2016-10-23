@@ -27,7 +27,7 @@ sub _add_sort {
     my ($self, $element) = @_;
 
     # ahhhhh
-    $element->onclick(sprintf "%sPager.sortData(this, %s, 'desc')", $self->table_name, $element->index);
+    $element->onclick(sprintf "%sTc.sortData(this, %s, 'desc')", $self->table_name, $element->index);
 
     return $element->inner_html(['%s<i>&#9658;</i>']);
 }

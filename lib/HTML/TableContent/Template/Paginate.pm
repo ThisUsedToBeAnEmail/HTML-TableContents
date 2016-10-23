@@ -18,6 +18,7 @@ around _set_html => sub {
 
     if ( $table_options->{pagination} ) {
         if ( $element->tag eq 'row' && $element->row_index > $table_options->{display} ) { 
+            $self->pagination(1);
             $element->style("display:none;");
         }
     }
@@ -69,8 +70,6 @@ sub setup_pagination {
         } else {
             push @{ $table->after_element }, $pagination;
         }
-
-        $self->add_pager_js($table, $pager_name, $page_count);
     }
     
     return $table;
@@ -79,37 +78,21 @@ sub setup_pagination {
 sub set_inner_pager_item_html {
     given ($_[1]->text) {
         when (/1/) {
-            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-selected" onclick="%sPager.showPage(%s)">%s</a>', 'text', 'tag', 'text', 'text']);
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-selected" onclick="%sTc.showPage(%s)">%s</a>', 'text', 'tag', 'text', 'text']);
         }
         when (/</) {
-            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.prev();">%s</a>', 'text', 'tag', 'text']);
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.prev();">%s</a>', 'text', 'tag', 'text']);
         }
         when (/>/) {
-            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.next();">%s</a>', 'text', 'tag', 'text']);
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.next();">%s</a>', 'text', 'tag', 'text']);
         }
         default {
-            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sPager.showPage(%s);">%s</a>', 'text', 'tag', 'text', 'text']);
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.showPage(%s);">%s</a>', 'text', 'tag', 'text', 'text']);
         }
     } 
     return $_[1];
 }
 
-sub add_pager_js {
-    my $table_script = sprintf '<script type="text/javascript">var %sPager = new Pager("%s", %s, %s);</script>', 
-       $_[2], $_[1]->id, $_[1]->attributes->{display}, $_[3];
-
-    push @{ $_[1]->after_element }, $table_script;
-   
-    $_[0]->add_pager_header_js;
-    
-    return $_[1];
-}
-
-sub add_pager_header_js {
-    my $js = "function Pager(tableName, itemsPerPage, totalPages) { this.tableName = tableName; this.itemsPerPage = itemsPerPage; this.currentPage = 1; this.pages = totalPages; this.showRecords = function(from, to) { var rows = document.getElementById(tableName).rows; for (var i = 1; i < rows.length; i++) { if (i < from || i > to) rows[i].style.display = 'none'; else rows[i].style.display = ''; } } this.showPage = function(pageNumber) { var oldPageAnchor = document.getElementById('tc'+this.currentPage); oldPageAnchor.className = 'tc-normal'; this.currentPage = pageNumber; var newPageAnchor = document.getElementById('tc'+this.currentPage); newPageAnchor.className = 'tc-selected'; var from = (pageNumber - 1) * itemsPerPage + 1; var to = from + itemsPerPage - 1; this.showRecords(from, to); } this.prev = function() { if (this.currentPage > 1) { this.showPage(this.currentPage - 1); } } this.next = function() { if (this.currentPage < this.pages) { this.showPage(this.currentPage + 1); } } }";
-
-    push @{ $_[0]->header_js }, $js;
-}
 
 no Moo::Role;
 
