@@ -114,7 +114,6 @@ sub _build_table {
         
         %cell_spec = $self->_refresh_cell_spec($row_base, $row_index, %cell_spec);
         my $row = $table->add_row($row_base);
-        $row = $self->_set_html($row);
 
         my $cell_index = 1;
         foreach ( $table->all_headers ) {
@@ -125,6 +124,7 @@ sub _build_table {
             $table->parse_to_column($cell);
         }
 
+        $row = $self->_set_html($row);
         $row_index++;
     }
 
