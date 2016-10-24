@@ -137,6 +137,10 @@ sub last_chance {
     return $_[1];
 }
 
+sub last_row_chance {
+    return $_[1];
+}
+
 sub _element_spec {
     my ( $self, $index, %spec) = @_;
 

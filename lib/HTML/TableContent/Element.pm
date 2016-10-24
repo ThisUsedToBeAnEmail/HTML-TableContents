@@ -166,6 +166,9 @@ sub render {
     my $attr = '';
     foreach my $attribute (@{ $_[0]->attribute_list }) {
         if (my $val = $args->{$attribute}) {
+            if ( ref $val eq 'ARRAY' ) {
+                $val = sprintf($val->[0], map { $_[0]->$_ } @{ $val }[1 .. scalar @{ $val } - 1]);
+            }
             $attr .= sprintf '%s="%s" ', $attribute, $val;
         }
     }
