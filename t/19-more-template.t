@@ -35,6 +35,7 @@ BEGIN {
     use_ok("t::Templates::Sort");
     use_ok("t::Templates::Search");
     use_ok("t::Templates::JS");
+    use_ok("t::Templates::VerticalHeaders");
 }
 
 ok(my $template = t::Templates::JustHeaders->new());
@@ -315,6 +316,12 @@ ok($template = t::Templates::JS->new());
 $html = '<div><input id="js-input" type="text" onkeyup="jsTc.search(this)" placeholder="Search for Something..."></input><table id="jsTable"><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id" onclick="jsTc.sortData(this, 0, \'desc\')">Id<i>&#9658;</i></th><th class="okay" onclick="jsTc.sortData(this, 1, \'desc\')">Name<i>&#9658;</i></th><th class="what" onclick="jsTc.sortData(this, 2, \'desc\')">Address<i>&#9658;</i></th></tr><tr><td>1</td><td>rob</td><td>somewhere</td></tr><tr><td>2</td><td>sam</td><td>somewhere else</td></tr><tr><td>3</td><td>frank</td><td>out</td></tr><tr><td>4</td><td>rob</td><td>somewhere</td></tr><tr><td>5</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>6</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>7</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>8</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>9</td><td>frank</td><td>out</td></tr><tr style="display:none;"><td>10</td><td>rob</td><td>somewhere</td></tr><tr style="display:none;"><td>11</td><td>sam</td><td>somewhere else</td></tr><tr style="display:none;"><td>12</td><td>frank</td><td>out</td></tr></table><div><ul class="pagination"><li><a href="#" id="tc<" class="tc-normal" onclick="jsTc.prev();"><</a></li><li><a href="#" id="tc1" class="tc-selected" onclick="jsTc.showPage(1)">1</a></li><li><a href="#" id="tc2" class="tc-normal" onclick="jsTc.showPage(2);">2</a></li><li><a href="#" id="tc3" class="tc-normal" onclick="jsTc.showPage(3);">3</a></li><li><a href="#" id="tc>" class="tc-normal" onclick="jsTc.next();">></a></li></ul></div><script type="text/javascript">var jsTc = new HtmlTC("jsTable", 5, 3);</script></div>';
 
 is($template->render, $html, "okay all of the above - html");
+
+ok($template = t::Templates::VerticalHeaders->new());
+
+$html = '<table><caption class="some-class" id="caption-id">table caption</caption><tr><th class="some-class" id="something-id">Id</th><td>1</td><td>2</td><td>3</td></tr><tr><th class="okay">Name</th><td>rob</td><td>sam</td><td>frank</td></tr><tr><th class="what">Address</th><td>somewhere</td><td>somewhere else</td><td>out</td></tr></table>';
+
+is($template->render, $html, "expected html - $html");
 
 done_testing();
 

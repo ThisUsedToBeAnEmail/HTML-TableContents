@@ -5,7 +5,7 @@ use HTML::TableContent::Table;
 
 our $VERSION = '0.16';
 
-my @ATTRIBUTE = qw/class id style colspan rowspan onclick type onkeyup placeholder/;
+my @ATTRIBUTE = qw/class id style colspan rowspan onclick type onkeyup placeholder scope/;
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -233,6 +233,8 @@ sub _trigger_rowspan { return $_[0]->attributes->{rowspan} = $_[1]; }
 sub _trigger_onclick { return $_[0]->attributes->{onclick} = $_[1]; }
 
 sub _trigger_type { return $_[0]->attributes->{type} = $_[1]; }
+
+sub _trigger_scope { return $_[0]->attributes->{scope} = $_[1]; }
 
 sub _trigger_onkeyup { return $_[0]->attributes->{onkeyup} = $_[1]; }
 

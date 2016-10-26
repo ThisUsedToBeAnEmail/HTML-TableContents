@@ -22,7 +22,7 @@ has '+html_tag' => (
     default => 'table',
 );
 
-my @html5 = qw/html5 thead tbody/;
+my @html5 = qw/html5 thead tbody vertical/;
 for (@html5) {
     has $_ => (
         is => 'rw',
@@ -46,6 +46,12 @@ sub _build_thead {
 sub _build_tbody {
     return defined $_[0]->attributes->{tbody} 
         ? delete $_[0]->attributes->{tbody}
+        : undef;
+}
+
+sub _build_vertical {
+    return defined $_[0]->attributes->{vertical}
+        ? delete $_[0]->attributes->{vertical}
         : undef;
 }
 
@@ -143,6 +149,33 @@ sub clear_first_header { return shift @{ $_[0]->headers } }
 sub clear_last_header { return $_[0]->clear_header( $_[0]->header_count - 1 ); }
 
 sub _render_element {
+   return defined $_[0]->vertical ? $_[0]->_render_vertical_table : $_[0]->_render_horizontal_table;
+}
+
+sub _render_vertical_table {
+    my $args = $_[0]->attributes;
+
+    my @table_rows = ( );
+
+    if ( $_[0]->has_caption ) {
+        push @table_rows, $_[0]->caption->render;
+    }
+    
+    for my $header ($_[0]->all_headers) {
+        my @row = ( );
+        push @row, $header->render;
+        for ($header->all_cells) {
+            push @row, $_->render;
+        }
+        push @table_rows, sprintf '<tr>%s</tr>', join( '', @row);
+    }
+
+    my $table = join '', @table_rows;
+
+    return $table;
+}
+
+sub _render_horizontal_table {
     my $args = $_[0]->attributes;
     
     my @table_rows = ( );
