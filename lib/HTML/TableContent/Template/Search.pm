@@ -8,7 +8,6 @@ has searchable => (
     lazy => 1,
 );
 
-
 around _set_html => sub {
     my ($orig, $self, $args) = @_;
 
@@ -34,23 +33,7 @@ around last_chance => sub {
 };
 
 sub add_search_box {
-    my ($self, $table) = @_;
-
-    my $table_name = $self->table_name;
-    my $search_box_id = sprintf '%s-input', $table_name;
-    my $keyup = sprintf '%sTc.search(this)', $table_name;
-
-    my $search = HTML::TableContent::Element->new({
-        html_tag => 'input',
-        type => 'text',
-        id => $search_box_id,
-        onkeyup => $keyup,
-        placeholder => 'Search for Something...'
-    });
-
-    push @{ $table->before_element }, $search;
-
-    return $table;
+    return $_[1];
 }
 
 no Moo::Role;

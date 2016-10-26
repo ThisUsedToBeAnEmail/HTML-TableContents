@@ -2,6 +2,10 @@ package HTML::TableContent::Template::Javascript;
 
 use Moo::Role;
 
+with 'HTML::TableContent::Template::Javascript::Paginate';
+with 'HTML::TableContent::Template::Javascript::Sort';
+with 'HTML::TableContent::Template::Javascript::Search';
+
 after last_chance => sub {
     my ($self, $table) = @_;
 

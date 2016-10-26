@@ -24,31 +24,7 @@ around _set_html => sub {
 };
 
 sub _add_sort {
-    my ($self, $element) = @_;
-
-    # ahhhhh
-    $element->onclick(sprintf "%sTc.sortData(this, %s, 'desc')", $self->table_name, $element->index);
-
-    return $element->inner_html(['%s<i>&#9658;</i>']);
-}
-
-around last_chance => sub {
-    my ($orig, $self, $args) = @_;
-
-    my $table = $self->$orig($args);
-
-    if ($self->sortable) {
-        # ahhh 
-        $self->add_sort_js;
-    }
-
-    return $table;
-};
-
-sub add_sort_js {
-
-
-
+    return $_[1];
 }
 
 no Moo::Role;

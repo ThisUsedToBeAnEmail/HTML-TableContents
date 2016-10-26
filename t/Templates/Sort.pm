@@ -3,6 +3,8 @@ package t::Templates::Sort;
 use Moo;
 use HTML::TableContent::Template;
 
+with 'HTML::TableContent::Template::Javascript';
+
 caption title => (
     class => 'some-class',
     id => 'caption-id',

@@ -3,6 +3,8 @@ package t::Templates::Pagination;
 use Moo;
 use HTML::TableContent::Template;
 
+with 'HTML::TableContent::Template::Javascript';
+
 sub table_spec {
     return {
         pagination => 1,
