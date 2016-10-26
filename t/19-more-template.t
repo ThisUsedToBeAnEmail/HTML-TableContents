@@ -42,7 +42,6 @@ ok(my $template = t::Templates::JustHeaders->new());
 
 warn Dumper $template;
 
-
 is($template->table->header_count, 3, "expected header count");
 
 is($template->id->text, 'id', "expected header id");

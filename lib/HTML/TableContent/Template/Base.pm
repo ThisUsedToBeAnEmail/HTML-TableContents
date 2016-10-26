@@ -91,7 +91,6 @@ sub _build_table {
     }
 
     my $header_spec = $self->_header_spec; 
-    my %row_spec = $self->_row_spec;
     my %cell_spec = $self->_cell_spec; 
 
     for (0 .. scalar @{$header_spec} - 1){
@@ -107,6 +106,20 @@ sub _build_table {
         
         push @{ $table->headers }, $header;
     }
+
+    $table = $self->can('add_template_rows') 
+        ? $self->add_template_rows($table, %cell_spec) 
+        : $self->_add_template_rows($table, $data, %cell_spec);
+   
+    $table = $self->last_chance($table);
+
+    return $table;
+}
+
+sub _add_template_rows {
+    my ($self, $table, $data, %cell_spec) = @_;
+
+    my %row_spec = $self->_row_spec;
 
     my $row_index = 1;
     foreach my $hash ( @{ $data } ) {
@@ -127,8 +140,6 @@ sub _build_table {
         $row = $self->_set_html($row);
         $row_index++;
     }
-
-    $table = $self->last_chance($table);
 
     return $table;
 }
