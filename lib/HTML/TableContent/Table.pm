@@ -249,6 +249,8 @@ sub get_header_column {
 
     my @cells  = ();
     my $column = $args{header};
+    use Data::Dumper;
+    warn Dumper $column;
     foreach my $header ( $self->all_headers ) {
         if ( $header->lc_text =~ m{$column}ixms ) {
             for ( $header->all_cells ) {

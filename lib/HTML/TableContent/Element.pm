@@ -5,88 +5,97 @@ use HTML::TableContent::Table;
 
 our $VERSION = '0.16';
 
-my @ATTRIBUTE = qw/class id style colspan rowspan onclick type onkeyup placeholder scope/;
+my @ATTRIBUTE =
+  qw/class id style colspan rowspan onclick onchange type onkeyup placeholder scope selected value
+  autocomplete for onFocus onBlur href role width height data_toggle data_placement title/;
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
-    
-    my $build = ( );
 
-    if (my $links = delete $args->{links}) {
+    my $build = ();
+
+    if ( my $links = delete $args->{links} ) {
         if ( ref $links eq 'ARRAY' ) {
             $build->{links} = $links;
         }
     }
 
-    $build->{attributes} = $args;
+    if ( my $concat = delete $args->{truncate} ) {
+        $build->{truncate} = $concat;
+    }
+
+    $build->{attributes}     = $args;
     $build->{attribute_list} = \@ATTRIBUTE;
 
-    for my $field ( @ATTRIBUTE, 'html_tag', 'tag' ) {
-        if (defined $args->{$field}) {
+    for my $field ( @ATTRIBUTE, 'html_tag', 'tag') {
+        if ( defined $args->{$field} ) {
             $build->{$field} = $args->{$field};
         }
     }
 
-    return $class->$orig( $build );
+    return $class->$orig($build);
 };
 
 for my $field (@ATTRIBUTE) {
     has $field => (
-        is => 'rw',
-        lazy => 1,
+        is      => 'rw',
+        lazy    => 1,
         trigger => 1,
         default => q{}
     );
 }
 
 has [qw/template_attr row_index index data tag/] => (
-    is => 'rw',
+    is      => 'rw',
     clearer => 1,
-    builder => 1, 
+    builder => 1,
 );
 
 has attributes => (
-    is => 'rw',
+    is      => 'rw',
     default => sub { {} }
 );
 
-has [qw/inner_html wrap_html attribute_list/] => (
-    is => 'rw',
-);
+has [qw/inner_html wrap_html attribute_list truncate/] => ( is => 'rw' );
 
 has [qw/children nested links before_element after_element/] => (
-    is => 'rw',
+    is      => 'rw',
     default => sub { [] },
 );
 
 has html_tag => (
-    is => 'rw',
+    is      => 'rw',
     default => 'table',
 );
 
 sub _build_row_index {
-    return defined $_[0]->attributes->{row_index} 
-        ? delete $_[0]->attributes->{row_index}
-        : undef;
+    return
+      defined $_[0]->attributes->{row_index}
+      ? delete $_[0]->attributes->{row_index}
+      : undef;
 }
 
 sub _build_index {
-    return defined $_[0]->attributes->{index} 
-        ? delete $_[0]->attributes->{index}
-        : undef;
+    return
+      defined $_[0]->attributes->{index}
+      ? delete $_[0]->attributes->{index}
+      : undef;
 }
 
 sub _build_template_attr {
-    return defined $_[0]->attributes->{template_attr} 
-        ? delete $_[0]->attributes->{template_attr}
-        : undef;
+    return
+      defined $_[0]->attributes->{template_attr}
+      ? delete $_[0]->attributes->{template_attr}
+      : undef;
 }
 
 sub _build_tag {
     my $caller = caller();
-    my ( $tag ) = $caller =~ /.*\:\:(.*)/;
+    my ($tag) = $caller =~ /.*\:\:(.*)/;
     return lc $tag;
 }
+
+sub has_data { return scalar @{ $_[0]->data } ? 1 : 0; }
 
 sub has_children { return scalar @{ $_[0]->children } ? 1 : 0; }
 
@@ -113,100 +122,130 @@ sub get_link { return $_[0]->links->[ $_[1] ]; }
 sub all_links { return @{ $_[0]->links }; }
 
 sub add_child {
-    my $element = $_[0]->new($_[1]);
+    my $element = $_[0]->new( $_[1] );
     push @{ $_[0]->children }, $element;
     return $element;
 }
 
-sub add_nested { 
-    my $table = HTML::TableContent::Table->new($_[1]);
+sub add_nested {
+    my $table = HTML::TableContent::Table->new( $_[1] );
     push @{ $_[0]->nested }, $table;
     return $table;
 }
 
 sub add_to_nested {
-    return push @{ $_[0]->nested}, $_[1];
+    return push @{ $_[0]->nested }, $_[1];
 }
 
 sub text { return join q{ }, @{ $_[0]->data }; }
 
+sub truncate_text { return substr($_[0]->text, 0, $_[0]->truncate) . '...'; }
+
 sub add_text { return push @{ $_[0]->data }, $_[1]; }
 
-sub set_text { $_[0]->data([ $_[1] ]); }
+sub set_text { $_[0]->data( [ $_[1] ] ); }
 
 sub lc_text { return lc $_[0]->text; }
 
 sub ucf_text { return ucfirst $_[0]->text; }
 
-sub add_class { my $class = $_[0]->class; return $_[0]->class(sprintf('%s %s', $class, $_[1])); }
+sub add_class {
+    my $class = $_[0]->class;
+    return $_[0]->class( sprintf( '%s %s', $class, $_[1] ) );
+}
 
-sub add_style { my $style = $_[0]->style; return $_[0]->style(sprintf('%s %s', $style, $_[1])); }
+sub add_style {
+    my $style = $_[0]->style;
+    return $_[0]->style( sprintf( '%s %s', $style, $_[1] ) );
+}
 
 sub raw {
     my $args = $_[0]->attributes;
-    
-    if ($_[0]->has_nested) {
-        $args->{nested} = ( );
+
+    if ( $_[0]->has_nested ) {
+        $args->{nested} = ();
         for ( $_[0]->all_nested ) {
             push @{ $args->{nested} }, $_->raw;
         }
     }
-    
+
     if ( scalar @{ $_[0]->data } ) {
         $args->{text} = $_[0]->text;
         $args->{data} = $_[0]->data;
     }
-    
+
     return $args;
 }
 
 sub render {
     my $args = $_[0]->attributes;
-    
+
     my $attr = '';
-    foreach my $attribute (@{ $_[0]->attribute_list }) {
-        if (my $val = $args->{$attribute}) {
+    foreach my $attribute ( @{ $_[0]->attribute_list } ) {
+        if ( my $val = $args->{$attribute} ) {
+            $attribute =~ s/\_/\-/g;
             if ( ref $val eq 'ARRAY' ) {
-                $val = sprintf($val->[0], map { $_[0]->$_ } @{ $val }[1 .. scalar @{ $val } - 1]);
+                $val = sprintf(
+                    $val->[0],
+                    map { $_[0]->$_ } @{$val}[ 1 .. scalar @{$val} - 1 ]
+                );
+            } elsif ( ref $val eq 'CODE' ) {
+                $val = $val->($_[0]);
             }
             $attr .= sprintf '%s="%s" ', $attribute, $val;
+
         }
     }
 
     my $render = $_[0]->_render_element;
 
     if ( my $inner_html = $_[0]->inner_html ) {
-       my $inner_count = scalar @{ $inner_html };
-       if ( $inner_count == 1 ) {
-           $render = sprintf($inner_html->[0], $render);
-       } else {
-           $render = sprintf($inner_html->[0], map { $_[0]->$_ } @{ $inner_html }[1 .. $inner_count - 1]);
-       }
+        my $inner_count = scalar @{$inner_html};
+        if ( $inner_count == 1 ) {
+            $render = sprintf( $inner_html->[0], $render );
+        }
+        else {
+            $render = sprintf(
+                $inner_html->[0],
+                map { $_[0]->$_ } @{$inner_html}[ 1 .. $inner_count - 1 ]
+            );
+        }
+    }
+
+    if ($_[0]->has_children) {
+        my @elements = map { $_->render } @{ $_[0]->children };
+        my $ele_html = sprintf '%s' x @elements, @elements;
+
+        $render = sprintf '%s %s', $render, $ele_html; 
     }
 
     my $tag = $_[0]->html_tag;
-    my $html = sprintf("<%s %s>%s</%s>", $tag, $attr, $render, $tag);
-   
+    my $html = sprintf( "<%s %s>%s</%s>", $tag, $attr, $render, $tag );
+
     if ( my $before_element = $_[0]->before_element ) {
-        for (@{ $before_element }) {
+        for ( @{$before_element} ) {
             my $ren = ref \$_ eq 'SCALAR' ? $_ : $_->render;
             $html = sprintf "%s%s", $ren, $html;
         }
     }
-   
+
     if ( my $after_element = $_[0]->after_element ) {
-        for (@{ $after_element }) {
-           my $ren = ref \$_ eq 'SCALAR' ? $_ : $_->render;
-           $html = sprintf "%s%s", $html, $ren;
+        for ( @{$after_element} ) {
+            my $ren = ref \$_ eq 'SCALAR' ? $_ : $_->render;
+            $html = sprintf "%s%s", $html, $ren;
         }
     }
 
     if ( my $wrap_html = $_[0]->wrap_html ) {
-        my $wrap_count = scalar @{ $wrap_html };
-        if ( $wrap_count  == 1 ) {
-            $html = sprintf($wrap_html->[0], $html);
-        } else {
-            $html = sprintf($wrap_html->[0], map { $_[0]->$_ } @{ $wrap_html }[1 .. $wrap_html - 1]);
+        my $wrap_count = scalar @{$wrap_html};
+        if ( $wrap_count == 1 ) {
+            $html = sprintf( $wrap_html->[0], $html );
+        }
+        else {
+            $html = sprintf(
+                $wrap_html->[0],
+                map { $_[0]->$_ } @{$wrap_html}[ 1 .. $wrap_html - 1 ]
+            );
         }
     }
 
@@ -214,10 +253,11 @@ sub render {
 }
 
 sub _render_element {
-    return $_[0]->text unless $_[0]->has_children;
+    return $_[0]->_render_element_text($_[0]->text);
+}
 
-    my @elements = map { $_->render } @{ $_[0]->children };
-    return sprintf '%s' x @elements, @elements;
+sub _render_element_text {
+    return defined $_[0]->truncate ? $_[0]->truncate_text($_[0]->text) : $_[0]->text;
 }
 
 sub _trigger_class { return $_[0]->attributes->{class} = $_[1]; }
@@ -232,7 +272,11 @@ sub _trigger_rowspan { return $_[0]->attributes->{rowspan} = $_[1]; }
 
 sub _trigger_onclick { return $_[0]->attributes->{onclick} = $_[1]; }
 
+sub _trigger_onchange { return $_[0]->attributes->{onchange} = $_[1]; }
+
 sub _trigger_type { return $_[0]->attributes->{type} = $_[1]; }
+
+sub _trigger_value { return $_[0]->attributes->{value} = $_[1]; }
 
 sub _trigger_scope { return $_[0]->attributes->{scope} = $_[1]; }
 
@@ -240,18 +284,44 @@ sub _trigger_onkeyup { return $_[0]->attributes->{onkeyup} = $_[1]; }
 
 sub _trigger_placeholder { return $_[0]->attributes->{placeholder} = $_[1]; }
 
-sub _trigger_template_attr { return $_[0]->attributes->{template_attr} = $_[1]; }
+sub _trigger_onFocus { return $_[0]->attributes->{onFocus} = $_[1]; }
+
+sub _trigger_onBlur { return $_[0]->attributes->{onBlur} = $_[1]; }
+
+sub _trigger_role { return $_[0]->attributes->{role} = $_[1]; }
+
+sub _trigger_href { return $_[0]->attributes->{href} = $_[1]; }
+
+sub _trigger_width { return $_[0]->attributes->{width} = $_[1]; }
+
+sub _trigger_height { return $_[0]->attributes->{height} = $_[1]; }
+
+sub _trigger_data_toggle { return $_[0]->attributes->{data_toggle} = $_[1]; }
+
+sub _trigger_data_placement { return $_[0]->attributes->{data_placement} = $_[1]; }
+
+sub _trigger_title { return $_[0]->attributes->{title} = $_[1]; }
+
+sub _trigger_template_attr {
+    return $_[0]->attributes->{template_attr} = $_[1];
+}
+
+sub _trigger_selected { return $_[0]->attributes->{selected} = $_[1]; }
+
+sub _trigger_autocomplete { return $_[0]->attributes->{autocomplete} = $_[1]; }
+
+sub _trigger_for { return $_[0]->attributes->{for} = $_[1]; }
 
 sub _build_data {
     my $data = delete $_[0]->attributes->{data};
     my $text = delete $_[0]->attributes->{text};
 
     if ( defined $text ) {
-        push @{ $data }, $text;
+        push @{$data}, $text;
     }
 
-    return $data if defined $data && scalar @{ $data };
-    return [ ];
+    return $data if defined $data && scalar @{$data};
+    return [];
 }
 
 sub has_id { return length $_[0]->id ? 1 : 0; }

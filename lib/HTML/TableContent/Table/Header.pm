@@ -31,8 +31,12 @@ sub get_cell { return $_[0]->cells->[ $_[1] ]; }
 
 sub get_first_cell { return $_[0]->get_cell(0); }
 
-sub _render_element {
-    return $_[0]->ucf_text;
+sub get_last_cell { return $_[0]->get_cell( $_[0]->cell_count - 1 ); }
+
+sub unique_cells {
+    my $count_cells = { };
+    map { $count_cells->{$_->text}++ } $_[0]->all_cells;
+    return $count_cells;   
 }
 
 1;

@@ -14,11 +14,12 @@ around setup_pagination => sub {
     my $row_count = $table->row_count;
     my $table_options = $self->table_options;
 
-    if ( $row_count > $table_options->{display} ) {
+    if ( $row_count > $self->display ) {
         my $pager_name = $self->table_name;
         $table->id(sprintf '%sTable', $pager_name);
-        my $page_count = ceil($row_count / $table_options->{display});
-        $self->page_count($page_count);
+        
+        my $page_count = $self->set_page_count($row_count);
+        my $display_page_count = ceil( $row_count / $self->display );
 
         my $pagination = HTML::TableContent::Element->new({ html_tag => 'ul', class => 'pagination' });
         $pagination->wrap_html(['<div>%s</div>']);
@@ -28,7 +29,8 @@ around setup_pagination => sub {
 
         for (1 .. $page_count) {
             my $page = $pagination->add_child({ html_tag => 'li', text => $_, tag => $pager_name });
-            $page = $self->set_inner_pager_item_html($page); 
+
+            $page = $self->set_inner_pager_item_html($page, $display_page_count); 
         }
 
         my $forward = $pagination->add_child({ html_tag => 'li', text => '>', tag => $pager_name });
@@ -48,16 +50,19 @@ around setup_pagination => sub {
 sub set_inner_pager_item_html {
     given ($_[1]->text) {
         when (/1/) {
-            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-selected" onclick="%sTc.showPage(%s)">%s</a>', 'text', 'tag', 'text', 'text']);
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-selected" onclick="%sTc.showPage(%s); return false;">%s</a>', 'text', 'tag', 'text', 'text']);
         }
         when (/</) {
-            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.prev();">%s</a>', 'text', 'tag', 'text']);
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.prev(); return false;">%s</a>', 'text', 'tag', 'text']);
         }
         when (/>/) {
-            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.next();">%s</a>', 'text', 'tag', 'text']);
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.next(); return false;">%s</a>', 'text', 'tag', 'text']);
+        }
+        when ($_ > $_[2]) {
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal search-hide" onclick="%sTc.showPage(%s); return false">%s</a>', 'text', 'tag', 'text', 'text']);
         }
         default {
-            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.showPage(%s);">%s</a>', 'text', 'tag', 'text', 'text']);
+            $_[1]->inner_html(['<a href="#" id="tc%s" class="tc-normal" onclick="%sTc.showPage(%s); return false;">%s</a>', 'text', 'tag', 'text', 'text']);
         }
     } 
     return $_[1];

@@ -39,7 +39,7 @@ sub render {
 }
 
 sub _build_data {
-   return $_[0]->can('_data') ? $_[0]->_coerce_data($_[0]->_data) : [ ];
+   return $_[0]->can('_data') ? $_[0]->_coerce_data($_[0]->_data) : undef;
 }
 
 sub _trigger_data {
@@ -69,8 +69,6 @@ sub _build_table {
     my $self = shift;
 
     my $data = $self->data;
-
-    return unless scalar @{ $data };
     
     my $table_spec = { };
     if ($self->can('table_spec')) {
@@ -295,7 +293,7 @@ sub _from_attributes {
     if ( ref $data eq 'ARRAY' ) {
         $element->$action($data);
     } elsif ( $self->can($data) ) {
-        $element->$action($self->$data);
+        $element->$action($self->$data($element));
     }
     else {
         croak "$action on $element->template_attr needs to be either an ArrayRef or A reference to a Sub";

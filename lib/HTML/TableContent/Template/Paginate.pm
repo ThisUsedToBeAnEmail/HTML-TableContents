@@ -6,19 +6,38 @@ use HTML::TableContent::Element;
 use feature qw/switch/;
 no warnings 'experimental';
 
-has [qw/page_count display pagination/] => (
+has pagination => (
+    is => 'rw',
+    lazy => 1,
+    builder => 1,
+);
+
+sub _build_pagination {
+    my $self = shift;
+
+    my $table_options = $self->table_options;
+    return $table_options->{pagination} ? 1 : undef;
+}
+
+has page_count => (
     is => 'rw',
 );
+
+sub set_page_count {
+    my ($self, $row_count) = @_; 
+
+    my $page_count = ceil($row_count / $self->highest_display);
+    $self->page_count($page_count);
+    return $page_count;
+}
 
 around _set_html => sub {
     my ($orig, $self, $args) = @_;
 
     my $element = $self->$orig($args);
-    my $table_options = $self->table_options;
 
-    if ( $table_options->{pagination} ) {
-        if ( $element->tag eq 'row' && $element->row_index > $table_options->{display} ) { 
-            $self->pagination(1);
+    if ( $self->pagination ) {
+        if ( $element->tag eq 'row' && $element->row_index > $self->display ) { 
             $element->style("display:none;");
         }
     }

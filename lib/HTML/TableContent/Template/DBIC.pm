@@ -2,44 +2,47 @@ package HTML::TableContent::Template::DBIC;
 
 use Moo::Role;
 
+use JSON;
+
 has rs => (
-    is => 'ro',
+    is => 'rw',
     lazy => 1,
 );
 
 has result => (
-    is => 'ro',
+    is => 'rw',
     lazy => 1,
 );
 
 sub add_template_rows {
-    my ($self, $table, %row_spec, %cell_spec) = @_;
+    my ($self, $table, %cell_spec) = @_;
 
     if ( defined $self->rs ) {
-        $table = $self->_rows_from_rs($table, %row_spec, %cell_spec);
+        $table = $self->_rows_from_rs($table, %cell_spec);
     } elsif ( my $result = $self->result ) {
-        my $row = $self->_row_from_result(1, $result, $table, %row_spec, %cell_spec); 
+        my $row = $self->_row_from_result(1, $result, $table, %cell_spec); 
     } else {
         die 'You must supply either a result or resultset';
     }
-
    return $table;
 }
 
 sub _rows_from_rs {
-    my ($self, $table, %row_spec, %cell_spec) = @_;
+    my ($self, $table, %cell_spec) = @_;
 
     my $row_index = 1;
     foreach my $result ( $self->rs->all ) {
-        my $row = $self->_row_from_result($row_index, $result, $table, %row_spec, %cell_spec);
+        $self->result($result);
+        my $table = $self->_row_from_result($row_index, $result, $table, %cell_spec);
         $row_index++;
     }
     return $table;
 }
 
 sub _row_from_result {
-    my ($self, $row_index, $result, $table, %row_spec, %cell_spec) = @_;
-    
+    my ($self, $row_index, $result, $table, %cell_spec) = @_;
+   
+    my %row_spec = $self->_row_spec;
     my $row_base = $self->_element_spec($row_index, %row_spec);
         
     %cell_spec = $self->_refresh_cell_spec($row_base, $row_index, %cell_spec);
@@ -50,17 +53,24 @@ sub _row_from_result {
         my $cell_base = $self->_element_spec($cell_index++, %cell_spec);
         my $field = $_->template_attr;
         
-        if (my $relationship = $_->attributes->{relationship}) {
-            my $rel = $result->$relationship;
-            if ( $field = $_->attributes->{field}) {
-                $cell_base->{text} = $rel->$field;    
+        unless ( defined $_->attributes->{special} ) {
+            if (defined $result->$field && defined $_->attributes->{relationship}) {
+                my $relationship = $_->attributes->{relationship};
+                my $rel = $result->$relationship;
+                if (my $f = $_->attributes->{field}) {
+                    $cell_base->{original_text} = $result->$field;
+                    $cell_base->{text} = $rel->$f;    
+                } else {
+                    die "You need to define a field for $field - $relationship";
+                }
             } else {
-                die "You need to define a field for $field - $relationship";
+                my $text = $result->$field;
+                if (ref $text eq 'HASH') {
+                    $text = to_json $text;
+                }
+                $cell_base->{text} = $text;
             }
-        } else {
-            $cell_base->{text} = $result->$field;
         }
-
         my $cell = $row->add_cell($cell_base);
         $cell = $self->_set_html($cell);
         $table->parse_to_column($cell);
@@ -68,7 +78,7 @@ sub _row_from_result {
 
     $row = $self->_set_html($row);
 
-    return $row;
+    return $table;
 }
 
 1;

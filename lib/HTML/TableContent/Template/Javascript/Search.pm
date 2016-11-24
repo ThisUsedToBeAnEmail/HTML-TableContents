@@ -7,19 +7,20 @@ around add_search_box => sub {
     my ($orig, $self, $args) = @_;
     
     my $table = $self->$orig($args);
+    
+    my $caption = $table->caption;
+    
     my $table_name = $self->table_name;
     my $search_box_id = sprintf '%s-input', $table_name;
     my $keyup = sprintf '%sTc.search(this)', $table_name;
 
-    my $search = HTML::TableContent::Element->new({
+    my $search = $caption->add_child({
         html_tag => 'input',
         type => 'text',
         id => $search_box_id,
         onkeyup => $keyup,
-        placeholder => 'Search for Something...'
+        placeholder => $self->search_text
     });
-
-    push @{ $table->before_element }, $search;
 
     return $table;
 };
