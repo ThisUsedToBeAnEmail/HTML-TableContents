@@ -39,6 +39,13 @@ sub unique_cells {
     return $count_cells;   
 }
 
+around _render_element_text => sub {
+   my ($orig, $self, $args) = @_;
+
+   my $text = $self->$orig($args);
+   return ucfirst $text;
+};
+
 1;
 
 __PACKAGE__->meta->make_immutable;
