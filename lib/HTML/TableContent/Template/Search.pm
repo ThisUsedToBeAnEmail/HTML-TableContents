@@ -9,18 +9,22 @@ has search_columns => (
     default => sub { { } },
 );
 
-has search_text => (
+has [qw/search_text search_box_position/] => (
     is => 'rw',
     lazy => 1,
     builder => 1,
 );
 
 sub _build_search_text {
-    my $self = shift;
+    my $default_text = 'Search table for...';
+    my $table_spec = $_[0]->table_options;
+    return defined $table_spec->{search_text} ? $table_spec->{search_text} : $default_text;
+}     
 
-    my $table_spec = $self->table_spec;
-    return defined $table_spec->{search_text} ? $table_spec->{search_text} : 'Search table for..';
-}                                                                              
+sub _build_search_box_position {
+    my $table_spec = $_[0]->table_options;
+    return defined $table_spec->{search_box_position} ? $table_spec->{search_box_position} : 'before';
+}
 
 sub searchable { return keys %{ $_[0]->search_columns } ? 1 : undef; }
 

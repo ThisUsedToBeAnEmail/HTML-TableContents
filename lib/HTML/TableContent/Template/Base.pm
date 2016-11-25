@@ -31,11 +31,15 @@ has data => (
 has table_options => (
     is => 'rw',
     lazy => 1,
-    default => sub { { } }
+    builder => 1,
 );
 
 sub render {
     return $_[0]->table->render;
+}
+
+sub _build_table_options {
+    return $_[0]->can('table_spec') ? $_[0]->table_spec : {};
 }
 
 sub _build_data {
@@ -70,11 +74,7 @@ sub _build_table {
 
     my $data = $self->data;
     
-    my $table_spec = { };
-    if ($self->can('table_spec')) {
-        $table_spec = $self->table_spec;
-        $self->table_options($table_spec);
-    }
+    my $table_spec = $self->table_options;
 
     my $table = HTML::TableContent::Table->new($table_spec);
     $table = $self->_set_html($table);
