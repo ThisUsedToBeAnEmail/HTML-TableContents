@@ -3,6 +3,12 @@ package HTML::TableContent::Template::Display;
 use Moo::Role;
 use HTML::TableContent::Element;
 
+has displaying => (
+    is => 'rw',
+    lazy => 1,
+);
+
+
 has [qw/display display_options/] => (
     is => 'rw',
     lazy => 1,
@@ -39,7 +45,7 @@ around last_chance => sub {
     my ($orig, $self, $args) = @_;
 
     my $table = $self->$orig($args);
-    if (defined $self->pagination){
+    if (defined $self->displaying){
         $table = $self->setup_show($table);
     }   
     return $table 

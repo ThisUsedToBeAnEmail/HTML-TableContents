@@ -27,8 +27,12 @@ sub add_pager_js {
     }
     my $display = defined $_[1]->attributes->{display} ? $_[1]->attributes->{display} : $_[1]->row_count;
 
-    my $table_args = { 'searchColumns' => $_[0]->search_columns }; 
+    my $table_args = { }; 
     
+    if ( keys %{ $_[0]->search_columns } ) {
+        $table_args->{searchColumns} = $_[0]->search_columns;
+    }
+
     my $json_args = to_json($table_args);
 
     my $table_script = sprintf '<script type="text/javascript">var %sTc = new HtmlTC("%s", %s, %s);</script>', 

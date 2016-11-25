@@ -216,7 +216,7 @@ sub render {
         my @elements = map { $_->render } @{ $_[0]->children };
         my $ele_html = sprintf '%s' x @elements, @elements;
 
-        $render = sprintf '%s %s', $render, $ele_html; 
+        $render = sprintf '%s%s', $render, $ele_html; 
     }
 
     my $tag = $_[0]->html_tag;
