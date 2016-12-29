@@ -3,7 +3,7 @@ package HTML::TableContent::Element;
 use Moo;
 use HTML::TableContent::Table;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 my @ATTRIBUTE =
   qw/class id style colspan rowspan onclick onchange type onkeyup placeholder scope selected value
@@ -343,7 +343,7 @@ HTML::TableContent::Element - attributes, text, data, class, id
 
 =head1 VERSION
 
-Version 0.16
+Version 0.17
 
 =cut
 

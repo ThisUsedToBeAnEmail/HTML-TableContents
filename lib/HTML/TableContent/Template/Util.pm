@@ -3,6 +3,8 @@ package HTML::TableContent::Template::Util;
 use Moo::Role;
 use HTML::TableContent::Element;
 
+our $VERSION = '0.17';
+
 has [qw/button_options/] => (
     is => 'rw',
     lazy => 1,

@@ -2,6 +2,8 @@ package HTML::TableContent::Template::Javascript::Paginate;
 
 use Moo::Role;
 
+our $VERSION = '0.17';
+
 use POSIX qw(ceil);
 use feature qw/switch/;
 no warnings 'experimental';

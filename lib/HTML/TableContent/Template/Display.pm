@@ -3,6 +3,8 @@ package HTML::TableContent::Template::Display;
 use Moo::Role;
 use HTML::TableContent::Element;
 
+our $VERSION = '0.17';
+
 has displaying => (
     is => 'rw',
     lazy => 1,

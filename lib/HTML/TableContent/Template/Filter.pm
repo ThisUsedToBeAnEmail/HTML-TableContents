@@ -3,6 +3,8 @@ package HTML::TableContent::Template::Filter;
 use Moo::Role;
 use HTML::TableContent::Element;
 
+our $VERSION = '0.17';
+
 has filter_options => (
     is => 'rw',
     lazy => 1,

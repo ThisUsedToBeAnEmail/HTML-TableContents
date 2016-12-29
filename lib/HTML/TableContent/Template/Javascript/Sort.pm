@@ -2,6 +2,8 @@ package HTML::TableContent::Template::Javascript::Sort;
 
 use Moo::Role;
 
+our $VERSION = '0.17';
+
 around _add_sort => sub {
     my ($orig, $self, $args) = @_;
  

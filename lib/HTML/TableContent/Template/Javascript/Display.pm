@@ -2,6 +2,8 @@ package HTML::TableContent::Template::Javascript::Display;
 
 use Moo::Role;
 
+our $VERSION = '0.17';
+
 around setup_show => sub {
     my ($orig, $self, $args) = @_;
 

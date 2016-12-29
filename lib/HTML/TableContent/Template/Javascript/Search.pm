@@ -3,6 +3,8 @@ package HTML::TableContent::Template::Javascript::Search;
 use Moo::Role;
 use HTML::TableContent::Element;
 
+our $VERSION = '0.17';
+
 use feature qw/switch/;
 no warnings 'experimental'; 
 

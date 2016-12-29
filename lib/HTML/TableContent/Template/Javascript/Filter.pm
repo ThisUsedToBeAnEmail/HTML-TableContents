@@ -2,6 +2,8 @@ package HTML::TableContent::Template::Javascript::Filter;
 
 use Moo::Role;
 
+our $VERSION = '0.17';
+
 use HTML::TableContent::Element;
 
 around _add_filter => sub {

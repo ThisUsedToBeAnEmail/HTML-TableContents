@@ -3,6 +3,8 @@ package HTML::TableContent::Template::Base;
 use strict;
 use warnings;
 
+our $VERSION = '0.17';
+
 use Moo::Role;
 use Carp qw/croak/;
 

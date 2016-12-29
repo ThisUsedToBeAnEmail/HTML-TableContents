@@ -3,6 +3,8 @@ package HTML::TableContent::Template::Search;
 use Moo::Role;
 use HTML::TableContent::Element;
 
+our $VERSION = '0.17';
+
 has search_columns => (
     is => 'rw',
     lazy => 1,

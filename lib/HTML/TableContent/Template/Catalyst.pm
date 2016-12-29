@@ -2,6 +2,8 @@ package HTML::TableContent::Template::Catalyst;
 
 use Moo::Role;
 
+our $VERSION = '0.17';
+
 with 'HTML::TableContent::Template::Catalyst::Util';
 
 has ctx => (

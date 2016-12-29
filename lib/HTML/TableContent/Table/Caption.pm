@@ -2,7 +2,7 @@ package HTML::TableContent::Table::Caption;
 
 use Moo;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 extends 'HTML::TableContent::Element';
 
@@ -22,7 +22,7 @@ HTML::TableContent::Table::Caption - base class for table captions.
 
 =head1 VERSION
 
-Version 0.16
+Version 0.17
 
 =head1 SYNOPSIS
 

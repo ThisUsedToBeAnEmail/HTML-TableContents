@@ -10,6 +10,8 @@ with 'HTML::TableContent::Template::Javascript::Filter';
 with 'HTML::TableContent::Template::Javascript::Sort';
 with 'HTML::TableContent::Template::Javascript::Search';
 
+our $VERSION = '0.17';
+
 after last_chance => sub {
     my ($self, $table) = @_;
 

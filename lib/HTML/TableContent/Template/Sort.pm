@@ -3,6 +3,8 @@ package HTML::TableContent::Template::Sort;
 use Moo::Role;
 use HTML::TableContent::Element;
 
+our $VERSION = '0.17';
+
 has sort_options => (
     is => 'rw',
     lazy => 1,

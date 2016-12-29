@@ -2,6 +2,8 @@ package HTML::TableContent::Template::Catalyst::Util;
 
 use Moo::Role;
 
+our $VERSION = '0.17';
+
 around _create_buttons => sub {
     my ($orig, $self, $ele, $args) = @_;
 

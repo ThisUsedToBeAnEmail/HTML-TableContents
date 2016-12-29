@@ -6,7 +6,7 @@ use HTML::TableContent::Table::Caption;
 use HTML::TableContent::Table::Header;
 use HTML::TableContent::Table::Row;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 extends 'HTML::TableContent::Element';
 
@@ -427,7 +427,7 @@ HTML::TableContent::Table - Base class for table's
 
 =head1 VERSION
 
-Version 0.16
+Version 0.17
 
 =cut
 

@@ -6,6 +6,8 @@ use HTML::TableContent::Element;
 use feature qw/switch/;
 no warnings 'experimental';
 
+our $VERSION = '0.17';
+
 has pagination => (
     is => 'rw',
     lazy => 1,
@@ -55,7 +57,6 @@ around last_chance => sub {
     return $table 
 };
 
-## Could refactor the below into - Table
 sub setup_pagination {
     return $_[1];
 }
